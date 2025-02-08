@@ -1,0 +1,24 @@
+{
+  "name": "nazuninha-bot",
+  "version": "0.0.1",
+  "description": "O bot de whatsapp mais leve e funcional que voce ja viu",
+  "main": "app.js",
+  "scripts": {
+    "start": "npm run start:silent --silent",
+    "start:silent": "sh dados/src/.scripts/.start.sh",
+    "config": "npm run config:silent --silent",
+    "config:install": "npm run config:install:silent --silent",
+    "config:silent": "sh dados/src/.scripts/.config.sh",
+    "config:install:silent": "sh dados/src/.scripts/.config.sh --install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/hiudyy/nazuninha-bot"
+  },
+  "author": "Hiudy",
+  "license": "ISC",
+  "dependencies": {
+    "baileys": "npm:@whiskeysockets/baileys@latest",
+    "qrcode": "latest"
+  }
+}
