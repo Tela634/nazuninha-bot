@@ -1,7 +1,7 @@
 # **Nazuninha Bot 🤖🚀**  
-[![Ultima Atualização](https://img.shields.io/github/last-commit/hiudyy/nazuninha-bot)](https://github.com/hiudyy/nazuninha-bot)  
-[![Stars](https://img.shields.io/github/stars/hiudyy/nazuninha-bot?color=yellow&label=Favoritos&style=for-the-badge)](https://github.com/hiudyy/nazuninha-bot/stargazers)  
-[![License](https://img.shields.io/badge/license-Copyright-red?style=for-the-badge)](LICENSE)  
+[![Última Atualização](https://img.shields.io/github/last-commit/hiudyy/nazuninha-bot)](https://github.com/hiudyy/nazuninha-bot)  
+[![Estrelas](https://img.shields.io/github/stars/hiudyy/nazuninha-bot?color=yellow&label=Favoritos&style=for-the-badge)](https://github.com/hiudyy/nazuninha-bot/stargazers)  
+[![Licença](https://img.shields.io/badge/license-Copyright-red?style=for-the-badge)](LICENSE)  
 [![Status](https://img.shields.io/badge/STATUS-ATIVO-success?style=for-the-badge)](#)  
 
 **Nazuninha Bot** é um bot completo e otimizado para WhatsApp, desenvolvido com `Node.js` e a biblioteca `Baileys`. Fácil de instalar, rápido e cheio de funcionalidades para turbinar seu WhatsApp!  
@@ -63,6 +63,6 @@ O bot pedirá seu número de telefone e fornecerá um código para você inserir
 ## 👤 **Créditos**  
 
 Desenvolvido por [**Hiudy**](https://github.com/hiudyy) ❤️  
-[![Perfil Hiudy](https://github-readme-stats.vercel.app/api?username=hiudyy&show_icons=true&theme=radical)](https://github.com/hiudyy)  
+[![Perfil Hiudy](https://github-readme-stats.vercel.app/api?username=hiudyy&show_icons=true&theme=radical&locale=pt-BR)](https://github.com/hiudyy)  
 
 Se curtiu o projeto, deixa uma ⭐ no repositório e compartilhe! 🚀  
