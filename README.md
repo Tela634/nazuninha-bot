@@ -1,5 +1,5 @@
 # **Nazuninha Bot 🤖🚀**  
-[![Downloads](https://img.shields.io/github/downloads/hiudyy/nazuninha-bot/total?color=blue&label=Downloads&style=for-the-badge)](https://github.com/hiudyy/nazuninha-bot/releases)  
+[![Ultima Atualização](https://img.shields.io/github/last-commit/hiudyy/nazuninha-bot)](https://github.com/hiudyy/nazuninha-bot)  
 [![Stars](https://img.shields.io/github/stars/hiudyy/nazuninha-bot?color=yellow&label=Favoritos&style=for-the-badge)](https://github.com/hiudyy/nazuninha-bot/stargazers)  
 [![License](https://img.shields.io/badge/license-Copyright-red?style=for-the-badge)](LICENSE)  
 [![Status](https://img.shields.io/badge/STATUS-ATIVO-success?style=for-the-badge)](#)  
@@ -63,7 +63,6 @@ O bot pedirá seu número de telefone e fornecerá um código para você inserir
 ## 👤 **Créditos**  
 
 Desenvolvido por [**Hiudy**](https://github.com/hiudyy) ❤️  
-
-[![Perfil de Hiudy](https://github.com/hiudyy.png?size=100)](https://github.com/hiudyy)  
+[![Perfil Hiudy](https://github-readme-stats.vercel.app/api?username=hiudyy&show_icons=true&theme=radical)](https://github.com/hiudyy)  
 
 Se curtiu o projeto, deixa uma ⭐ no repositório e compartilhe! 🚀  
