@@ -7,6 +7,8 @@
     "start": "npm run start:silent --silent",
     "start:silent": "sh dados/src/.scripts/.start.sh",
     "config": "npm run config:silent --silent",
+    "update": "npm run update:silent --silent",
+    "update:silent": "sh dados/src/.scripts/.update.sh",
     "config:install": "npm run config:install:silent --silent",
     "config:silent": "sh dados/src/.scripts/.config.sh",
     "config:install:silent": "sh dados/src/.scripts/.config.sh --install"

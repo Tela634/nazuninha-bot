@@ -3,6 +3,8 @@
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
 const { reportError, youtube, tiktok, pinterest }  = require(__dirname+'/.funcs/.exports.js');
+const menu = require(__dirname+'/menus/menu.js');
+const menudown = require(__dirname+'/menus/menudown.js');
 const axios = require('axios');
 const fs = require('fs');
 
@@ -84,6 +86,14 @@ try {
     reply('Ocorreu um erro na requisição.');
    }
    break;
+   
+   case 'menu':
+   await reply(await menu(prefix));
+   break
+   
+   case 'menudown':
+   await reply(await menudown(prefix));
+   break
    
  default:
  };
