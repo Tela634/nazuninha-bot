@@ -56,9 +56,10 @@ fi
 
 # Remove todos os arquivos e diretórios, exceto o backup e o script de atualização
 mensagem "🧹 Removendo arquivos antigos..."
-shopt -s extglob
-rm -rf !("backup_temp"|"dados")
-shopt -u extglob
+rm -rf .git
+rm -rf package.json
+rm -rf package-lock.json
+find dados/ -mindepth 1 ! -path 'backup_temp' -exec rm -rf {} +
 
 # Move os novos arquivos para o diretório atual
 mensagem "🚚 Movendo novos arquivos..."
@@ -81,7 +82,7 @@ rm -rf "$backup_dir"
 
 # Instala as dependências do Node.js
 mensagem "📦 Instalando dependências do Node.js..."
-npm install
+npm install --no-bin-links
 if [ $? -ne 0 ]; then
     aviso "❌ Falha ao instalar as dependências. Verifique o arquivo package.json."
     exit 1
