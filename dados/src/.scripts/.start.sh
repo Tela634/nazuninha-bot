@@ -61,11 +61,21 @@ read conexao
 case "$conexao" in
     1)
         mensagem "📡 Iniciando conexão por QR Code..."
+        while : 
+        do
         node "$connect_file"
+        sleep 1
+        printf "- O ︎bot caiu! Iniciando novamente, aguarde...\n"
+        done
         ;;
     2)
         mensagem "🔑 Iniciando conexão por Código..."
+        while : 
+        do
         node "$connect_file" --code
+        sleep 1
+        printf "- O ︎bot caiu! Iniciando novamente, aguarde...\n"
+        done
         ;;
     *)
         aviso "❌ Opção inválida! Reinicie o script e escolha 1 ou 2."

@@ -18,7 +18,8 @@
   "author": "Hiudy",
   "license": "ISC",
   "dependencies": {
-    "baileys": "npm:@whiskeysockets/baileys@latest",
-    "qrcode-terminal": "latest"
+    "baileys": "npm:@itsukichan/baileys@latest",
+    "qrcode-terminal": "latest",
+    "cheerio": "latest"
   }
 }

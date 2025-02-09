@@ -22,8 +22,58 @@ return new Promise(resolve => rl.question(question, (answer) => { rl.close(); re
 async function startNazu(retryCount = 0) {
  const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
  const { version } = await fetchLatestBaileysVersion();
-
- let nazu = makeWASocket({version, auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, logger), }, printQRInTerminal: !process.argv.includes('--code'), browser: ['Ubuntu', 'Edge', '110.0.1587.56'], syncFullHistory: false, markOnlineOnConnect: true, fireInitQueriesEarly: true, msgRetryCounterCache, connectTimeoutMs: 60000, defaultQueryTimeoutMs: 0, keepAliveIntervalMs: 10000, logger, });
+ 
+ async function getMessage(key) {
+  if (store) {
+    try {
+      const msg = await store.loadMessage(key.remoteJid, key.id);
+      return msg?.message || undefined;
+    } catch (error) {
+      console.error("Erro ao carregar a mensagem:", error);
+      return undefined;
+    };
+  };
+  return Promise.resolve({});
+ };
+ 
+ let nazu = makeWASocket({
+    version,
+    auth: {
+        creds: state.creds,
+        keys: makeCacheableSignalKeyStore(state.keys, logger),
+    },
+    printQRInTerminal: !process.argv.includes('--code'),
+    syncFullHistory: false,
+    markOnlineOnConnect: false,
+    fireInitQueriesEarly: true,
+    msgRetryCounterCache,
+    connectTimeoutMs: 180000,
+    defaultQueryTimeoutMs: 10000,
+    keepAliveIntervalMs: 10000,
+    retryRequestDelayMs: 5000,
+    generateHighQualityLinkPreview: true,
+    logger,
+    patchMessageBeforeSending: (message) => {
+    const requiresPatch = !!(
+    message?.interactiveMessage
+    );
+    if (requiresPatch) {
+    message = {
+    viewOnceMessage: {
+    message: {
+    messageContextInfo: {
+    deviceListMetadataVersion: 2,
+    deviceListMetadata: {},
+    },
+    ...message,
+    },
+    },
+    };
+    }
+    return message;
+    },
+    getMessage
+});
 
  nazu.ev.on('creds.update', saveCreds);
 
@@ -58,6 +108,7 @@ async function startNazu(retryCount = 0) {
     if (!m.messages || !Array.isArray(m.messages)) return;
     for (const info of m.messages) {
     if(!info.message) return;
+    if(m.type == "append") return;  
     const indexModulePath = __dirname + '/index.js';
     delete require.cache[require.resolve(indexModulePath)];
     const indexModule = require(indexModulePath);
@@ -72,27 +123,20 @@ async function startNazu(retryCount = 0) {
   }
  });
  
-    if (process.argv.includes('--code') && !nazu.authState.creds.registered) {
-        try {
-            console.log('🔑 Iniciando conexão por Código...');
-            let phoneNumber = await ask('📞 Digite seu número (com DDD e DDI): ');
-            phoneNumber = phoneNumber.replace(/\D/g, ''); // Remove caracteres não numéricos
-
-            if (!/^\d{10,15}$/.test(phoneNumber)) {
-                console.log('❌ Número inválido! Tente novamente.');
-                return;
-            }
-
-            console.log('📡 Solicitando código de emparelhamento...');
-            const code = await nazu.requestPairingCode(phoneNumber);
-            console.log(`🔢 Seu código de pareamento: ${code}`);
-            console.log('📲 No WhatsApp, vá em "Aparelhos Conectados" -> "Conectar com Número de Telefone" e insira o código.');
-        } catch (err) {
-            console.error('❌ Erro ao solicitar código:', err.message || err);
-            console.error('📌 Resposta completa do erro:', err);
-        }
-    }
-}
+ if (process.argv.includes('--code') && !nazu.authState.creds.registered) {
+  try {
+    let phoneNumber = await ask('📞 Digite seu número (com DDD e DDI): ');
+    phoneNumber = phoneNumber.replace(/\D/g, '');
+    if (!/^\d{10,15}$/.test(phoneNumber)) return console.log('❌ Número inválido! Tente novamente.');
+    const code = await nazu.requestPairingCode(phoneNumber);
+    console.log(`🔢 Seu código de pareamento: ${code}`);
+    console.log('📲 No WhatsApp, vá em "Aparelhos Conectados" -> "Conectar com Número de Telefone" e insira o código.');
+  } catch (err) {
+    console.error('❌ Erro ao solicitar código:', err.message || err);
+    console.error('📌 Resposta completa do erro:', err);
+  };
+ };
+};
 
 // Inicia o bot
 startNazu();

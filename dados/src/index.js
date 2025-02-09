@@ -1,4 +1,8 @@
-// Created By Hiudy (não remova nem edite essa linha)
+//Criador: hiudy
+//Versão: 0.0.1
+//Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
+
+const { reportError, youtube, tiktok, pinterest }  = require(__dirname+'/.funcs/.exports.js');
 const axios = require('axios');
 const fs = require('fs');
 
@@ -23,11 +27,64 @@ try {
  var isCmd = body.trim().startsWith(prefix);
  const command = isCmd ? budy2.trim().slice(1).split(/ +/).shift().toLocaleLowerCase().trim().replaceAll(' ', '') : null;
  
+ 
+ //FUNÇÕES BASICAS
+ async function reply(text) { return nazu.sendMessage(from, {text: text.trim()}, {sendEphemeral: true, contextInfo: { forwardingScore: 50, isForwarded: true, externalAdReply: { showAdAttribution: true }}, quoted: info})};nazu.reply=reply;
+ 
+ const reagir = async (emj) => { if (typeof emj === 'string') { await nazu.sendMessage(from, { react: { text: emj, key: info.key } }); } else if (Array.isArray(emj)) { for (const emjzin of emj) { await nazu.sendMessage(from, { react: { text: emjzin, key: info.key } }); await new Promise(res => setTimeout(res, 500)); } } }; nazu.react = reagir;
+ //FIM FUNÇÕES BASICAS
+ 
  switch(command) {
-  case 'teste':
-   await nazu.sendMessage(from, {text: 'sla'}, {quoted: info});
-  break
+
+  case 'play':
+  case 'ytmp3':
+  try {
+    if (!q) return reply(`Digite o nome da música.\n> Ex: ${prefix + command} Back to Black`);
+    nazu.react(['❤️','💖','🩷','💜','💞']);
+    datinha = await youtube.search(q);
+    if(!datinha.ok) return reply(datinha.msg);
+    await nazu.sendMessage(from, { image: { url: datinha.data.thumbnails.pop().url }, caption: `🎵 *Música Encontrada* 🎵\n\n📌 *Nome:* ${datinha.data.title}\n👤 *Canal:* ${datinha.data.channelName}\n👀 *Visualizações:* ${datinha.data.viewCount}\n🔗 *Link:* ${datinha.data.url}`, footer: `By: ${nomebot}` }, { quoted: info });
+    dlRes = await youtube.mp3(datinha.data.url);
+    if(!dlRes.ok) return reply(dlRes.msg);
+    await nazu.sendMessage(from, {audio: {url: dlRes.url}, mimetype: 'audio/mp4', fileName: datinha.data.title}, {quoted: info});
+  } catch (e) {
+    console.error(e);
+    reply('Ocorreu um erro durante a requisição.');
+  }
+  break;
   
+  case 'tiktok': case 'tiktokaudio': case 'tiktokvideo': case 'tiktoks': case 'tiktoksearch':
+   try {
+    if (!q) return reply(`Digite um nome ou o link de um vídeo.\n> Ex: ${prefix}${command} Gato`);
+    nazu.react(['❤️','💖','🩷','💜','💞']);
+    let isTikTokUrl = /^https?:\/\/(?:www\.|m\.|vm\.|t\.)?tiktok\.com\//.test(q);
+    let datinha = await (isTikTokUrl ? tiktok.dl(q) : tiktok.search(q));
+    if (!datinha.ok) return reply(datinha.msg);
+    for (const urlz of datinha.urls) {
+        await nazu.sendMessage(from, { [datinha.type]: { url: urlz }, mimetype: datinha.mime }, { quoted: info });
+    }
+    if (datinha.audio) await nazu.sendMessage(from, { audio: { url: datinha.audio }, mimetype: 'audio/mp4' }, { quoted: info });
+   } catch (e) {
+    console.error(e);
+    reply('Ocorreu um erro durante a requisição.');
+   }
+   break;
+  
+  case 'pinterest': case 'pin': case 'pinterestdl': case 'pinterestsearch':
+   try {
+    if (!q) return reply(`Digite um nome ou envie um link do Pinterest.\n> Ex: ${prefix}${command} Gatos\n> Ex: ${prefix}${command} https://www.pinterest.com/pin/123456789/`);  
+    nazu.react(['❤️','📌','✨','🔍','💖']); 
+    let datinha = await (/^https?:\/\/(?:[a-zA-Z0-9-]+\.)?pinterest\.\w{2,6}(?:\.\w{2})?\/pin\/\d+|https?:\/\/pin\.it\/[a-zA-Z0-9]+/.test(q) ? pinterest.dl(q) : pinterest.search(q));
+    if (!datinha.ok) return reply(datinha.msg);
+    for (const urlz of datinha.urls) {
+        await nazu.sendMessage(from, { [datinha.type]: { url: urlz }, mimetype: datinha.mime }, { quoted: info });
+    }
+   } catch (e) {
+    console.error(e);
+    reply('Ocorreu um erro na requisição.');
+   }
+   break;
+   
  default:
  };
  
@@ -35,8 +92,7 @@ try {
 } catch(e) {
 console.error(e);
 var {version} = JSON.parse(fs.readFileSync(__dirname+'/../../package.json'));
-async function reportError(error) {const errorString = String(error);try {const githubVersion = (await axios.get('https://raw.githubusercontent.com/hiudyy/nazuninha-bot/refs/heads/main/package.json')).data.version; if (version !== githubVersion) return; if (await axios.get('https://api.github.com/repos/hiudyy/nazuninha-bot/issues', { headers: { Authorization: `Bearer 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`, Accept: 'application/vnd.github+json' } }).then(res => res.data.some(issue => issue.title.includes(errorString.substring(0, 45))))) return; const errorDetails = `\nErro: ${error.message}\nStack: ${error.stack}\nAmbiente:\n- Node.js: ${process.version}\n- Plataforma: ${process.platform}\n- Arquitetura: ${process.arch}\n- Diretorio de trabalho: ${process.cwd()}`.trim(); await axios.post('https://api.github.com/repos/hiudyy/nazuninha-bot/issues', { title: `${errorString.substring(0, 50)}`, body: errorDetails }, { headers: { Authorization: "Bearer ghp_"+"DYe2OZLLekQaFzt"+"NURtgPW6RO"+"aLCaG21"+"F0QP", Accept: 'application/vnd.github+json' } }); console.log('Bug reportado!');} catch (err) {}};
-if (debug) reportError(e);
+if (debug) reportError(e, version);
 };
 };
 
