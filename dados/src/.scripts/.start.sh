@@ -20,6 +20,7 @@ versao=$(jq -r .version package.json 2>/dev/null || echo "Desconhecida")
 config="./dados/src/config.json"
 node_modules="./node_modules"
 qr_code_dir="./dados/database/qr-code"
+connect_file="./dados/src/connect.js"
 
 # Exibe o cabeçalho
 separador
@@ -31,7 +32,7 @@ echo ""
 # Verifica se a configuração já foi feita
 if [ ! -f "$config" ]; then
     aviso "⚠ Opa! Parece que você ainda não configurou o bot."
-    mensagem "🔹 Para configurar, execute: \033[1;34msh config.sh\033[0m"
+    mensagem "🔹 Para configurar, execute: \033[1;34mnpm run config\033[0m"
     exit 1
 fi
 
@@ -45,7 +46,7 @@ fi
 # Verifica se há mais de 2 arquivos na pasta QR Code
 if [ -d "$qr_code_dir" ] && [ "$(ls -1 "$qr_code_dir" 2>/dev/null | wc -l)" -gt 2 ]; then
     mensagem "📡 QR Code já detectado! Iniciando conexão automática..."
-    node ./dados/src/connect.js
+    node "$connect_file"
     exit 0
 fi
 
@@ -60,11 +61,11 @@ read conexao
 case "$conexao" in
     1)
         mensagem "📡 Iniciando conexão por QR Code..."
-        node ./dados/src/connect.js
+        node "$connect_file"
         ;;
     2)
         mensagem "🔑 Iniciando conexão por Código..."
-        node ./dados/src/connect.js --code
+        node "$connect_file" --code
         ;;
     *)
         aviso "❌ Opção inválida! Reinicie o script e escolha 1 ou 2."

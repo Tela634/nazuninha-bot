@@ -34,11 +34,15 @@ if [ -f "$arquivo" ]; then
     numerodono=$(jq -r .numerodono "$arquivo")
     nomebot=$(jq -r .nomebot "$arquivo")
     prefixo=$(jq -r .prefixo "$arquivo")
+    aviso=$(jq -r .aviso "$arquivo")
+    debug= $(jq -r .debug "$arquivo")
 else
     nomedono=""
     numerodono=""
     nomebot=""
     prefixo=""
+    aviso="false"
+    debug="false"
 fi
 
 # Exibe o cabeçalho
@@ -51,7 +55,7 @@ echo ""
 # Termos de uso
 aviso "⚠ ATENÇÃO! Antes de continuar, leia atentamente os termos:"
 echo "\033[1;33m1.\033[0m Nunca remover os créditos do criador do Bot."
-echo "\033[1;33m2.\033[0m Nunca vender ou distribuir os arquivos deste projeto."
+echo "\033[1;33m2.\033[0m Nunca vender os arquivos deste projeto."
 echo "\033[1;33m3.\033[0m Usar o Bot de forma ética e responsável."
 echo ""
 
@@ -92,16 +96,46 @@ read prefixonovo
 prefixo=${prefixonovo:-$prefixo}
 mensagem "✔ Prefixo registrado: $prefixo"
 
+# Pergunta se o usuário deseja receber o aviso quando o bot ligar
+echo "📲 Você deseja receber uma notificação quando o bot ligar? (S/n)"
+read aviso_ao_ligar
+
+# Converte a resposta para minúsculas
+aviso_ao_ligar=$(echo "$aviso_ao_ligar" | tr '[:upper:]' '[:lower:]')
+
+# Define o valor para "aviso" como true ou false
+if [ -z "$aviso_ao_ligar" ] || [ "$aviso_ao_ligar" = "s" ]; then
+    aviso="true"
+else
+    aviso="false"
+fi
+
+# Pergunta se o usuário quer enviar os bugs ao criador
+echo "🛠️ Você deseja enviar os bugs que ocorrerem para o criador do bot? (S/n)"
+read envia_bugs
+
+# Converte a resposta para minúsculas
+envia_bugs=$(echo "$envia_bugs" | tr '[:upper:]' '[:lower:]')
+
+# Define o valor para "debug" como true ou false
+if [ -z "$envia_bugs" ] || [ "$envia_bugs" = "s" ]; then
+    debug="true"
+else
+    debug="false"
+fi
+
 # Cria o diretório caso não exista
 mkdir -p "$(dirname "$arquivo")"
 
-# Escreve os dados no arquivo JSON
+# Adiciona a configuração ao arquivo JSON
 cat > "$arquivo" <<EOL
 {
   "nomedono": "$nome",
   "numerodono": "$numero",
   "nomebot": "$nomebot",
-  "prefixo": "$prefixo"
+  "prefixo": "$prefixo",
+  "aviso": $aviso,
+  "debug": $debug
 }
 EOL
 
