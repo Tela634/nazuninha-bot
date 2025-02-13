@@ -33,6 +33,7 @@ try {
  
  //INFOS DE GRUPO
   const groupMetadata = await nazu.groupMetadata(from);
+  const AllgroupMembers = groupMetadata.participants.map(p => p.id);
   const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
   const botNumber = nazu.user.id.split(':')[0] + '@s.whatsapp.net';
   const isGroupAdmin = groupAdmins.includes(sender);
@@ -261,6 +262,23 @@ case 'fotogp':
   } catch (e) {
     console.error(e);
     reply('❌ Ocorreu um erro ao tentar mudar a foto do grupo.');
+  }
+  break;
+  
+  case 'marcar':
+  if (!isGroup) return reply('❌ Apenas para grupos.');
+  if (!isGroupAdmins) return reply('🚫 Apenas admins.');
+  if (!isBotGroupAdmins) return reply('🤖 O bot precisa ser admin.');
+  try {
+    let path = __dirname + '/../database/grupos/' + from + '.json';
+    let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
+    let membros = AllgroupMembers.filter(m => !['0', 'games'].includes(data.mark[m]));
+    if (!membros.length) return reply('❌ Nenhum membro para mencionar.');
+    let msg = `📢 *Membros mencionados:* ${q ? `\n💬 *Mensagem:* ${q}` : ''}\n\n`;
+    await nazu.sendMessage(from, {text: msg + membros.map(m => `➤ @${m.split('@')[0]}`).join('\n'), mentions: membros});
+  } catch (e) {
+    console.error(e);
+    reply('⚠️ Erro ao marcar.');
   }
   break;
  default:
