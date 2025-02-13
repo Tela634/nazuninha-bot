@@ -42,7 +42,7 @@ try {
   case 'ytmp3':
   try {
     if (!q) return reply(`Digite o nome da música.\n> Ex: ${prefix + command} Back to Black`);
-    nazu.react(['❤️','💖','🩷','💜','💞']);
+    nazu.react(['❤️','💖']);
     datinha = await youtube.search(q);
     if(!datinha.ok) return reply(datinha.msg);
     await nazu.sendMessage(from, { image: { url: datinha.data.thumbnails.pop().url }, caption: `🎵 *Música Encontrada* 🎵\n\n📌 *Nome:* ${datinha.data.title}\n👤 *Canal:* ${datinha.data.channelName}\n👀 *Visualizações:* ${datinha.data.viewCount}\n🔗 *Link:* ${datinha.data.url}`, footer: `By: ${nomebot}` }, { quoted: info });
@@ -58,7 +58,7 @@ try {
   case 'tiktok': case 'tiktokaudio': case 'tiktokvideo': case 'tiktoks': case 'tiktoksearch':
    try {
     if (!q) return reply(`Digite um nome ou o link de um vídeo.\n> Ex: ${prefix}${command} Gato`);
-    nazu.react(['❤️','💖','🩷','💜','💞']);
+    nazu.react(['❤️','💖']);
     let isTikTokUrl = /^https?:\/\/(?:www\.|m\.|vm\.|t\.)?tiktok\.com\//.test(q);
     let datinha = await (isTikTokUrl ? tiktok.dl(q) : tiktok.search(q));
     if (!datinha.ok) return reply(datinha.msg);
@@ -75,7 +75,7 @@ try {
   case 'pinterest': case 'pin': case 'pinterestdl': case 'pinterestsearch':
    try {
     if (!q) return reply(`Digite um nome ou envie um link do Pinterest.\n> Ex: ${prefix}${command} Gatos\n> Ex: ${prefix}${command} https://www.pinterest.com/pin/123456789/`);  
-    nazu.react(['❤️','📌','✨','🔍','💖']); 
+    nazu.react(['❤️','📌']); 
     let datinha = await (/^https?:\/\/(?:[a-zA-Z0-9-]+\.)?pinterest\.\w{2,6}(?:\.\w{2})?\/pin\/\d+|https?:\/\/pin\.it\/[a-zA-Z0-9]+/.test(q) ? pinterest.dl(q) : pinterest.search(q));
     if (!datinha.ok) return reply(datinha.msg);
     for (const urlz of datinha.urls) {
@@ -97,7 +97,7 @@ try {
    
    
    //COMANDOS DE DONO BB
-   case 'prefix':
+   case 'prefixo':
    case 'numerodono':
    case 'nomedono':
    case 'nomebot': try {
