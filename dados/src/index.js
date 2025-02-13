@@ -29,6 +29,12 @@ try {
  var isCmd = body.trim().startsWith(prefix);
  const command = isCmd ? budy2.trim().slice(1).split(/ +/).shift().toLocaleLowerCase().trim().replaceAll(' ', '') : null;
  
+ //INFOS DE GRUPO
+  const groupMetadata = await nazu.groupMetadata(from);
+  const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
+  const botNumber = nazu.user.id.split(':')[0] + '@s.whatsapp.net';
+  const isGroupAdmin = groupAdmins.includes(sender);
+  const isBotAdmin = groupAdmins.includes(botNumber);
  
  //FUNÇÕES BASICAS
  async function reply(text) { return nazu.sendMessage(from, {text: text.trim()}, {sendEphemeral: true, contextInfo: { forwardingScore: 50, isForwarded: true, externalAdReply: { showAdAttribution: true }}, quoted: info})};nazu.reply=reply;
@@ -130,6 +136,114 @@ try {
   } catch (e) {
     console.error(e);
     reply('❌ Ocorreu um erro ao obter as informações.');
+  }
+  break;
+  
+  
+  //COMANDOS DE ADM
+  case 'banir':
+  case 'ban':
+case 'kick':
+  try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para remover membros.');
+
+    const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid;
+    if (!mentioned) return reply('❌ Marque o usuário que deseja banir.');
+    
+    await nazu.groupParticipantsUpdate(from, mentioned, 'remove');
+    reply(`✅ Usuário banido com sucesso!`);
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao tentar banir o usuário.');
+  }
+  break;
+
+case 'promover':
+  try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para promover membros.');
+
+    const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid;
+    if (!mentioned) return reply('❌ Marque o usuário que deseja promover.');
+
+    await nazu.groupParticipantsUpdate(from, mentioned, 'promote');
+    reply(`✅ Usuário promovido a administrador!`);
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao tentar promover o usuário.');
+  }
+  break;
+
+case 'rebaixar':
+  try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para rebaixar membros.');
+
+    const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid;
+    if (!mentioned) return reply('❌ Marque o usuário que deseja rebaixar.');
+
+    await nazu.groupParticipantsUpdate(from, mentioned, 'demote');
+    reply(`✅ Usuário rebaixado com sucesso!`);
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao tentar rebaixar o usuário.');
+  }
+  break;
+
+case 'setname':
+  try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para mudar o nome do grupo.');
+
+    const newName = q.trim();
+    if (!newName) return reply('❌ Digite um novo nome para o grupo.');
+
+    await nazu.groupUpdateSubject(from, newName);
+    reply(`✅ Nome do grupo alterado para: *${newName}*`);
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao tentar mudar o nome do grupo.');
+  }
+  break;
+
+case 'setdesc':
+  try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para mudar a descrição do grupo.');
+
+    const newDesc = q.trim();
+    if (!newDesc) return reply('❌ Digite uma nova descrição para o grupo.');
+
+    await nazu.groupUpdateDescription(from, newDesc);
+    reply(`✅ Descrição do grupo alterada!`);
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao tentar mudar a descrição do grupo.');
+  }
+  break;
+
+case 'setpp':
+case 'fotogp':
+  try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para mudar a foto do grupo.');
+
+    if (!info.message.imageMessage) return reply('❌ Envie uma imagem com o comando para definir como foto do grupo.');
+
+    const imageBuffer = await nazu.downloadMediaMessage(info.message.imageMessage);
+    await nazu.updateProfilePicture(from, imageBuffer);
+    
+    reply('✅ Foto do grupo alterada com sucesso!');
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao tentar mudar a foto do grupo.');
   }
   break;
  default:
