@@ -142,6 +142,8 @@ try {
   
   case 'mention':
   try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    
     let dir = __dirname + `/../database/grupos/`;
     let file = dir + `${from}.json`;
 
@@ -151,13 +153,13 @@ try {
     let groupData = JSON.parse(fs.readFileSync(file));
     if (!groupData.mark) groupData.mark = {};
 
-    if (!q) return reply(`📢 *Configuração de Marcações*\n💬 Escolha uma opção:\n- *${prefix}mention all* - _Marcado em tudo_\n- *${prefix}mention marca* - _Só marcações_\n- *${prefix}mention games* - _Só jogos_\n- *${prefix}mention 0* - _Sem marcações_`);
+    if (!q) return reply(`📢 *Configuração de Marcações*\n\n🔧 Escolha como deseja ser mencionado:\n\n✅ *${prefix}mention all* → Marcado em tudo (marcações e jogos).\n📢 *${prefix}mention marca* → Apenas em marcações de administradores.\n🎮 *${prefix}mention games* → Somente em jogos do bot.\n🚫 *${prefix}mention 0* → Não será mencionado em nenhuma ocasião.`);
 
-    let options = { all: 'tudo', marca: 'marcações', games: 'jogos', 0: 'nenhuma' };
+    let options = {  all: '✨ Você agora será mencionado em todas as interações do bot, incluindo marcações de administradores e os jogos!', marca: '📢 A partir de agora, você será mencionado apenas quando um administrador marcar.',games: '🎮 Você optou por ser mencionado somente em jogos do bot.', 0: '🔕 Silêncio ativado! Você não será mais mencionado pelo bot, nem em marcações nem em jogos.'};
     if (options[q.toLowerCase()] !== undefined) {
       groupData.mark[sender] = q.toLowerCase();
       fs.writeFileSync(file, JSON.stringify(groupData, null, 2));
-      return reply(`✅ Agora você será marcado em: *${options[q.toLowerCase()]}*`);
+      return reply(`*${options[q.toLowerCase()]}*`);
     }
 
     reply(`❌ Opção inválida! Use *${prefix}mention* para ver as opções.`);
