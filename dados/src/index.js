@@ -267,8 +267,8 @@ case 'fotogp':
   
   case 'marcar':
   if (!isGroup) return reply('❌ Apenas para grupos.');
-  if (!isGroupAdmins) return reply('🚫 Apenas admins.');
-  if (!isBotGroupAdmins) return reply('🤖 O bot precisa ser admin.');
+  if (!isGroupAdmin) return reply('🚫 Apenas admins.');
+  if (!isBotAdmin) return reply('🤖 O bot precisa ser admin.');
   try {
     let path = __dirname + '/../database/grupos/' + from + '.json';
     let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
