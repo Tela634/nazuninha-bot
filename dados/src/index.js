@@ -55,7 +55,7 @@ try {
     await nazu.sendMessage(from, { image: { url: datinha.data.thumbnails.pop().url }, caption: `🎵 *Música Encontrada* 🎵\n\n📌 *Nome:* ${datinha.data.title}\n👤 *Canal:* ${datinha.data.channelName}\n👀 *Visualizações:* ${datinha.data.viewCount}\n🔗 *Link:* ${datinha.data.url}`, footer: `By: ${nomebot}` }, { quoted: info });
     dlRes = await youtube.mp3(datinha.data.url);
     if(!dlRes.ok) return reply(dlRes.msg);
-    await nazu.sendMessage(from, {audio: {url: dlRes.url}, mimetype: 'audio/mp4', fileName: datinha.data.title}, {quoted: info});
+    await nazu.sendMessage(from, {audio: {url: dlRes.url}, fileName: datinha.data.title}, {quoted: info});
   } catch (e) {
     console.error(e);
     reply('Ocorreu um erro durante a requisição.');
