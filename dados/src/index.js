@@ -251,6 +251,7 @@ case 'fotogp':
   }
   break;
  default:
+ if(isCmd) await nazu.react('❌');
  };
  
  
