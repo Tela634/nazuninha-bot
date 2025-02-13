@@ -87,6 +87,8 @@ try {
    }
    break;
    
+   
+   //MENUS AQUI BB
    case 'menu':
    await reply(await menu(prefix));
    break
@@ -112,6 +114,48 @@ try {
    };
   break;
   
+  
+  //COMANDOS GERAIS
+  case 'ping':
+  try {
+    const timestamp = Date.now();
+    const speedConverted = (Date.now() - (info.messageTimestamp * 1000)) / 1000;
+    const config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
+
+    function formatUptime(seconds) {
+      let d = Math.floor(seconds / (24 * 3600));
+      let h = Math.floor((seconds % (24 * 3600)) / 3600);
+      let m = Math.floor((seconds % 3600) / 60);
+      let s = Math.floor(seconds % 60);
+
+      let uptimeStr = [];
+      if (d > 0) uptimeStr.push(`${d}d`);
+      if (h > 0) uptimeStr.push(`${h}h`);
+      if (m > 0) uptimeStr.push(`${m}m`);
+      if (s > 0) uptimeStr.push(`${s}s`);
+
+      return uptimeStr.join(' ');
+    }
+
+    const uptime = formatUptime(process.uptime());
+
+    const infoMsg = `
+📡 *Status do Bot*
+-----------------------------------
+🤖 *Nome:* ${config.nomebot}
+👤 *Dono:* ${config.nomedono}
+
+📌 *Prefixo:* ${config.prefixo}
+🚀 *Latência:* ${speedConverted.toFixed(2)}s
+⏳ *Uptime:* ${uptime}
+    `.trim();
+
+    await reply(infoMsg);
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao obter as informações.');
+  }
+  break;
  default:
  };
  
