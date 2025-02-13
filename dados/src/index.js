@@ -95,6 +95,23 @@ try {
    await reply(await menudown(prefix));
    break
    
+   
+   //COMANDOS DE DONO BB
+   case 'prefix':
+   case 'numerodono':
+   case 'nomedono':
+   case 'nomebot': try {
+    if (!q) return reply(`Uso correto: ${prefix}${command} <valor>`);
+     let config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
+     config[command] = q;
+     fs.writeFileSync(__dirname + '/config.json', JSON.stringify(config, null, 2));
+     reply(`✅ ${command} atualizado para: *${q}*`);
+   } catch (e) {
+   console.error(e);
+   reply('❌ Ocorreu um erro ao atualizar a configuração.');
+   };
+  break;
+  
  default:
  };
  
