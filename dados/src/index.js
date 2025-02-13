@@ -131,11 +131,8 @@ try {
     const timestamp = Date.now();
     const speedConverted = (Date.now() - (info.messageTimestamp * 1000)) / 1000;
     const config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
-
-    function formatUptime(seconds) {let d = Math.floor(seconds / (24 * 3600));let h = Math.floor((seconds % (24 * 3600)) / 3600);let m = Math.floor((seconds % 3600) / 60);let s = Math.floor(seconds % 60);let uptimeStr = [];if (d > 0) uptimeStr.push(`${d}d`);if (h > 0) uptimeStr.push(`${h}h`);if (m > 0) uptimeStr.push(`${m}m`);if (s > 0) uptimeStr.push(`${s}s`);return uptimeStr.join(' ');};
-    
-    const uptime = formatUptime(process.uptime());
-    
+    function formatUptime(seconds) {let d = Math.floor(seconds / (24 * 3600));let h = Math.floor((seconds % (24 * 3600)) / 3600);let m = Math.floor((seconds % 3600) / 60);let s = Math.floor(seconds % 60);let uptimeStr = [];if (d > 0) uptimeStr.push(`${d}d`);if (h > 0) uptimeStr.push(`${h}h`);if (m > 0) uptimeStr.push(`${m}m`);if (s > 0) uptimeStr.push(`${s}s`);return uptimeStr.join(' ');};    
+    const uptime = formatUptime(process.uptime());    
     await reply(`\n📡 *Status do Bot*\n-----------------------------------\n🤖 *Nome:* ${config.nomebot}\n👤 *Dono:* ${config.nomedono}\n\n📌 *Prefixo:* ${config.prefixo}\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime:* ${uptime}`);
   } catch (e) {
     console.error(e);
@@ -143,19 +140,44 @@ try {
   }
   break;
   
+  case 'mention':
+  try {
+    let dir = __dirname + `/../database/grupos/`;
+    let file = dir + `${from}.json`;
+
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify({ mark: {} }, null, 2));
+
+    let groupData = JSON.parse(fs.readFileSync(file));
+    if (!groupData.mark) groupData.mark = {};
+
+    if (!q) return reply(`📢 *Configuração de Marcações*\n💬 Escolha uma opção:\n- *${prefix}mention all* - _Marcado em tudo_\n- *${prefix}mention marca* - _Só marcações_\n- *${prefix}mention games* - _Só jogos_\n- *${prefix}mention 0* - _Sem marcações_`);
+
+    let options = { all: 'tudo', marca: 'marcações', games: 'jogos', 0: 'nenhuma' };
+    if (options[q.toLowerCase()] !== undefined) {
+      groupData.mark[sender] = q.toLowerCase();
+      fs.writeFileSync(file, JSON.stringify(groupData, null, 2));
+      return reply(`✅ Agora você será marcado em: *${options[q.toLowerCase()]}*`);
+    }
+
+    reply(`❌ Opção inválida! Use *${prefix}mention* para ver as opções.`);
+  } catch (e) {
+    console.error(e);
+    reply('❌ Erro ao atualizar configuração.');
+  }
+  break;
+  
   
   //COMANDOS DE ADM
   case 'banir':
   case 'ban':
-case 'kick':
+  case 'kick':
   try {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
     if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para remover membros.');
-
     const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid;
-    if (!mentioned) return reply('❌ Marque o usuário que deseja banir.');
-    
+    if (!mentioned) return reply('❌ Marque o usuário que deseja banir.');   
     await nazu.groupParticipantsUpdate(from, mentioned, 'remove');
     reply(`✅ Usuário banido com sucesso!`);
   } catch (e) {
@@ -169,10 +191,8 @@ case 'promover':
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
     if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para promover membros.');
-
     const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid;
     if (!mentioned) return reply('❌ Marque o usuário que deseja promover.');
-
     await nazu.groupParticipantsUpdate(from, mentioned, 'promote');
     reply(`✅ Usuário promovido a administrador!`);
   } catch (e) {
@@ -186,10 +206,8 @@ case 'rebaixar':
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
     if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para rebaixar membros.');
-
     const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid;
     if (!mentioned) return reply('❌ Marque o usuário que deseja rebaixar.');
-
     await nazu.groupParticipantsUpdate(from, mentioned, 'demote');
     reply(`✅ Usuário rebaixado com sucesso!`);
   } catch (e) {
@@ -203,10 +221,8 @@ case 'setname':
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
     if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para mudar o nome do grupo.');
-
     const newName = q.trim();
     if (!newName) return reply('❌ Digite um novo nome para o grupo.');
-
     await nazu.groupUpdateSubject(from, newName);
     reply(`✅ Nome do grupo alterado para: *${newName}*`);
   } catch (e) {
@@ -220,10 +236,8 @@ case 'setdesc':
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
     if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para mudar a descrição do grupo.');
-
     const newDesc = q.trim();
     if (!newDesc) return reply('❌ Digite uma nova descrição para o grupo.');
-
     await nazu.groupUpdateDescription(from, newDesc);
     reply(`✅ Descrição do grupo alterada!`);
   } catch (e) {
@@ -238,12 +252,9 @@ case 'fotogp':
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
     if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para mudar a foto do grupo.');
-
     if (!info.message.imageMessage) return reply('❌ Envie uma imagem com o comando para definir como foto do grupo.');
-
     const imageBuffer = await getFileBuffer(info.message.imageMessage, 'image');
-    await nazu.updateProfilePicture(from, imageBuffer);
-    
+    await nazu.updateProfilePicture(from, imageBuffer);    
     reply('✅ Foto do grupo alterada com sucesso!');
   } catch (e) {
     console.error(e);
