@@ -13,6 +13,7 @@ const { numerodono, nomedono, nomebot, prefixo, prefixo: prefix, debug } = JSON.
 try {
  const from = info.key.remoteJid;
  const isGroup = from.endsWith('@g.us');
+ const sender = isGroup ? info.key.participant.includes(':') ? info.key.participant.split(':')[0] +'@s.whatsapp.net': info.key.participant : info.key.remoteJid;
  const isStatus = from.endsWith('@broadcast');
  
  const baileys = require('baileys');
