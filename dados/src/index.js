@@ -2,6 +2,7 @@
 //Versão: 0.0.1
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
+const { downloadContentFromMessage } = require('baileys');
 const { reportError, youtube, tiktok, pinterest }  = require(__dirname+'/.funcs/.exports.js');
 const menu = require(__dirname+'/menus/menu.js');
 const menudown = require(__dirname+'/menus/menudown.js');
@@ -41,6 +42,8 @@ try {
  async function reply(text) { return nazu.sendMessage(from, {text: text.trim()}, {sendEphemeral: true, contextInfo: { forwardingScore: 50, isForwarded: true, externalAdReply: { showAdAttribution: true }}, quoted: info})};nazu.reply=reply;
  
  const reagir = async (emj) => { if (typeof emj === 'string') { await nazu.sendMessage(from, { react: { text: emj, key: info.key } }); } else if (Array.isArray(emj)) { for (const emjzin of emj) { await nazu.sendMessage(from, { react: { text: emjzin, key: info.key } }); await new Promise(res => setTimeout(res, 500)); } } }; nazu.react = reagir;
+ 
+ const getFileBuffer = async (mediakey, MediaType) => {const stream = await downloadContentFromMessage(mediakey, MediaType);let buffer = Buffer.from([]);for await(const chunk of stream) {buffer = Buffer.concat([buffer, chunk]) };return buffer}
  //FIM FUNÇÕES BASICAS
  
  switch(command) {
@@ -238,7 +241,7 @@ case 'fotogp':
 
     if (!info.message.imageMessage) return reply('❌ Envie uma imagem com o comando para definir como foto do grupo.');
 
-    const imageBuffer = await nazu.downloadMediaMessage(info.message.imageMessage);
+    const imageBuffer = await getFileBuffer(info.message.imageMessage, 'image');
     await nazu.updateProfilePicture(from, imageBuffer);
     
     reply('✅ Foto do grupo alterada com sucesso!');
