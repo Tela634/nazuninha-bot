@@ -22,6 +22,7 @@
   "dependencies": {
     "baileys": "npm:@itsukichan/baileys@latest",
     "qrcode-terminal": "latest",
-    "cheerio": "latest"
+    "cheerio": "latest",
+    "@vreden/youtube_scraper": "latest"
   }
 }
