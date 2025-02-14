@@ -47,6 +47,22 @@ try {
  const getFileBuffer = async (mediakey, MediaType) => {const stream = await downloadContentFromMessage(mediakey, MediaType);let buffer = Buffer.from([]);for await(const chunk of stream) {buffer = Buffer.concat([buffer, chunk]) };return buffer}
  //FIM FUNÇÕES BASICAS
  
+ //DEFINIÇÕES DE ISQUOTED
+ const content = JSON.stringify(info.message);
+ const isQuotedMsg = type === 'extendedTextMessage' && content.includes('conversation')
+ const isQuotedMsg2 = type === 'extendedTextMessage' && content.includes('text')
+ const isQuotedImage = type === 'extendedTextMessage' && content.includes('imageMessage')
+ const isQuotedVisuU = type === 'extendedTextMessage' && content.includes('viewOnceMessage')
+ const isQuotedVisuU2 = type === 'extendedTextMessage' && content.includes('viewOnceMessageV2')
+ const isQuotedVideo = type === 'extendedTextMessage' && content.includes('videoMessage')
+ const isQuotedDocument = type === 'extendedTextMessage' && content.includes('documentMessage')
+ const isQuotedDocW = type === 'extendedTextMessage' && content.includes('documentWithCaptionMessage')
+ const isQuotedAudio = type === 'extendedTextMessage' && content.includes('audioMessage')
+ const isQuotedSticker = type === 'extendedTextMessage' && content.includes('stickerMessage')
+ const isQuotedContact = type === 'extendedTextMessage' && content.includes('contactMessage')
+ const isQuotedLocation = type === 'extendedTextMessage' && content.includes('locationMessage')
+ const isQuotedProduct = type === 'extendedTextMessage' && content.includes('productMessage')
+
  switch(command) {
 
   case 'play':
@@ -281,6 +297,32 @@ case 'fotogp':
     reply('⚠️ Erro ao marcar.');
   }
   break;
+  
+  case 'totag':
+case 'cita':
+case 'hidetag':
+    if (!isGroup) return reply('❌ Apenas para grupos.');
+    if (!isGroupAdmin) return reply('🚫 Apenas admins.');
+    if (!isBotAdmin) return reply('🤖 O bot precisa ser admin.');
+    let path = __dirname + '/../database/grupos/' + from + '.json';
+    let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
+    let membros = AllgroupMembers.map(i => i.id).filter(m => !['0', 'games'].includes(data.mark[m]));    
+    if (!membros.length) return reply('❌ Nenhum membro disponível para mencionar.');
+    let rsm = info.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+    let media = null;
+    let caption = q ? `\n${q}` : `❪👑 *Marcação do(a) Adm:* ${pushname}`;
+    if (rsm) { if (isQuotedImage) media = { image: { url: rsm?.imageMessage?.url } }; else if (isQuotedVideo) media = { video: { url: rsm?.videoMessage?.url } }; else if (isQuotedSticker) media = { sticker: { url: rsm?.stickerMessage?.url } }; else if (isQuotedAudio) media = { audio: { url: rsm?.audioMessage?.url } }; else if (isQuotedDocument) media = { document: { url: rsm?.documentMessage?.url } }; else if (rsm?.extendedTextMessage?.text) media = { text: rsm.extendedTextMessage.text };
+     let originalCaption = rsm?.imageMessage?.caption || rsm?.videoMessage?.caption || rsm?.documentMessage?.caption;
+     if (originalCaption && originalCaption.length > 2) caption = originalCaption;
+    }
+    if (media) {
+        media.mentions = membros;
+        if ('caption' in media || 'text' in media) media.caption = caption;
+        await nazu.sendMessage(from, media);
+    } else {
+        await nazu.sendMessage(from, { text: caption, mentions: membros });
+    }
+    break;
  default:
  if(isCmd) await nazu.react('❌');
  };
