@@ -74,7 +74,6 @@ try {
     await nazu.sendMessage(from, { image: { url: datinha.data.thumbnail }, caption: `🎵 *Música Encontrada* 🎵\n\n📌 *Nome:* ${datinha.data.title}\n👤 *Canal:* ${datinha.data.author.name}\n👀 *Visualizações:* ${datinha.data.views}\n🔗 *Link:* ${datinha.data.url}`, footer: `By: ${nomebot}` }, { quoted: info });
     dlRes = await youtube.mp3(datinha.data.url);
     if(!dlRes.ok) return reply(dlRes.msg);
-    console.log(dlRes);
     await nazu.sendMessage(from, {audio: {url: dlRes.url}, fileName: datinha.data.title, mimetype: 'audio/mp4'}, {quoted: info});
   } catch (e) {
     console.error(e);
