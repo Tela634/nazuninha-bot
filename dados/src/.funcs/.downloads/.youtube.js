@@ -11,7 +11,7 @@ async function search(name) {
 }
 
 async function mp3(url) {
-    try {
+    try {/*
         const downloadRes = await axios.get(`https://p.oceansaver.in/ajax/download.php?api=dfcb6d76f2f6a9894gjkege8a4ab232222&url=${encodeURIComponent(url)}&format=m4a`);
         if (!downloadRes.data.id) return { ok: false, msg: 'Erro ao iniciar o download.' };
         
@@ -26,8 +26,11 @@ async function mp3(url) {
                 attempts++;
             } catch (e) {}
         }
-
+   
         return { ok: false, msg: 'O download demorou muito e foi cancelado.' };
+        */
+        datinha = await axios.get(`https://nayan-video-downloader.vercel.app/ytdown?url=${encodeURIComponent(url)}`)
+        return { ok: true, criador: 'Hiudy', url: datinha.data.data.audio };
     } catch (e) {
         return { ok: false, msg: 'Ocorreu um erro ao realizar o download.' };
     }
