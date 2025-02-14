@@ -299,30 +299,38 @@ case 'fotogp':
   break;
   
   case 'totag':
-case 'cita':
-case 'hidetag':
-    if (!isGroup) return reply('❌ Apenas para grupos.');
-    if (!isGroupAdmin) return reply('🚫 Apenas admins.');
-    if (!isBotAdmin) return reply('🤖 O bot precisa ser admin.');
+  case 'cita':
+  case 'hidetag':
+  if (!isGroup) return reply('❌ Apenas para grupos.');
+  if (!isGroupAdmin) return reply('🚫 Apenas admins.');
+  if (!isBotAdmin) return reply('🤖 O bot precisa ser admin.');
+
+    const rsm4 = info.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+    const messageTypes = {image: isQuotedImage ? rsm4?.imageMessage : info.message?.imageMessage, video: isQuotedVideo ? rsm4?.videoMessage : info.message?.videoMessage, document: isQuotedDocument ? rsm4?.documentMessage : info.message?.documentMessage, documentWithCaption: isQuotedDocW ? rsm4?.documentWithCaptionMessage?.message?.documentMessage : info.message?.documentWithCaptionMessage?.message?.documentMessage, audio: isQuotedAudio ? rsm4.audioMessage : "", sticker: isQuotedSticker ? rsm4.stickerMessage : "", conversation: isQuotedMsg && !rsm4.audioMessage && !rsm4.stickerMessage && !rsm4.imageMessage && !rsm4.videoMessage && !rsm4.documentMessage && !rsm4.documentWithCaptionMessage ? rsm4.conversation : info.message?.conversation, extendedText: rsm4?.extendedTextMessage?.text || info?.message?.extendedTextMessage?.text
+    };
     let path = __dirname + '/../database/grupos/' + from + '.json';
     let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
-    let membros = AllgroupMembers.map(i => i.id).filter(m => !['0', 'games'].includes(data.mark[m]));    
-    if (!membros.length) return reply('❌ Nenhum membro disponível para mencionar.');
-    let rsm = info.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-    let media = null;
-    let caption = q ? `\n${q}` : `❪👑 *Marcação do(a) Adm:* ${pushname}`;
-    if (rsm) { if (isQuotedImage) media = { image: { url: rsm?.imageMessage?.url } }; else if (isQuotedVideo) media = { video: { url: rsm?.videoMessage?.url } }; else if (isQuotedSticker) media = { sticker: { url: rsm?.stickerMessage?.url } }; else if (isQuotedAudio) media = { audio: { url: rsm?.audioMessage?.url } }; else if (isQuotedDocument) media = { document: { url: rsm?.documentMessage?.url } }; else if (rsm?.extendedTextMessage?.text) media = { text: rsm.extendedTextMessage.text };
-     let originalCaption = rsm?.imageMessage?.caption || rsm?.videoMessage?.caption || rsm?.documentMessage?.caption;
-     if (originalCaption && originalCaption.length > 2) caption = originalCaption;
-    }
-    if (media) {
-        media.mentions = membros;
-        if ('caption' in media || 'text' in media) media.caption = caption;
-        await nazu.sendMessage(from, media);
-    } else {
-        await nazu.sendMessage(from, { text: caption, mentions: membros });
-    }
+    const MRC_TD4 = AllgroupMembers.filter(m => !['0', 'games'].includes(data.mark[m]));
+    let DFC4;
+    const createMessage = (type, message, caption) => {message.caption = caption;message.mentions = MRC_TD4;return { [type]: { url: message.url } };};
+    if (messageTypes.image && !messageTypes.audio && !messageTypes.document) {
+        DFC4 = createMessage('image', messageTypes.image, q.length > 1 ? `\n${q}` : messageTypes.image.caption.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`));
+    } else if (messageTypes.video && !messageTypes.audio && !messageTypes.document) {
+        DFC4 = createMessage('video', messageTypes.video, q.length > 1 ? `\n${q.trim()}` : messageTypes.video.caption.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`).trim());
+    } else if (messageTypes.conversation) {
+        DFC4 = {text: messageTypes.conversation.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`).trim(), mentions: MRC_TD4};
+    } else if (messageTypes.extendedText) {
+        DFC4 = {text: messageTypes.extendedText.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`).trim(), mentions: MRC_TD4};
+    } else if (messageTypes.document) {
+        DFC4 = createMessage('document', messageTypes.document, q.length > 1 ? `\n${q.trim()}` : messageTypes.document.caption.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`).trim());
+    } else if (messageTypes.sticker && !messageTypes.audio) {
+        DFC4 = createMessage('sticker', messageTypes.sticker, '');
+    } else if (messageTypes.audio) {
+        DFC4 = {audio: { url: messageTypes.audio.url },mentions: MRC_TD4,ptt: true};
+    };
+    await nazu.sendMessage(from, DFC4).catch((error) => {});
     break;
+    
  default:
  if(isCmd) await nazu.react('❌');
  };
