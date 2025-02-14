@@ -1,39 +1,33 @@
 async function menuadm(prefix) {
   return `
 ╭━━━━━━━━━━━━━━━━━━━━━╮
-┃     🛠️ MENU DE ADM 🛠️     
+┃     🛠️ *MENU DE ADM* 🛠️     
 ╰━━━━━━━━━━━━━━━━━━━━━╯
 
 ╭─────────────────────╮
-│ 🔧 Comandos de Administração
+│ 🔧 *Comandos de Administração*
 ├─────────────────────┤
-│🔒 ${prefix}hidetag
-│  ➥ Marca todos os membros sem @
-├─────────────────────┤
-│🔖 ${prefix}marcar
-│  ➥ Marca todos os membros com @
-├─────────────────────┤
-│🚫 ${prefix}ban
-│  ➥ Bane um usuário do grupo
-├─────────────────────┤
-│📈 ${prefix}promover
-│  ➥ Promove um membro a admin
-├─────────────────────┤
-│📉 ${prefix}rebaixar
-│  ➥ Remove um usuário da admin
-├─────────────────────┤
-│📝 ${prefix}setname
-│  ➥ Altera o nome do grupo
-├─────────────────────┤
-│📄 ${prefix}setdesc
-│  ➥ Altera a descrição do grupo
+│🔒 *${prefix}hidetag*
+│  ➥ _Marca todos os membros sem @_
+│🔖 *${prefix}marcar*
+│  ➥ _Marca todos os membros com @_
+│🚫 *${prefix}ban* ou *${prefix}b*
+│  ➥ _Bane um usuário do grupo_
+│📈 *${prefix}promover*
+│  ➥ _Promove um membro a admin_
+│📉 *${prefix}rebaixar*
+│  ➥ _Remove um usuário da admin_
+│📝 *${prefix}setname*
+│  ➥ _Altera o nome do grupo_
+│📄 *${prefix}setdesc*
+│  ➥ _Altera a descrição do grupo_
 ╰─────────────────────╯
 
 ╭━━━━━━━━━━━━━━━━━━━━━╮
-┃  🌟 Ativações disponíveis
+┃  🌟 *Ativações disponíveis*
 ├─────────────────────┤
-│🎮 ${prefix}modobn
-│  ➥ Ativa o modo brincadeiras
+│🎮 *${prefix}modobn*
+│  ➥ _Ativa o modo brincadeiras_
 ╰━━━━━━━━━━━━━━━━━━━━━╯
 `;
 }

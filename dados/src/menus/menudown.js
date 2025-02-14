@@ -7,18 +7,15 @@ async function menudown(prefix) {
 ╭─────────────────────╮
 │  🛠️ *Comandos disponíveis* 
 ├─────────────────────┤
-│🎥 *${prefix}tiktok*
+│🎥 *${prefix}tiktok* ou *${prefix}ttk*
 │  ➥ _Baixa vídeos e fotos do TikTok._
-│  ➥ Uso: ${prefix}tiktok <link ou nome>
-├─────────────────────┤
+│  ➥ _Uso: ${prefix}tiktok <link ou nome>_
 │📌 *${prefix}pinterest* ou *${prefix}pin*
 │  ➥ _Baixa fotos e vídeos do Pinterest._
-│  ➥ Uso: ${prefix}pinterest <link ou nome>
-├─────────────────────┤
+│  ➥ _Uso: ${prefix}pinterest <link ou nome>_
 │🎶 *${prefix}play*
 │  ➥ _Baixa músicas pelo nome._
-│  ➥ Uso: ${prefix}play <nome da música>
-├─────────────────────┤
+│  ➥ _Uso: ${prefix}play <nome da música>_
 │💫 *${prefix}instagram* ou *${prefix}ig*
 │  ➥ _Baixa fotos e vídeos do Instagram._
 │  ➥ Uso: ${prefix}instagram <link>
