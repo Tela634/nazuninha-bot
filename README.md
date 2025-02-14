@@ -26,25 +26,25 @@
 Antes de começar, certifique-se de ter o **Node.js 18+** instalado.  
 
 ### **1️⃣ Clone o Repositório**  
-$$$sh  
+```sh  
 git clone https://github.com/hiudyy/nazuninha-bot.git  
 cd nazuninha-bot  
-$$$  
+```  
 
 ### **2️⃣ Configure o Bot**  
-$$$sh  
+```sh  
 npm run config  
 npm run config:install  
-$$$  
+```  
 
 ---  
 
 ## 🚀 **Rodando o Bot**  
 Após a configuração, inicie o bot com o seguinte comando:  
 
-$$$sh  
+```sh  
 npm start  
-$$$  
+```  
 
 O bot irá iniciar e perguntar como você deseja conectá-lo ao WhatsApp. Você terá as seguintes opções:  
 
@@ -59,9 +59,9 @@ O bot solicitará seu número de telefone e fornecerá um código para você ins
 ## 🔄 **Atualizando o Bot**  
 Para manter seu bot sempre atualizado com as últimas melhorias e correções, basta executar:  
 
-$$$sh  
+```sh  
 npm run update  
-$$$  
+```  
 
 > **✅ Não se preocupe!** Seus dados e configurações **não serão apagados** ao atualizar o bot.  
 
