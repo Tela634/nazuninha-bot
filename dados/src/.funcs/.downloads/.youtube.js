@@ -1,4 +1,4 @@
-const { search: ytSearch, ytmp3 } = require('@vreden/youtube_scraper');
+const { ermp3, ermp4 } = require('@er-npm/scraper');
 const yts = require('yt-search');
 
 async function search(name) {
@@ -15,9 +15,9 @@ async function search(name) {
 
 async function mp3(url) {
     try {
-        const downloadRes = await ytmp3(url);
+        const downloadRes = await ermp3(url);
         if (!downloadRes) return { ok: false, msg: 'Erro ao iniciar o download.' };
-        return { ok: true, criador: 'Hiudy', url: downloadRes.download.url };
+        return { ok: true, criador: 'Hiudy', url: downloadRes.url };
     } catch (e) {
         return { ok: false, msg: 'Ocorreu um erro ao realizar o download.' };
     };
