@@ -34,10 +34,10 @@ async function dl(url) {
             return { ok: false, msg: 'Erro ao obter o link de download.' };
         }
         const downloadUrl = `https://api.safestytmp3.cc/${response.data.i}/download/6b71cbcg,d4b2,5973,8bdb,6e7g58b8d12c/14e25ccd7cdd4c1a6b16a8171aa56386/`;
-        return { ok: true, criador: 'Hiudy', downloadUrl };
+        return { ok: true, criador: 'Hiudy', url: downloadUrl };
     } catch (e) {
         return { ok: false, msg: 'Ocorreu um erro ao realizar o download.' };
     }
 };
 
-module.exports = { search, dl };
+module.exports = { search, mp3: dl };
