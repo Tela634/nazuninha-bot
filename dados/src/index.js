@@ -7,7 +7,7 @@ const { reportError, youtube, tiktok, pinterest, igdl }  = require(__dirname+'/.
 const { menu, menudown, menuadm } = require(__dirname+'/menus/index.js');
 const axios = require('axios');
 const fs = require('fs');
-const sharp = require('sharp'); 
+const Jimp = require('jimp');
 
 async function NazuninhaBotExec(nazu, info) {
 const { numerodono, nomedono, nomebot, prefixo, prefixo: prefix, debug } = JSON.parse(fs.readFileSync(__dirname+'/config.json'));
@@ -166,7 +166,7 @@ try {
     const config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
     function formatUptime(seconds) {let d = Math.floor(seconds / (24 * 3600));let h = Math.floor((seconds % (24 * 3600)) / 3600);let m = Math.floor((seconds % 3600) / 60);let s = Math.floor(seconds % 60);let uptimeStr = [];if (d > 0) uptimeStr.push(`${d}d`);if (h > 0) uptimeStr.push(`${h}h`);if (m > 0) uptimeStr.push(`${m}m`);if (s > 0) uptimeStr.push(`${s}s`);return uptimeStr.join(' ');};    
     const uptime = formatUptime(process.uptime());
-    axios.get(`https://count.getloli.com/@nazuninha-ping?name=nazuninha-ping&theme=booru-lewd&padding=4&offset=0&align=top&scale=2&pixelated=1&darkmode=1&num=${String(speedConverted.toFixed(3)).replaceAll('.', '')}`, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': 'https://count.getloli.com' }, responseType: 'arraybuffer' }).then(async r => await nazu.sendMessage(from, { image: await sharp(r.data).png().toBuffer(), caption: `\n📡 *Status do Bot*\n-----------------------------------\n🤖 *Nome:* ${config.nomebot}\n👤 *Dono:* ${config.nomedono}\n\n📌 *Prefixo:* ${config.prefixo}\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime:* ${uptime}` }, { quoted: info })).catch(e => (console.error('Erro ao obter a imagem:', e), nazu.sendMessage(from, { text: '❌ Erro ao obter o status do bot. Tente novamente mais tarde.' }, { quoted: info })));
+    axios.get(`https://count.getloli.com/@nazuninha-ping?name=nazuninha-ping&theme=booru-lewd&padding=4&offset=0&align=top&scale=2&pixelated=1&darkmode=1&num=${String(speedConverted.toFixed(3)).replaceAll('.', '')}`, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': 'https://count.getloli.com' }, responseType: 'arraybuffer' }).then(async r => await nazu.sendMessage(from, { image: await (await Jimp.read(r.data)).getBufferAsync(Jimp.MIME_PNG), caption: `\n📡 *Status do Bot*\n-----------------------------------\n🤖 *Nome:* ${config.nomebot}\n👤 *Dono:* ${config.nomedono}\n\n📌 *Prefixo:* ${config.prefixo}\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime:* ${uptime}` }, { quoted: info })).catch(e => (console.error('Erro ao obter a imagem:', e), nazu.sendMessage(from, { text: '❌ Erro ao obter o status do bot. Tente novamente mais tarde.' }, { quoted: info })));
   } catch (e) {
     console.error(e);
     reply('❌ Ocorreu um erro ao obter as informações.');

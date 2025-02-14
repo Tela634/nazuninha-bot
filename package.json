@@ -24,6 +24,6 @@
     "qrcode-terminal": "latest",
     "cheerio": "latest",
     "@vreden/youtube_scraper": "latest",
-    "sharp": "latest"
+    "jimp": "latest"
   }
 }
