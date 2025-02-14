@@ -3,7 +3,7 @@
 [![Estrelas](https://img.shields.io/github/stars/hiudyy/nazuninha-bot?color=yellow&label=Favoritos&style=for-the-badge)](https://github.com/hiudyy/nazuninha-bot/stargazers)  
 [![Licença](https://img.shields.io/badge/license-Copyright-red?style=for-the-badge)](LICENSE)  
 [![Status](https://img.shields.io/badge/STATUS-ATIVO-success?style=for-the-badge)](#)  
-[![Visitas](https://count.getloli.com/nazuninha-bot?name=nazuninha-bot&theme=booru-lewd&padding=8&offset=0&align=top&scale=2&pixelated=1&darkmode=1)](#)  
+[![Visitas](https://count.getloli.com/@nazuninha-bot?name=nazuninha-bot&theme=booru-lewd&padding=8&offset=0&align=top&scale=2&pixelated=1&darkmode=1)](#)  
 
 **Nazuninha Bot** é um bot completo e otimizado para WhatsApp, desenvolvido com `Node.js` e a biblioteca `Baileys`. É fácil de instalar, rápido e repleto de funcionalidades para turbinar sua experiência no WhatsApp!  
 
