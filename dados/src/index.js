@@ -3,7 +3,7 @@
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
 const { downloadContentFromMessage } = require('baileys');
-const { reportError, youtube, tiktok, pinterest }  = require(__dirname+'/.funcs/.exports.js');
+const { reportError, youtube, tiktok, pinterest, igdl }  = require(__dirname+'/.funcs/.exports.js');
 const menu = require(__dirname+'/menus/menu.js');
 const menudown = require(__dirname+'/menus/menudown.js');
 const axios = require('axios');
@@ -98,7 +98,20 @@ try {
     reply('Ocorreu um erro durante a requisição.');
    }
    break;
-  
+   
+   case 'instagram': case 'igdl': case 'ig': case 'instavideo':
+  try {
+    if (!q) return reply(`Digite um link do Instagram.\n> Ex: ${prefix}${command} https://www.instagram.com/reel/DFaq_X7uoiT/?igsh=M3Q3N2ZyMWU1M3Bo`);
+    nazu.react(['❤️', '📌']);
+    const datinha = await igdl.dl(q);
+    if (!datinha.ok) return reply(datinha.msg);
+    await Promise.all(datinha.data.map(urlz => nazu.sendMessage(from, { [urlz.type]: urlz.buff }, { quoted: info })));
+  } catch (e) {
+    console.error(e);
+    reply('Ocorreu um erro na requisição.');
+  }
+  break;
+    
   case 'pinterest': case 'pin': case 'pinterestdl': case 'pinterestsearch':
    try {
     if (!q) return reply(`Digite um nome ou envie um link do Pinterest.\n> Ex: ${prefix}${command} Gatos\n> Ex: ${prefix}${command} https://www.pinterest.com/pin/123456789/`);  
