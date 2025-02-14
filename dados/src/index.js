@@ -343,6 +343,26 @@ case 'fotogp':
     await nazu.sendMessage(from, DFC4).catch((error) => {});
     break;
     
+    case 'modobrincadeira': case 'modobrincadeiras': case 'modobn': {
+    if (!isGroup) return reply('❌ Apenas para grupos.');
+    if (!isGroupAdmin) return reply('🚫 Apenas admins.'); 
+     const groupFilePath = __dirname + `/../database/grupos/${from}.json`;    
+     let groupData = {};
+     try {groupData = JSON.parse(fs.readFileSync(groupFilePath));} catch (error) {}
+
+    if (!groupData.modobrincadeira || groupData.modobrincadeira === undefined) {
+        groupData.modobrincadeira = true;
+    } else {
+        groupData.modobrincadeira = !groupData.modobrincadeira;
+    };
+    fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+    if (groupData.modobrincadeira) {
+        await reply('🎉 *Modo de Brincadeiras ativado!* Agora o grupo está no modo de brincadeiras. Divirta-se!');
+    } else {
+        await reply('⚠️ *Modo de Brincadeiras desativado!* O grupo não está mais no modo de brincadeiras.');
+    }};
+    break;
+    
  default:
  if(isCmd) await nazu.react('❌');
  };
