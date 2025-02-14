@@ -23,6 +23,7 @@
     "baileys": "npm:@itsukichan/baileys@latest",
     "qrcode-terminal": "latest",
     "cheerio": "latest",
-    "@er-npm/scraper": "latest"
+    "@er-npm/scraper": "latest",
+    "yt-search": "latest"
   }
 }
