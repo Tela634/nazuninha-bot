@@ -312,7 +312,7 @@ case 'fotogp':
     let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
     const MRC_TD4 = AllgroupMembers.filter(m => !['0', 'games'].includes(data.mark[m]));
     let DFC4;
-    const createMessage = (type, message, caption) => {message.caption = caption;message.mentions = MRC_TD4;message[type] = {url: message.url};return message };};
+    const createMessage = (type, message, caption) => {message.caption = caption;message.mentions = MRC_TD4;message[type] = {url: message.url};return message;};
     if (messageTypes.image && !messageTypes.audio && !messageTypes.document) {
         DFC4 = createMessage('image', messageTypes.image, q.length > 1 ? `\n${q}` : messageTypes.image.caption.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`));
     } else if (messageTypes.video && !messageTypes.audio && !messageTypes.document) {
