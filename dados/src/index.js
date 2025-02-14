@@ -324,7 +324,7 @@ case 'fotogp':
     } else if (messageTypes.document) {
         DFC4 = createMessage('document', messageTypes.document, q.length > 1 ? `\n${q.trim()}` : messageTypes.document.caption.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`).trim());
     } else if (messageTypes.sticker && !messageTypes.audio) {
-        DFC4 = createMessage('sticker', messageTypes.sticker, '');
+        DFC4 = createMessage('sticker', messageTypes.sticker);
     } else if (messageTypes.audio) {
         DFC4 = {audio: { url: messageTypes.audio.url },mentions: MRC_TD4,ptt: true};
     };
