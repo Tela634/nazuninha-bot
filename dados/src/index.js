@@ -198,6 +198,29 @@ try {
   }
   break;
   
+  case 'st':
+case 'stk':
+case 'sticker':
+case 's': {
+    var RSM = info.message?.extendedTextMessage?.contextInfo?.quotedMessage
+    var midia = RSM?.imageMessage || info.message?.imageMessage || RSM?.viewOnceMessage?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || RSM?.videoMessage || info.message?.videoMessage || RSM?.viewOnceMessage?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage
+
+    if (!midia) return reply(`Marque uma imagem ou um vídeo de até 9.9 segundos para fazer figurinha, com o comando: ${prefix + command} (mencionando a mídia)`);
+
+    var isVideo = !!midia.videoMessage
+    if (isVideo && midia.seconds > 9.9) return reply(`O vídeo precisa ter no máximo 9.9 segundos para ser convertido em figurinha.`);
+
+    var buffer = await getFileBuffer(midia, isVideo ? 'video' : 'image')
+
+    var pack = `↧ ❪🤖ฺ࣭࣪͘ꕸ▸ 𝐂𝐫𝐢𝐚𝐝𝐚 𝐩𝐨𝐫:\n• ↳ ${NomeDoBot}\n—\n↧ ❪🕵🏻‍♂️ฺ࣭࣪͘ꕸ▸ 𝐏𝐫𝐨𝐩𝐫𝐢𝐞𝐭𝐚𝐫𝐢𝐨:\n• ↳ ${ownerName}`
+    var author = `↧ ❪👤ฺ࣭࣪͘ꕸ▸ 𝐒𝐨𝐥𝐢𝐜𝐢𝐭𝐚𝐝𝐨 𝐩𝐨𝐫:\n• ↳ ${pushname}\n—\n↧ ❪🤍ฺ࣭࣪͘ꕸ▸ 𝐕𝐢𝐬𝐢𝐭𝐞 𝐧𝐨𝐬𝐬𝐨 𝐬𝐢𝐭𝐞:\n• ↳ `
+    let tempFile = path.join(tmpdir(), `sticker_${Date.now()}.${isVideo ? 'mp4' : 'jpg'}`)
+    await writeFile(tempFile, buffer)
+    let stickerMessage = { sticker: { url: tempFile }, mimetype: isVideo ? Mimetype.mp4 : Mimetype.webp, packname: pack, author };
+    await nazu.sendMessage(from, stickerMessage, { quoted: null })
+  }
+  break
+  
   case 'mention':
   try {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
