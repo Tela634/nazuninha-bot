@@ -32,12 +32,12 @@ try {
  const command = isCmd ? budy2.trim().slice(1).split(/ +/).shift().toLocaleLowerCase().trim().replaceAll(' ', '') : null;
  
  //INFOS DE GRUPO
-  const groupMetadata = await nazu.groupMetadata(from);
-  const AllgroupMembers = groupMetadata.participants.map(p => p.id);
-  const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
+  const groupMetadata = !isGroup ? {} : await nazu.groupMetadata(from);
+  const AllgroupMembers = !isGroup ? [] : groupMetadata.participants.map(p => p.id);
+  const groupAdmins = !isGroup ? [] : groupMetadata.participants.filter(p => p.admin).map(p => p.id);
   const botNumber = nazu.user.id.split(':')[0] + '@s.whatsapp.net';
-  const isGroupAdmin = groupAdmins.includes(sender);
-  const isBotAdmin = groupAdmins.includes(botNumber);
+  const isGroupAdmin = !isGroup ? null : groupAdmins.includes(sender);
+  const isBotAdmin = !isGroup ? null : groupAdmins.includes(botNumber);
  
  //FUNÇÕES BASICAS
  async function reply(text) { return nazu.sendMessage(from, {text: text.trim()}, {sendEphemeral: true, contextInfo: { forwardingScore: 50, isForwarded: true, externalAdReply: { showAdAttribution: true }}, quoted: info})};nazu.reply=reply;
