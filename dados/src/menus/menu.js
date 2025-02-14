@@ -10,6 +10,7 @@ async function menu(prefix) {
 │📥 *${prefix}menudown*
 │  ➥ _Baixe músicas, vídeos, fotos_
 │      _e muito mais!_
+├─────────────────────┤
 │🛠️ *${prefix}menuadm*
 │  ➥ _Comandos de administração_
 │      _e ativações do grupo_
