@@ -81,8 +81,8 @@ try {
   }
   break;
   
-  case 'play':
-  case 'ytmp3':
+  case 'playvid':
+  case 'ytmp4':
   try {
     if (!q) return reply(`Digite o nome da música.\n> Ex: ${prefix + command} Back to Black`);
     nazu.react(['❤️','💖']);
