@@ -211,7 +211,7 @@ case 's': {
     var buffer = await getFileBuffer(midia, isVideo ? 'video' : 'image')
     let tempFile = pathz.join(__dirname, 'temp', `sticker_${Date.now()}.${isVideo ? 'mp4' : 'jpg'}`)
     if (!fs.existsSync(__dirname+'/temp')) fs.mkdirSync(__dirname+'/temp', { recursive: true });
-    await writeFile(tempFile, buffer)
+    await fs.writeFileSync(tempFile, buffer)
     let stickerMessage = { sticker: { url: tempFile }, mimetype: isVideo ? Mimetype.mp4 : Mimetype.webp };
     await nazu.sendMessage(from, stickerMessage, { quoted: null })
   }
