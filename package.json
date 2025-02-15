@@ -24,6 +24,7 @@
     "qrcode-terminal": "latest",
     "cheerio": "latest",
     "yt-search": "latest",
-    "node-webpmux": "latest"
+    "node-webpmux": "latest",
+    "fluent-ffmpeg": "latest"
   }
 }
