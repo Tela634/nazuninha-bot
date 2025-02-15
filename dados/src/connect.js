@@ -3,6 +3,7 @@
 const { Boom } = require('@hapi/boom');
 const { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, DisconnectReason } = require('baileys');
 
+const { sendSticker } = require(__dirname+'/.funcs/.exports.js');
 const readline = require('readline');
 const { execSync } = require('child_process');
 const pino = require('pino');
@@ -74,7 +75,11 @@ async function startNazu(retryCount = 0) {
     },
     getMessage
 });
-
+ 
+ exports.nazu = nazu;
+ 
+ nazu.sendSticker = sendSticker;
+ 
  nazu.ev.on('creds.update', saveCreds);
 
  nazu.ev.on('connection.update', async (update) => {

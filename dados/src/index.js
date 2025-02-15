@@ -210,8 +210,7 @@ case 's': {
     var isVideo = !!midia.videoMessage
     if (isVideo && midia.seconds > 9.9) return reply(`O vídeo precisa ter no máximo 9.9 segundos para ser convertido em figurinha.`);
     var buffer = await getFileBuffer(midia, isVideo ? 'video' : 'image')
-    const sticker = new Sticker(buffer, {pack: '.', author: '.', type: StickerTypes.DEFAULT, categories: ['🤩', '🎉'], quality: 50});
-    await nazu.sendMessage(from, await sticker.toMessage(), { quoted: info })
+    await nazu.sendSticker(from, {sticker: buffer, author: '.', packname: '.', type: isVideo ? 'video' : 'image', { quoted: info })
   }
   break
   

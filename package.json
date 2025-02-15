@@ -24,6 +24,6 @@
     "qrcode-terminal": "latest",
     "cheerio": "latest",
     "yt-search": "latest",
-    "riz-sticker-maker": "latest"
+    "node-webpmux": "latest"
   }
 }
