@@ -119,13 +119,13 @@ If you like this project, leave a ⭐ on the repository and share it! 🚀
 ---
 
 ## ⚙️ **Key Commands**  
-Here are some essential commands:  
+Here are some essential commands:
 
-- `!menu` → Displays all available commands  
-- `!sticker` → Converts an image to a sticker  
-- `!ytmp3 <link>` → Downloads YouTube audio  
-- `!ytmp4 <link>` → Downloads YouTube video  
-- `!play <song name>` → Automatically downloads a song  
-- `!ping` → Checks bot response time  
+| **Command**               | **Status**     | **Type**   |
+|---------------------------|----------------|------------|
+| `!play <song name>`        | ✅ Working     | Scraper    |
+| `!instagram <profile link>`| ✅ Working     | Scraper    |
+| `!tiktok <video link>`     | ✅ Working     | Scraper    |
+| `!pinterest <pin link>`    | ✅ Working     | Scraper    |
 
-📌 **And much more!** Explore all commands on WhatsApp.  
+📌 **And much more!** Explore all commands directly on WhatsApp.
