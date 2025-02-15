@@ -2,6 +2,7 @@
 //Versão: 0.0.1
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
+const { Sticker, createSticker, StickerTypes } = require('riz-sticker-maker')
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { reportError, youtube, tiktok, pinterest, igdl }  = require(__dirname+'/.funcs/.exports.js');
 const { menu, menudown, menuadm } = require(__dirname+'/menus/index.js');
@@ -209,11 +210,8 @@ case 's': {
     var isVideo = !!midia.videoMessage
     if (isVideo && midia.seconds > 9.9) return reply(`O vídeo precisa ter no máximo 9.9 segundos para ser convertido em figurinha.`);
     var buffer = await getFileBuffer(midia, isVideo ? 'video' : 'image')
-    let tempFile = pathz.join(__dirname, 'temp', `sticker_${Date.now()}.${isVideo ? 'mp4' : 'jpg'}`)
-    if (!fs.existsSync(__dirname+'/temp')) fs.mkdirSync(__dirname+'/temp', { recursive: true });
-    await fs.writeFileSync(tempFile, buffer)
-    let stickerMessage = { sticker: { url: tempFile }, mimetype: isVideo ? 'video/mp4' : 'image/webp' };
-    await nazu.sendMessage(from, stickerMessage, { quoted: null })
+    const sticker = new Sticker(buffer, {pack: '.', author: '.', type: StickerTypes.DEFAULT, categories: ['🤩', '🎉'], quality: 50});
+    await nazu.sendMessage(from, await sticker.toMessage(), { quoted: info })
   }
   break
   
