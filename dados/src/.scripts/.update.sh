@@ -82,7 +82,7 @@ rm -rf "$backup_dir"
 
 # Instala as dependências do Node.js
 mensagem "📦 Instalando dependências do Node.js..."
-npm install --no-bin-links
+npm install --no-bin-links --force
 if [ $? -ne 0 ]; then
     aviso "❌ Falha ao instalar as dependências. Verifique o arquivo package.json."
     exit 1

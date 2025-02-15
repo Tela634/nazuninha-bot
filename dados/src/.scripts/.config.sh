@@ -17,7 +17,7 @@ separador() {
 if [ "$1" = "--install" ]; then
     separador
     mensagem "📦 Instalando dependências..."
-    npm install --no-bin-links
+    npm install --no-bin-links --force
     mensagem "✔ Instalação concluída! Rode 'npm start' para iniciar o bot."
     exit 0
 fi
@@ -152,7 +152,7 @@ read instalar
 instalar=$(echo "$instalar" | tr '[:upper:]' '[:lower:]')
 if [ -z "$instalar" ] || [ "$instalar" = "s" ]; then
     mensagem "📦 Instalando dependências..."
-    npm install --no-bin-links
+    npm install --no-bin-links --force
     mensagem "✔ Instalação concluída! Rode 'npm start' para iniciar o bot."
 else
     mensagem "⚡ Instalação dos módulos pulada. Para instalar depois, rode:"
