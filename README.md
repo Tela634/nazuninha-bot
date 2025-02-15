@@ -1,76 +1,113 @@
-# 🚀 **Nazuninha Bot – The Ultimate WhatsApp Bot!** 🤖  
-
-[![Last Update](https://img.shields.io/github/last-commit/hiudyy/nazuninha-bot?style=for-the-badge)](https://github.com/hiudyy/nazuninha-bot)  
+# **Nazuninha Bot 🤖🚀**  
+[![Last Update](https://img.shields.io/github/last-commit/hiudyy/nazuninha-bot)](https://github.com/hiudyy/nazuninha-bot)  
 [![Stars](https://img.shields.io/github/stars/hiudyy/nazuninha-bot?color=yellow&label=Favorites&style=for-the-badge)](https://github.com/hiudyy/nazuninha-bot/stargazers)  
 [![License](https://img.shields.io/badge/license-Copyright-red?style=for-the-badge)](LICENSE)  
 [![Status](https://img.shields.io/badge/STATUS-ACTIVE-success?style=for-the-badge)](#)  
-[![Visits Counter – Track Project Popularity](https://count.getloli.com/@nazuninha-bot?name=nazuninha-bot&theme=booru-lewd&padding=8&offset=0&align=top&scale=2&pixelated=1&darkmode=1)](#)  
 
-### 🌟 **The all-in-one bot to supercharge your WhatsApp!**  
-**Nazuninha Bot** is a fast, optimized, and feature-packed WhatsApp bot built with **Node.js** and `Baileys`. It offers powerful automation, seamless API integrations, and a wide range of tools for users and group admins.  
+📊 **Total Visits:**  
+[![Visits Counter](https://count.getloli.com/@nazuninha-bot?name=nazuninha-bot&theme=booru-lewd&padding=8&offset=0&align=top&scale=2&pixelated=1&darkmode=1)](#)  
 
-> ⚠️ **IMPORTANT:** This project is protected by **Copyright**. **Removing credits or selling this bot is strictly prohibited.**  
+---  
 
----
+## 🤖 **What is Nazuninha Bot?**  
 
-## 📌 **Table of Contents**  
+**Nazuninha Bot** is a powerful and optimized WhatsApp bot built with `Node.js` and `Baileys`. It's designed to provide a full-featured experience for automating WhatsApp, with a focus on speed, ease of use, and flexibility. Whether you need automation tools, fun features, or utilities, **Nazuninha Bot** has it all!  
+
+> ⚠️ **IMPORTANT:** This project is **protected by copyright**. It is **STRICTLY FORBIDDEN** to remove credits from the code or **sell any part of it**. Legal actions will be taken against violators.  
+
+---  
+
+## 📜 **Table of Contents**  
 - [📥 Installation](#-installation)  
 - [🚀 Running the Bot](#-running-the-bot)  
-- [🔄 Updating](#-updating)  
-- [💡 Features](#-features)  
-- [⚙️ Key Commands](#️-key-commands)  
+- [🔄 Updating the Bot](#-updating-the-bot)  
 - [💖 Support the Project](#-support-the-project)  
 - [📜 License](#-license)  
 - [👤 Credits](#-credits)  
 
----
+---  
 
 ## 📥 **Installation**  
 
-### **1️⃣ Requirements**  
-✔ **Node.js 18+**  
-✔ **Git Installed**  
+Before starting, make sure you have **Node.js 18+** installed.  
 
-### **2️⃣ Clone the Repository**  
+### **1️⃣ Clone the Repository**  
 ```sh  
 git clone https://github.com/hiudyy/nazuninha-bot.git  
 cd nazuninha-bot  
 ```  
 
-### **3️⃣ Install Dependencies**  
-```sh  
-npm install  
-```  
-
-### **4️⃣ Configure the Bot**  
+### **2️⃣ Install Dependencies**  
 ```sh  
 npm run config  
 npm run config:install  
 ```  
 
----
+---  
 
 ## 🚀 **Running the Bot**  
-Once set up, start the bot using:  
+
+Once installed, start the bot with:  
+
 ```sh  
 npm start  
 ```  
 
-The bot will prompt you to connect via **QR Code** or **Pairing Code**.  
+The bot will prompt you to choose a connection method:  
 
-- **📷 QR Code:** Scan it using WhatsApp.  
-- **🔢 Pairing Code:** Enter your phone number and connect via a generated code.  
+🔹 **QR Code:**  
+Scan the QR Code displayed in the terminal with WhatsApp.  
 
----
+🔹 **Pairing Code:**  
+Enter your phone number, and the bot will provide a pairing code to input in WhatsApp.  
 
-## 🔄 **Updating**  
-Keep your bot up-to-date with:  
+---  
+
+## 🔄 **Updating the Bot**  
+
+To keep the bot up-to-date with the latest features and fixes, run:  
+
 ```sh  
 npm run update  
 ```  
-✅ **Your data and settings will remain intact!**  
 
----
+> ✅ **Don't worry!** Your data and settings **will not be lost** when updating.  
+
+---  
+
+## 💖 **Support the Project**  
+
+Maintaining and improving this bot takes time and effort. If you like this project, consider supporting it!  
+
+### 🌍 **International Support via Patreon**  
+If you’re outside Brazil, you can support through **Patreon**:  
+[![Support on Patreon](https://img.shields.io/badge/Support-Patreon-orange?style=for-the-badge&logo=patreon)](https://patreon.com/hiudyy)  
+
+### 🇧🇷 **Brazilian Support via Pix**  
+For Brazilian supporters, donations can be sent via **Pix**:  
+
+**🔹 Pix Key (Email):** `lua.bot@hotmail.com`  
+
+Any amount helps to keep the project alive. Thank you! ❤️  
+
+---  
+
+## 📜 **License**  
+
+© 2025 **Hiudy**. All rights reserved.  
+
+🚨 **You are NOT allowed to remove credits or sell this bot.** Legal actions may be taken if violated.  
+
+---  
+
+## 👤 **Credits**  
+
+Developed by [**Hiudy**](https://github.com/hiudyy) ❤️  
+[![Hiudy's Profile](https://github-readme-stats.vercel.app/api?username=hiudyy&show_icons=true&theme=radical&locale=en)](https://github.com/hiudyy)  
+
+If you like this project, leave a ⭐ on the repository and share it! 🚀  
+
+---  
 
 ## 💡 **Features**  
 ✅ Lightning-fast response time  
@@ -92,28 +129,3 @@ Here are some essential commands:
 - `!ping` → Checks bot response time  
 
 📌 **And much more!** Explore all commands on WhatsApp.  
-
----
-
-## 💖 **Support the Project**  
-Enjoying the bot? Help us keep it running with a donation!  
-
-**💰 Pix Key:** `lua.bot@hotmail.com`  
-
-Your support helps maintain and improve this project! ❤️  
-
----
-
-## 📜 **License**  
-© 2025 **Hiudy**. All rights reserved.  
-
-🚨 **Removing credits or selling the bot is strictly prohibited. Violations will result in legal action.**  
-
----
-
-## 👤 **Credits**  
-
-Developed by [**Hiudy**](https://github.com/hiudyy) 🚀  
-[![Hiudy's GitHub Profile](https://github-readme-stats.vercel.app/api?username=hiudyy&show_icons=true&theme=radical&locale=en)](https://github.com/hiudyy)  
-
-If you like this project, **give it a ⭐ and share it!**  
