@@ -6,7 +6,7 @@ const { downloadContentFromMessage } = require('baileys');
 const { reportError, youtube, tiktok, pinterest, igdl }  = require(__dirname+'/.funcs/.exports.js');
 const { menu, menudown, menuadm } = require(__dirname+'/menus/index.js');
 const axios = require('axios');
-const path = require('path');
+const pathz = require('path');
 const fs = require('fs');
 
 async function NazuninhaBotExec(nazu, info) {
@@ -213,7 +213,7 @@ case 's': {
 
     var buffer = await getFileBuffer(midia, isVideo ? 'video' : 'image')
 
-    let tempFile = path.join(tmpdir(), `sticker_${Date.now()}.${isVideo ? 'mp4' : 'jpg'}`)
+    let tempFile = pathz.join(tmpdir(), `sticker_${Date.now()}.${isVideo ? 'mp4' : 'jpg'}`)
     await writeFile(tempFile, buffer)
     let stickerMessage = { sticker: { url: tempFile }, mimetype: isVideo ? Mimetype.mp4 : Mimetype.webp };
     await nazu.sendMessage(from, stickerMessage, { quoted: null })
