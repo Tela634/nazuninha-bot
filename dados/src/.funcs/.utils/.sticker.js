@@ -1,6 +1,5 @@
 const fs = require('fs').promises;
 const fs2 = require('fs');
-const { nazu } = require(__dirname+'/../../connect.js');
 const path = require("path");
 const webp = require("node-webpmux");
 const axios = require('axios'); // Para substituir a função getBuffer
@@ -92,7 +91,7 @@ const sendSticker = async (jid, { sticker: path, type = 'image', packname = '', 
         buffer = await convertToWebp(buff, type === 'video');
     }
 
-    await nazu.sendMessage(jid, { sticker: { url: buffer }, ...(packname || author ? { packname, author } : {}) }, { quoted });
+    await nazu.sendMessage(nazu, jid, { sticker: { url: buffer }, ...(packname || author ? { packname, author } : {}) }, { quoted });
     return buffer;
 };
 

@@ -3,7 +3,7 @@
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
-const { reportError, youtube, tiktok, pinterest, igdl }  = require(__dirname+'/.funcs/.exports.js');
+const { reportError, youtube, tiktok, pinterest, igdl, sendSticker }  = require(__dirname+'/.funcs/.exports.js');
 const { menu, menudown, menuadm } = require(__dirname+'/menus/index.js');
 const axios = require('axios');
 const pathz = require('path');
@@ -209,7 +209,7 @@ case 's': {
     var isVideo = !!midia.videoMessage
     if (isVideo && midia.seconds > 9.9) return reply(`O vídeo precisa ter no máximo 9.9 segundos para ser convertido em figurinha.`);
     var buffer = await getFileBuffer(midia, isVideo ? 'video' : 'image')
-    await nazu.sendSticker(from, { sticker: buffer, author: '.', packname: '.', type: isVideo ? 'video' : 'image'}, { quoted: info })
+    await sendSticker(nazu, from, { sticker: buffer, author: '.', packname: '.', type: isVideo ? 'video' : 'image'}, { quoted: info })
   }
   break
   
