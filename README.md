@@ -1,92 +1,119 @@
-# **Nazuninha Bot 🤖🚀**  
-[![Última Atualização](https://img.shields.io/github/last-commit/hiudyy/nazuninha-bot)](https://github.com/hiudyy/nazuninha-bot)  
-[![Estrelas](https://img.shields.io/github/stars/hiudyy/nazuninha-bot?color=yellow&label=Favoritos&style=for-the-badge)](https://github.com/hiudyy/nazuninha-bot/stargazers)  
-[![Licença](https://img.shields.io/badge/license-Copyright-red?style=for-the-badge)](LICENSE)  
-[![Status](https://img.shields.io/badge/STATUS-ATIVO-success?style=for-the-badge)](#)  
-[![Visitas](https://count.getloli.com/@nazuninha-bot?name=nazuninha-bot&theme=booru-lewd&padding=8&offset=0&align=top&scale=2&pixelated=1&darkmode=1)](#)  
+# 🚀 **Nazuninha Bot – The Ultimate WhatsApp Bot!** 🤖  
 
-**Nazuninha Bot** é um bot completo e otimizado para WhatsApp, desenvolvido com `Node.js` e a biblioteca `Baileys`. É fácil de instalar, rápido e repleto de funcionalidades para turbinar sua experiência no WhatsApp!  
+[![Last Update](https://img.shields.io/github/last-commit/hiudyy/nazuninha-bot?style=for-the-badge)](https://github.com/hiudyy/nazuninha-bot)  
+[![Stars](https://img.shields.io/github/stars/hiudyy/nazuninha-bot?color=yellow&label=Favorites&style=for-the-badge)](https://github.com/hiudyy/nazuninha-bot/stargazers)  
+[![License](https://img.shields.io/badge/license-Copyright-red?style=for-the-badge)](LICENSE)  
+[![Status](https://img.shields.io/badge/STATUS-ACTIVE-success?style=for-the-badge)](#)  
+[![Visits Counter – Track Project Popularity](https://count.getloli.com/@nazuninha-bot?name=nazuninha-bot&theme=booru-lewd&padding=8&offset=0&align=top&scale=2&pixelated=1&darkmode=1)](#)  
 
-> **⚠️ IMPORTANTE:** Este projeto é **protegido por Copyright**. É **PROIBIDO** remover os créditos do código ou **vender os arquivos**. Caso isso ocorra, **medidas jurídicas poderão ser tomadas.**  
+### 🌟 **The all-in-one bot to supercharge your WhatsApp!**  
+**Nazuninha Bot** is a fast, optimized, and feature-packed WhatsApp bot built with **Node.js** and `Baileys`. It offers powerful automation, seamless API integrations, and a wide range of tools for users and group admins.  
 
----  
+> ⚠️ **IMPORTANT:** This project is protected by **Copyright**. **Removing credits or selling this bot is strictly prohibited.**  
 
-## 📜 **Índice**  
-- [📥 Instalação](#-instalação)  
-- [🚀 Rodando o Bot](#-rodando-o-bot)  
-- [🔄 Atualizando o Bot](#-atualizando-o-bot)  
-- [💖 Apoie o Projeto](#-apoie-o-projeto)  
-- [📜 Licença](#-licença)  
-- [👤 Créditos](#-créditos)  
+---
 
----  
+## 📌 **Table of Contents**  
+- [📥 Installation](#-installation)  
+- [🚀 Running the Bot](#-running-the-bot)  
+- [🔄 Updating](#-updating)  
+- [💡 Features](#-features)  
+- [⚙️ Key Commands](#️-key-commands)  
+- [💖 Support the Project](#-support-the-project)  
+- [📜 License](#-license)  
+- [👤 Credits](#-credits)  
 
-## 📥 **Instalação**  
+---
 
-Antes de começar, certifique-se de ter o **Node.js 18+** instalado.  
+## 📥 **Installation**  
 
-### **1️⃣ Clone o Repositório**  
+### **1️⃣ Requirements**  
+✔ **Node.js 18+**  
+✔ **Git Installed**  
+
+### **2️⃣ Clone the Repository**  
 ```sh  
 git clone https://github.com/hiudyy/nazuninha-bot.git  
 cd nazuninha-bot  
 ```  
 
-### **2️⃣ Configure o Bot**  
+### **3️⃣ Install Dependencies**  
+```sh  
+npm install  
+```  
+
+### **4️⃣ Configure the Bot**  
 ```sh  
 npm run config  
 npm run config:install  
 ```  
 
----  
+---
 
-## 🚀 **Rodando o Bot**  
-Após a configuração, inicie o bot com o seguinte comando:  
-
+## 🚀 **Running the Bot**  
+Once set up, start the bot using:  
 ```sh  
 npm start  
 ```  
 
-O bot irá iniciar e perguntar como você deseja conectá-lo ao WhatsApp. Você terá as seguintes opções:  
+The bot will prompt you to connect via **QR Code** or **Pairing Code**.  
 
-**🔹 Conectar via QR Code:**  
-Basta escanear o QR Code exibido no terminal com o WhatsApp.  
+- **📷 QR Code:** Scan it using WhatsApp.  
+- **🔢 Pairing Code:** Enter your phone number and connect via a generated code.  
 
-**🔹 Conectar via Código de Emparelhamento:**  
-O bot solicitará seu número de telefone e fornecerá um código para você inserir no WhatsApp.  
+---
 
----  
-
-## 🔄 **Atualizando o Bot**  
-Para manter seu bot sempre atualizado com as últimas melhorias e correções, basta executar:  
-
+## 🔄 **Updating**  
+Keep your bot up-to-date with:  
 ```sh  
 npm run update  
 ```  
+✅ **Your data and settings will remain intact!**  
 
-> **✅ Não se preocupe!** Seus dados e configurações **não serão apagados** ao atualizar o bot.  
+---
 
----  
+## 💡 **Features**  
+✅ Lightning-fast response time  
+✅ Automated sticker creation  
+✅ Direct media downloads (videos/audio)  
+✅ Advanced group administration tools  
+✅ API integration for multiple services  
 
-## 💖 **Apoie o Projeto**  
-Se você deseja ajudar a manter este projeto ativo e em constante evolução, considere fazer uma doação. Qualquer valor é bem-vindo e ajuda a cobrir custos de desenvolvimento e manutenção.  
+---
 
-**Chave Pix:**  
-lua.bot@hotmail.com  
+## ⚙️ **Key Commands**  
+Here are some essential commands:  
 
-Agradecemos seu apoio! 🙏  
+- `!menu` → Displays all available commands  
+- `!sticker` → Converts an image to a sticker  
+- `!ytmp3 <link>` → Downloads YouTube audio  
+- `!ytmp4 <link>` → Downloads YouTube video  
+- `!play <song name>` → Automatically downloads a song  
+- `!ping` → Checks bot response time  
 
----  
+📌 **And much more!** Explore all commands on WhatsApp.  
 
-## 📜 **Licença**  
-© 2025 **Hiudy**. Todos os direitos reservados.  
+---
 
-🚨 **Não é permitido remover os créditos do código ou vender os arquivos.** Caso isso ocorra, medidas legais poderão ser tomadas.  
+## 💖 **Support the Project**  
+Enjoying the bot? Help us keep it running with a donation!  
 
----  
+**💰 Pix Key:** `lua.bot@hotmail.com`  
 
-## 👤 **Créditos**  
+Your support helps maintain and improve this project! ❤️  
 
-Desenvolvido por [**Hiudy**](https://github.com/hiudyy) ❤️  
-[![Perfil Hiudy](https://github-readme-stats.vercel.app/api?username=hiudyy&show_icons=true&theme=radical&locale=pt-BR)](https://github.com/hiudyy)  
+---
 
-Se você gostou do projeto, deixe uma ⭐ no repositório e compartilhe! 🚀  
+## 📜 **License**  
+© 2025 **Hiudy**. All rights reserved.  
+
+🚨 **Removing credits or selling the bot is strictly prohibited. Violations will result in legal action.**  
+
+---
+
+## 👤 **Credits**  
+
+Developed by [**Hiudy**](https://github.com/hiudyy) 🚀  
+[![Hiudy's GitHub Profile](https://github-readme-stats.vercel.app/api?username=hiudyy&show_icons=true&theme=radical&locale=en)](https://github.com/hiudyy)  
+
+If you like this project, **give it a ⭐ and share it!**  

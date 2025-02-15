@@ -200,9 +200,9 @@ try {
   break;
   
   case 'st':
-case 'stk':
-case 'sticker':
-case 's': {
+  case 'stk':
+  case 'sticker':
+  case 's': {
     var RSM = info.message?.extendedTextMessage?.contextInfo?.quotedMessage
     var midia = RSM?.imageMessage || info.message?.imageMessage || RSM?.viewOnceMessage?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || RSM?.videoMessage || info.message?.videoMessage || RSM?.viewOnceMessage?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage
     if (!midia) return reply(`Marque uma imagem ou um vídeo de até 9.9 segundos para fazer figurinha, com o comando: ${prefix + command} (mencionando a mídia)`);
