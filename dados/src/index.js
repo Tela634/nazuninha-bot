@@ -212,7 +212,7 @@ case 's': {
     let tempFile = pathz.join(__dirname, 'temp', `sticker_${Date.now()}.${isVideo ? 'mp4' : 'jpg'}`)
     if (!fs.existsSync(__dirname+'/temp')) fs.mkdirSync(__dirname+'/temp', { recursive: true });
     await fs.writeFileSync(tempFile, buffer)
-    let stickerMessage = { sticker: { url: tempFile }, mimetype: isVideo ? Mimetype.mp4 : Mimetype.webp };
+    let stickerMessage = { sticker: { url: tempFile }, mimetype: isVideo ? 'video/mp4' : 'image/webp' };
     await nazu.sendMessage(from, stickerMessage, { quoted: null })
   }
   break
