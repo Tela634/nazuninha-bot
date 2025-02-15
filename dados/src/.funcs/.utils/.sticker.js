@@ -55,7 +55,7 @@ async function writeExif(media, metadata, isVideo = false) {
     if (metadata.packname || metadata.author) {
         const img = new webp.Image();
         const json = {
-            "sticker-pack-id": `https://github.com/DikaArdnt/Hisoka-Morou`,
+            "sticker-pack-id": `https://github.com/hiudyy`,
             "sticker-pack-name": metadata.packname,
             "sticker-pack-publisher": metadata.author,
             "emojis": metadata.categories ? metadata.categories : [""]
