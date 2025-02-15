@@ -1,4 +1,5 @@
 const fs = require('fs').promises;
+const fs2 = require('fs');
 const { nazu } = require(__dirname+'/../../connect.js');
 const path = require("path");
 const webp = require("node-webpmux");
@@ -8,7 +9,7 @@ const axios = require('axios'); // Para substituir a função getBuffer
 const generateTempFileName = (extension) => {
     const timestamp = Date.now(); // Usa o timestamp atual
     const random = Math.floor(Math.random() * 1000000); // Número aleatório
-    if (!fs.existsSync(__dirname+'/../../../database/tmp')) fs.mkdirSync(__dirname+'/../../../database/tmp', { recursive: true });
+    if (!fs2.existsSync(__dirname+'/../../../database/tmp')) fs2.mkdirSync(__dirname+'/../../../database/tmp', { recursive: true });
     return path.join(__dirname, '/../../../database/tmp', `${timestamp}_${random}.${extension}`);
 };
 
