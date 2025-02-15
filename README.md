@@ -123,9 +123,9 @@ Here are some essential commands:
 
 | **Command**               | **Status**     | **Type**   |
 |---------------------------|----------------|------------|
-| `!play <song name>`        | ✅ Working     | Scraper    |
-| `!instagram <profile link>`| ✅ Working     | Scraper    |
-| `!tiktok <video link>`     | ✅ Working     | Scraper    |
-| `!pinterest <pin link>`    | ✅ Working     | Scraper    |
+| `!play <name/link>`        | ✅ Working     | Scraper    |
+| `!instagram <name/link>`   | ✅ Working     | Scraper    |
+| `!tiktok <name/link>`      | ✅ Working     | Scraper    |
+| `!pinterest <name/link>`   | ✅ Working     | Scraper    |
 
 📌 **And much more!** Explore all commands directly on WhatsApp.
