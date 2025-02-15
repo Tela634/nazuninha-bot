@@ -6,6 +6,7 @@ const { downloadContentFromMessage } = require('baileys');
 const { reportError, youtube, tiktok, pinterest, igdl }  = require(__dirname+'/.funcs/.exports.js');
 const { menu, menudown, menuadm } = require(__dirname+'/menus/index.js');
 const axios = require('axios');
+const path = require('path');
 const fs = require('fs');
 
 async function NazuninhaBotExec(nazu, info) {
