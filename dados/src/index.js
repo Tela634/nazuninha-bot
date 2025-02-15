@@ -2,7 +2,6 @@
 //Versão: 0.0.1
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
-const { Sticker, createSticker, StickerTypes } = require('riz-sticker-maker')
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { reportError, youtube, tiktok, pinterest, igdl }  = require(__dirname+'/.funcs/.exports.js');
 const { menu, menudown, menuadm } = require(__dirname+'/menus/index.js');
