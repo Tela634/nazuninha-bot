@@ -9,6 +9,14 @@
 
 ---  
 
+## 📢 **Join Our WhatsApp Channel!**  
+
+Stay updated with the latest news and updates about **Nazuninha Bot** by joining our official WhatsApp channel!  
+
+[![Join WhatsApp Channel](https://img.shields.io/badge/Join-WhatsApp-green?style=for-the-badge&logo=whatsapp)](https://whatsapp.com/channel/0029Vb6bZMrEQIaq4jzEPv40)
+
+---
+
 ## 🤖 **What is Nazuninha Bot?**  
 
 **Nazuninha Bot** is a powerful and optimized WhatsApp bot built with `Node.js` and `Baileys`. It's designed to provide a full-featured experience for automating WhatsApp, with a focus on speed, ease of use, and flexibility. Whether you need automation tools, fun features, or utilities, **Nazuninha Bot** has it all!  
