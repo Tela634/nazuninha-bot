@@ -59,5 +59,8 @@
     "rankgada": {"image": {"url": "https://telegra.ph/file/6ac2858647969cca031fd.jpg"}},
     "rankgostosa": {"image": {"url": "https://telegra.ph/file/dcff0d1e5ea578ade62fb.jpg"}}
   },
-  "games2": {}
+  "games2": {
+    "chute": {"video": {"url": "https://files.catbox.moe/7w071w.mp4"}},
+    "chutar": {"video": {"url": "https://files.catbox.moe/7w071w.mp4"}}
+  }
 }
