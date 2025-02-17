@@ -39,6 +39,9 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Remove o README.md (caso queira evitar o arquivo)
+rm -f ./temp_nazuninha/README.md
+
 # Remove todos os arquivos e diretórios antigos, exceto a pasta backup_temp
 mensagem "🧹 Limpando arquivos antigos..."
 rm -rf .git package.json package-lock.json

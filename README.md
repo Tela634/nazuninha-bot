@@ -32,6 +32,7 @@ Stay updated with the latest news and updates about **Nazuninha Bot** by joining
 - [💖 Support the Project](#-support-the-project)  
 - [📜 License](#-license)  
 - [👤 Credits](#-credits)  
+- [📱 If you're running on Termux](#-if-youre-running-on-termux)  
 
 ---  
 
@@ -40,16 +41,16 @@ Stay updated with the latest news and updates about **Nazuninha Bot** by joining
 Before starting, make sure you have **Node.js 18+** installed.  
 
 ### **1️⃣ Clone the Repository**  
-```sh  
+```
 git clone https://github.com/hiudyy/nazuninha-bot.git  
 cd nazuninha-bot  
-```  
+```
 
 ### **2️⃣ Install Dependencies**  
-```sh  
+```
 npm run config  
 npm run config:install  
-```  
+```
 
 ---  
 
@@ -57,9 +58,9 @@ npm run config:install
 
 Once installed, start the bot with:  
 
-```sh  
+```
 npm start  
-```  
+```
 
 The bot will prompt you to choose a connection method:  
 
@@ -75,9 +76,9 @@ Enter your phone number, and the bot will provide a pairing code to input in Wha
 
 To keep the bot up-to-date with the latest features and fixes, run:  
 
-```sh  
+```
 npm run update  
-```  
+```
 
 > ✅ **Don't worry!** Your data and settings **will not be lost** when updating.  
 
@@ -137,3 +138,45 @@ Here are some essential commands:
 | `!pinterest <name/link>`   | ✅ Working     | Scraper    |
 
 📌 **And much more!** Explore all commands directly on WhatsApp.
+
+---
+
+## 📱 **If you're running on Termux**  
+
+If you're running the bot in Termux, follow these steps:
+
+### **1️⃣ Install Termux and Update Packages**  
+```
+pkg update && pkg upgrade -y
+```
+
+### **2️⃣ Install Node.js**  
+```
+pkg install nodejs -y
+```
+
+### **3️⃣ Set Up the Storage**  
+```
+termux-setup-storage
+```
+
+### **4️⃣ Clone the Repository**  
+```
+git clone https://github.com/hiudyy/nazuninha-bot.git
+cd nazuninha-bot
+```
+
+### **5️⃣ Install Dependencies**  
+```
+npm run config  
+npm run config:install
+```
+
+### **6️⃣ Start the Bot**  
+```
+npm start
+```
+
+This will start the bot, and you will be prompted to choose a connection method (QR Code or Pairing Code). Follow the instructions to finish the setup.
+
+---
