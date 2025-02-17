@@ -2,49 +2,34 @@
 
 # Funções para exibir mensagens formatadas
 mensagem() {
-    echo "\033[1;32m$1\033[0m"
+    echo -e "\033[1;32m$1\033[0m"
 }
 
 aviso() {
-    echo "\033[1;31m$1\033[0m"
+    echo -e "\033[1;31m$1\033[0m"
 }
 
 separador() {
-    echo "\033[1;34m============================================\033[0m"
+    echo -e "\033[1;34m============================================\033[0m"
 }
 
-# Verifica se o usuário quer realmente atualizar
+# Início da atualização
 separador
-mensagem "🔄 Script de Atualização do Nazuninha Bot"
+mensagem "🔄 Iniciando atualização do Nazuninha Bot..."
 separador
-echo "Tem certeza que deseja atualizar o bot?"
-echo "Isso irá:"
-echo "1. Fazer backup dos dados importantes."
-echo "2. Baixar a versão mais recente do repositório."
-echo "3. Restaurar os dados após a atualização."
-echo ""
-read -p "Deseja continuar? (s/n): " resposta
-
-# Converte a resposta para minúsculas
-resposta=$(echo "$resposta" | tr '[:upper:]' '[:lower:]')
-
-# Verifica a resposta
-if [ "$resposta" != "s" ]; then
-    aviso "❌ Atualização cancelada."
-    exit 0
-fi
 
 # Cria um diretório temporário para o backup
 backup_dir="./backup_temp"
-mkdir -p "$backup_dir"
+mkdir -p "$backup_dir/dados/database"
+mkdir -p "$backup_dir/dados/src"
+mkdir -p "$backup_dir/dados/midias"
 
 # Faz o backup dos dados importantes
 mensagem "📂 Fazendo backup dos dados..."
-mkdir -p "$backup_dir/dados/database"
-mkdir -p "$backup_dir/dados/src"
 cp -r "./dados/database" "$backup_dir/dados/"
 cp "./dados/src/config.json" "$backup_dir/dados/src/"
-mensagem "✔ Backup concluído! Dados salvos em: $backup_dir"
+cp -r "./dados/midias/"* "$backup_dir/dados/midias/" 2>/dev/null
+mensagem "✔ Backup concluído!"
 
 # Baixa a versão mais recente do repositório
 mensagem "⬇️ Baixando a versão mais recente do repositório..."
@@ -54,12 +39,10 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Remove todos os arquivos e diretórios, exceto o backup e o script de atualização
-mensagem "🧹 Removendo arquivos antigos..."
-rm -rf .git
-rm -rf package.json
-rm -rf package-lock.json
-find dados/ -mindepth 1 ! -path 'backup_temp' -exec rm -rf {} +
+# Remove todos os arquivos e diretórios antigos, exceto a pasta backup_temp
+mensagem "🧹 Limpando arquivos antigos..."
+rm -rf .git package.json package-lock.json
+find dados/ -mindepth 1 ! -path "backup_temp/*" -exec rm -rf {} +
 
 # Move os novos arquivos para o diretório atual
 mensagem "🚚 Movendo novos arquivos..."
@@ -73,9 +56,15 @@ rm -rf ./temp_nazuninha
 mensagem "🔄 Restaurando dados do backup..."
 mkdir -p "./dados/database"
 mkdir -p "./dados/src"
+mkdir -p "./dados/midias"
+
 cp -r "$backup_dir/dados/database" "./dados/"
 cp "$backup_dir/dados/src/config.json" "./dados/src/"
-mensagem "✔ Dados restaurados com sucesso!"
+
+# Restaura os arquivos antigos da pasta 'midias' e substitui os que já existem
+mensagem "🖼 Restaurando arquivos antigos na pasta 'midias'..."
+cp -rf "$backup_dir/dados/midias/"* "./dados/midias/"
+mensagem "✔ Arquivos restaurados com sucesso!"
 
 # Remove a pasta de backup temporária
 rm -rf "$backup_dir"
