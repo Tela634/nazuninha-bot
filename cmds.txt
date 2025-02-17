@@ -1,0 +1,17 @@
+# Initial setup for Termux
+termux-setup-storage
+
+# Update system and packages
+pkg update && pkg upgrade -y
+
+# Install Node.js
+pkg install nodejs -y
+
+# Configure the environment (run only if necessary)
+npm run config
+
+# If not installed earlier, run the configuration installation
+npm run config:install
+
+# Start the application
+npm start
