@@ -492,6 +492,67 @@ break;
     };
 };
 break;
+
+case 'rankgay': case 'rankburro': case 'rankinteligente': case 'rankotaku': case 'rankfiel': case 'rankinfiel': case 'rankcorno': case 'rankgado': case 'rankgostoso': case 'rankrico': case 'rankpobre': case 'rankforte': case 'rankpegador': case 'rankmacho': case 'ranknerd': case 'ranktrabalhador': case 'rankbrabo': case 'ranklindo': case 'rankmalandro': case 'rankengracado': case 'rankcharmoso': case 'rankvisionario': case 'rankpoderoso': case 'rankvencedor': {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+
+    let path = __dirname + '/../database/grupos/' + from + '.json';
+    let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
+
+    let membros = AllgroupMembers.filter(m => !['0', 'marca'].includes(data.mark[m]));
+    if (membros.length < 5) return reply('❌ Membros insuficientes para formar um ranking.');
+
+    let top5 = membros.sort(() => Math.random() - 0.5).slice(0, 5);
+
+    let ranksData = fs.existsSync(__dirname + '/.funcs/.json/.ranks.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.ranks.json')) : { ranks: {} };
+    let responseText = ranksData[command] || `📊 *Ranking de ${command.replace('rank', '')}*:\n\n`;
+    
+    top5.forEach((m, i) => {
+        responseText += `🏅 *#${i + 1}* - @${m.split('@')[0]}\n`;
+    });
+
+    let media = ranksData.ranks[command];
+    if (media?.image) {
+        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: top5 });
+    } else if (media?.video) {
+        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: top5, gifPlayback: true });
+    } else {
+        await nazu.sendMessage(from, { text: responseText, mentions: top5 });
+    }
+};
+break;
+
+case 'ranklesbica': case 'rankburra': case 'rankinteligente': case 'rankotaku': case 'rankfiel': case 'rankinfiel': case 'rankcorna': case 'rankgada': case 'rankgostosa': case 'rankrica': case 'rankpobre': case 'rankforte': case 'rankpegadora': case 'ranknerd': case 'ranktrabalhadora': case 'rankbraba': case 'ranklinda': case 'rankmalandra': case 'rankengracada': case 'rankcharmosa': case 'rankvisionaria': case 'rankpoderosa': case 'rankvencedora': {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+
+    let path = __dirname + '/../database/grupos/' + from + '.json';
+    let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
+
+    let membros = AllgroupMembers.filter(m => !['0', 'marca'].includes(data.mark[m]));
+    if (membros.length < 5) return reply('❌ Membros insuficientes para formar um ranking.');
+
+    let top5 = membros.sort(() => Math.random() - 0.5).slice(0, 5);
+
+    let ranksData = fs.existsSync(__dirname + '/.funcs/.json/.ranks.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.ranks.json')) : { ranks: {} };
+    let responseText = ranksData[command] || `📊 *Ranking de ${command.replace('rank', '')}*:\n\n`;
+    
+    top5.forEach((m, i) => {
+        responseText += `🏅 *#${i + 1}* - @${m.split('@')[0]}\n`;
+    });
+
+    let media = ranksData.ranks[command];
+    if (media?.image) {
+        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: top5 });
+    } else if (media?.video) {
+        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: top5, gifPlayback: true });
+    } else {
+        await nazu.sendMessage(from, { text: responseText, mentions: top5 });
+    }
+};
+break;
+
  default:
  if(isCmd) await nazu.react('❌');
  };
