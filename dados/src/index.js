@@ -406,6 +406,48 @@ case 'fotogp':
     }};
     break;
     
+    
+    //COMANDOS DE BRINCADEIRAS
+
+   case 'gay': case 'burro': case 'inteligente': case 'otaku': case 'fiel': case 'infiel': case 'corno':  case 'gado': case 'gostoso': case 'feio': case 'rico': case 'pobre': case 'pirocudo': case 'pirokudo': case 'nazista': case 'ladrao': case 'safado': case 'vesgo': case 'bebado': case 'machista': case 'homofobico': case 'racista': case 'chato': case 'sortudo': case 'azarado': case 'forte': case 'fraco': case 'pegador': case 'otario': case 'macho': case 'bobo': case 'nerd': case 'preguicoso': case 'trabalhador': case 'brabo': case 'lindo': case 'malandro': case 'simpatico': case 'engracado': case 'charmoso': case 'misterioso': case 'carinhoso': case 'desumilde': case 'humilde': case 'ciumento': case 'corajoso': case 'covarde': case 'esperto': case 'talarico': case 'chorao': case 'brincalhao': case 'bolsonarista': case 'petista': case 'comunista': case 'lulista': case 'traidor': case 'bandido': case 'cachorro': case 'vagabundo': case 'pilantra': case 'mito': case 'padrao': case 'comedia': case 'psicopata': case 'fortao': case 'magrelo': case 'bombado': case 'chefe': case 'presidente': case 'rei': case 'patrao': case 'playboy': case 'zueiro': case 'gamer': case 'programador': case 'visionario': case 'billionario': case 'poderoso': case 'vencedor': case 'senhor': {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games: {} };
+    const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid || [];
+    const target = mentioned.length > 0 ? mentioned[0] : sender;
+    const targetName = `@${target.split('@')[0]}`;
+    const level = Math.floor(Math.random() * 101);
+    let responses = fs.existsSync(__dirname + '/.funcs/.json/.gamestext.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.gamestext.json')) : {};
+    const responseText = responses[command].replaceAll('#nome#', targetName).replaceAll('#level#', level) || `📊 ${targetName} tem *${level}%* de ${command}! 🔥`;
+    const media = gamesData.games[command]
+    if (media?.image) {
+        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: target });
+    } else if (media?.video) {
+        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: target});
+    } else {
+        await nazu.sendMessage(from, {text: responseText});
+    };
+};
+break;
+
+   case 'lesbica': case 'burra': case 'inteligente': case 'otaku': case 'fiel': case 'infiel': case 'corna': case 'gado': case 'gostosa': case 'feia': case 'rica': case 'pobre': case 'bucetuda': case 'nazista': case 'ladra': case 'safada': case 'vesga': case 'bebada': case 'machista': case 'homofobica': case 'racista': case 'chata': case 'sortuda': case 'azarada': case 'forte': case 'fraca': case 'pegadora': case 'otaria': case 'boba': case 'nerd': case 'preguicosa': case 'trabalhadora': case 'braba': case 'linda': case 'malandra': case 'simpatica': case 'engracada': case 'charmosa': case 'misteriosa': case 'carinhosa': case 'desumilde': case 'humilde': case 'ciumenta': case 'corajosa': case 'covarde': case 'esperta': case 'talarica': case 'chorona': case 'brincalhona': case 'bolsonarista': case 'petista': case 'comunista': case 'lulista': case 'traidora': case 'bandida': case 'cachorra': case 'vagabunda': case 'pilantra': case 'mito': case 'padrao': case 'comedia': case 'psicopata': case 'fortona': case 'magrela': case 'bombada': case 'chefe': case 'presidenta': case 'rainha': case 'patroa': case 'playboy': case 'zueira': case 'gamer': case 'programadora': case 'visionaria': case 'bilionaria': case 'poderosa': case 'vencedora': case 'senhora': {
+    if (!isGroup) return reply('❌ Este comando so pode ser usado em grupos.');
+    let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games: {} };
+    const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid || [];
+    const target = mentioned.length > 0 ? mentioned[0] : sender;
+    const targetName = `@${target.split('@')[0]}`;
+    const level = Math.floor(Math.random() * 101);
+    let responses = fs.existsSync(__dirname + '/.funcs/.json/.gamestext2.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.gamestext2.json')) : {};
+    const responseText = responses[command].replaceAll('#nome#', targetName).replaceAll('#level#', level) || `📊 ${targetName} tem *${level}%* de ${command}! 🔥`;
+    const media = gamesData.games[command]
+    if (media?.image) {
+        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: target });
+    } else if (media?.video) {
+        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: target});
+    } else {
+        await nazu.sendMessage(from, {text: responseText});
+    };
+};
+break;
  default:
  if(isCmd) await nazu.react('❌');
  };
