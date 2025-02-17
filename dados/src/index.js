@@ -441,9 +441,9 @@ break;
     const responseText = responses[command].replaceAll('#nome#', targetName).replaceAll('#level#', level) || `📊 ${targetName} tem *${level}%* de ${command}! 🔥`;
     const media = gamesData.games[command]
     if (media?.image) {
-        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: target });
+        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: [target] });
     } else if (media?.video) {
-        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: target});
+        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: [target]});
     } else {
         await nazu.sendMessage(from, {text: responseText});
     };
