@@ -16,6 +16,9 @@ async function menu(prefix) {
 │🎭 *${prefix}menubrincadeiras*
 │  ➥ _Comandos de brincadeiras_
 │      _e interações divertidas!_
+│👑 *${prefix}menudono*
+│  ➥ _Comandos exclusivos_
+│      _para o dono do bot_
 ╰─────────────────────╯
 
 ╭━━━━━━━━━━━━━━━━━━━━━╮

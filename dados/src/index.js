@@ -4,7 +4,7 @@
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { reportError, youtube, tiktok, pinterest, igdl, sendSticker }  = require(__dirname+'/.funcs/.exports.js');
-const { menu, menudown, menuadm, menubn } = require(__dirname+'/menus/index.js');
+const { menu, menudown, menuadm, menubn, menuDono } = require(__dirname+'/menus/index.js');
 const axios = require('axios');
 const pathz = require('path');
 const fs = require('fs');
@@ -16,6 +16,8 @@ try {
  const isGroup = from.endsWith('@g.us');
  const sender = isGroup ? info.key.participant.includes(':') ? info.key.participant.split(':')[0] +'@s.whatsapp.net': info.key.participant : info.key.remoteJid;
  const isStatus = from.endsWith('@broadcast');
+ const nmrdn = numerodono.replace(new RegExp("[()+-/ +/]", "gi"), "") + `@s.whatsapp.net`
+ const isOwner = nmrdn == sender ? true : false;
  
  const baileys = require('baileys');
  const type = baileys.getContentType(info.message);
@@ -165,6 +167,10 @@ try {
   case 'menuadm': case 'menuadmin': case 'menuadmins':
   nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menuadm(prefix)}, {quoted: info});
   break;
+  case 'menudono': case 'ownermenu':
+  if(!isOwner) return reply('Apenas meu dono.');
+  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menuDono(prefix)}, {quoted: info});
+  break;
    
    
    //COMANDOS DE DONO BB
@@ -172,6 +178,7 @@ try {
    case 'numerodono':
    case 'nomedono':
    case 'nomebot': try {
+    if(!isOwner) return reply('Apenas meu dono.');
     if (!q) return reply(`Uso correto: ${prefix}${command} <valor>`);
      let config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
      config[command] = q;
@@ -196,6 +203,7 @@ try {
         { name: 'Downloads', files: ['/menus/menudown.js'] },
         { name: 'Funções de adm', files: ['/menus/menuadm.js'] },
         { name: 'Brincadeiras', files: ['/menus/menubn.js'] },
+        { name: 'Funções de dono', files: ['/menus/menudono.js'] },
       ];
 
       let comandosPorCategoria = {};
