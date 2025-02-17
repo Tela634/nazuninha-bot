@@ -2,15 +2,15 @@
 
 # Funções para exibir mensagens formatadas
 mensagem() {
-    echo -e "\033[1;32m$1\033[0m"
+    echo "\033[1;32m$1\033[0m"
 }
 
 aviso() {
-    echo -e "\033[1;31m$1\033[0m"
+    echo "\033[1;31m$1\033[0m"
 }
 
 separador() {
-    echo -e "\033[1;34m============================================\033[0m"
+    echo "\033[1;34m============================================\033[0m"
 }
 
 # Início da atualização
