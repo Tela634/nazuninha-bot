@@ -412,7 +412,7 @@ case 'fotogp':
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não esta ativo nesse grupo');
     let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games: {} };
-    const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid || [];
+    const mentioned = info.message?.extendedTextMessage?.contextInfo?.mentionedJid || (info.message?.extendedTextMessage?.contextInfo?.participant ? [info.message.extendedTextMessage.contextInfo.participant] : []) || [];
     const target = mentioned.length > 0 ? mentioned[0] : sender;
     const targetName = `@${target.split('@')[0]}`;
     const level = Math.floor(Math.random() * 101);
@@ -420,11 +420,11 @@ case 'fotogp':
     const responseText = responses[command].replaceAll('#nome#', targetName).replaceAll('#level#', level) || `📊 ${targetName} tem *${level}%* de ${command}! 🔥`;
     const media = gamesData.games[command]
     if (media?.image) {
-        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: target });
+        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: [target] });
     } else if (media?.video) {
-        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: target});
+        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: [target]});
     } else {
-        await nazu.sendMessage(from, {text: responseText});
+        await nazu.sendMessage(from, {text: responseText, mentions: [target]});
     };
 };
 break;
@@ -445,7 +445,7 @@ break;
     } else if (media?.video) {
         await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: [target]});
     } else {
-        await nazu.sendMessage(from, {text: responseText});
+        await nazu.sendMessage(from, {text: responseText, mentions: [target]});
     };
 };
 break;
