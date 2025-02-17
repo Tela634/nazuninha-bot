@@ -8,17 +8,17 @@ async function menuDono(prefix) {
 │  📂 *Configurar Bot* 
 ├─────────────────────┤
 │⚙️ *${prefix}prefixo* 
-│  ➥ _Altere o prefixo do bot._ 
-│      _Exemplo de uso: ${prefix}prefixo !_
+│ ➥ _Altere o prefixo do bot._ 
+│     _Exemplo de uso: ${prefix}prefixo !_
 │📱 *${prefix}numerodono* 
-│  ➥ _Altere o número do dono do bot._ 
-│      _Exemplo de uso: ${prefix}numerodono 553398230030_
+│ ➥ _Altere o número do dono do bot._ 
+│     _Exemplo de uso: ${prefix}numerodono 553398230030_
 │👤 *${prefix}nomedono* 
-│  ➥ _Altere o nome do dono do bot._ 
-│      _Exemplo de uso: ${prefix}nomedono Hiudy_
+│ ➥ _Altere o nome do dono do bot._ 
+│     _Exemplo de uso: ${prefix}nomedono Hiudy_
 │🤖 *${prefix}nomebot* 
-│  ➥ _Altere o nome do bot._ 
-│      _Exemplo de uso: ${prefix}nomebot Nazu_
+│ ➥ _Altere o nome do bot._ 
+│     _Exemplo de uso: ${prefix}nomebot Nazu_
 ╰─────────────────────╯
 
 ╭━━━━━━━━━━━━━━━━━━━━━╮
