@@ -175,13 +175,59 @@ async function menubn(prefix) {
 ╭─────────────────────╮
 │  📂 *Rank Masculinos* 
 ├─────────────────────┤
-│ _Comandos a serem adicionados..._
+│ ${prefix}rankgay  
+│ ${prefix}rankburro  
+│ ${prefix}rankinteligente  
+│ ${prefix}rankotaku  
+│ ${prefix}rankfiel  
+│ ${prefix}rankinfiel  
+│ ${prefix}rankcorno  
+│ ${prefix}rankgado  
+│ ${prefix}rankgostoso  
+│ ${prefix}rankrico  
+│ ${prefix}rankpobre  
+│ ${prefix}rankforte  
+│ ${prefix}rankpegador  
+│ ${prefix}rankmacho  
+│ ${prefix}ranknerd  
+│ ${prefix}ranktrabalhador  
+│ ${prefix}rankbrabo  
+│ ${prefix}ranklindo  
+│ ${prefix}rankmalandro  
+│ ${prefix}rankengracado  
+│ ${prefix}rankcharmoso  
+│ ${prefix}rankvisionario  
+│ ${prefix}rankpoderoso  
+│ ${prefix}rankvencedor
 ╰─────────────────────╯
 
 ╭─────────────────────╮
 │  📂 *Rank Femininos* 
 ├─────────────────────┤
-│ _Comandos a serem adicionados..._
+│ ${prefix}ranklesbica  
+│ ${prefix}rankburra  
+│ ${prefix}rankinteligente  
+│ ${prefix}rankotaku  
+│ ${prefix}rankfiel  
+│ ${prefix}rankinfiel  
+│ ${prefix}rankcorna  
+│ ${prefix}rankgada  
+│ ${prefix}rankgostosa  
+│ ${prefix}rankrica  
+│ ${prefix}rankpobre  
+│ ${prefix}rankforte  
+│ ${prefix}rankpegadora  
+│ ${prefix}ranknerd  
+│ ${prefix}ranktrabalhadora  
+│ ${prefix}rankbraba  
+│ ${prefix}ranklinda  
+│ ${prefix}rankmalandra  
+│ ${prefix}rankengracada  
+│ ${prefix}rankcharmosa  
+│ ${prefix}rankvisionaria  
+│ ${prefix}rankpoderosa  
+│ ${prefix}rankvencedora  
+│ ${prefix}senhora  
 ╰─────────────────────╯
 
 ╭─────────────────────╮
