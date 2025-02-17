@@ -433,7 +433,7 @@ break;
     if (!isGroup) return reply('❌ Este comando so pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não esta ativo nesse grupo');
     let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games: {} };
-    const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid || [];
+    const mentioned = info.message?.extendedTextMessage?.contextInfo?.mentionedJid || (info.message?.extendedTextMessage?.contextInfo?.participant ? [info.message.extendedTextMessage.contextInfo.participant] : []) || [];
     const target = mentioned.length > 0 ? mentioned[0] : sender;
     const targetName = `@${target.split('@')[0]}`;
     const level = Math.floor(Math.random() * 101);
