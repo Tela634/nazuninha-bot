@@ -38,7 +38,14 @@ try {
   const botNumber = nazu.user.id.split(':')[0] + '@s.whatsapp.net';
   const isGroupAdmin = !isGroup ? null : groupAdmins.includes(sender);
   const isBotAdmin = !isGroup ? null : groupAdmins.includes(botNumber);
- 
+  if(isGroup) {
+  if (!fs.existsSync(__dirname + `/../database/grupos`)) fs.mkdirSync(__dirname + `/../database/grupos`, { recursive: true });
+  if (!fs.existsSync(__dirname + `/../database/grupos/${from}.json`)) fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify({ mark: {} }, null, 2));
+  };
+  let groupData = {};
+  try {groupData = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${from}.json`));} catch (error) {};
+  const isModoBn = groupData.modobrincadeira ? true : false;
+     
  //FUNÇÕES BASICAS
  async function reply(text) { return nazu.sendMessage(from, {text: text.trim()}, {sendEphemeral: true, contextInfo: { forwardingScore: 50, isForwarded: true, externalAdReply: { showAdAttribution: true }}, quoted: info})};nazu.reply=reply;
  
@@ -219,15 +226,6 @@ try {
   case 'mention':
   try {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-    
-    let dir = __dirname + `/../database/grupos/`;
-    let file = dir + `${from}.json`;
-
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify({ mark: {} }, null, 2));
-
-    let groupData = JSON.parse(fs.readFileSync(file));
-    if (!groupData.mark) groupData.mark = {};
 
     if (!q) return reply(`📢 *Configuração de Marcações*\n\n🔧 Escolha como deseja ser mencionado:\n\n✅ *${prefix}mention all* → Marcado em tudo (marcações e jogos).\n📢 *${prefix}mention marca* → Apenas em marcações de administradores.\n🎮 *${prefix}mention games* → Somente em jogos do bot.\n🚫 *${prefix}mention 0* → Não será mencionado em nenhuma ocasião.`);
 
@@ -392,10 +390,8 @@ case 'fotogp':
     case 'modobrincadeira': case 'modobrincadeiras': case 'modobn': {
     if (!isGroup) return reply('❌ Apenas para grupos.');
     if (!isGroupAdmin) return reply('🚫 Apenas admins.'); 
-     const groupFilePath = __dirname + `/../database/grupos/${from}.json`;    
-     let groupData = {};
-     try {groupData = JSON.parse(fs.readFileSync(groupFilePath));} catch (error) {}
-
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;    
+     
     if (!groupData.modobrincadeira || groupData.modobrincadeira === undefined) {
         groupData.modobrincadeira = true;
     } else {
@@ -414,6 +410,7 @@ case 'fotogp':
 
    case 'gay': case 'burro': case 'inteligente': case 'otaku': case 'fiel': case 'infiel': case 'corno':  case 'gado': case 'gostoso': case 'feio': case 'rico': case 'pobre': case 'pirocudo': case 'pirokudo': case 'nazista': case 'ladrao': case 'safado': case 'vesgo': case 'bebado': case 'machista': case 'homofobico': case 'racista': case 'chato': case 'sortudo': case 'azarado': case 'forte': case 'fraco': case 'pegador': case 'otario': case 'macho': case 'bobo': case 'nerd': case 'preguicoso': case 'trabalhador': case 'brabo': case 'lindo': case 'malandro': case 'simpatico': case 'engracado': case 'charmoso': case 'misterioso': case 'carinhoso': case 'desumilde': case 'humilde': case 'ciumento': case 'corajoso': case 'covarde': case 'esperto': case 'talarico': case 'chorao': case 'brincalhao': case 'bolsonarista': case 'petista': case 'comunista': case 'lulista': case 'traidor': case 'bandido': case 'cachorro': case 'vagabundo': case 'pilantra': case 'mito': case 'padrao': case 'comedia': case 'psicopata': case 'fortao': case 'magrelo': case 'bombado': case 'chefe': case 'presidente': case 'rei': case 'patrao': case 'playboy': case 'zueiro': case 'gamer': case 'programador': case 'visionario': case 'billionario': case 'poderoso': case 'vencedor': case 'senhor': {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isModoBn) return reply('❌ O modo brincadeira não esta ativo nesse grupo');
     let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games: {} };
     const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid || [];
     const target = mentioned.length > 0 ? mentioned[0] : sender;
@@ -434,6 +431,7 @@ break;
 
    case 'lesbica': case 'burra': case 'inteligente': case 'otaku': case 'fiel': case 'infiel': case 'corna': case 'gado': case 'gostosa': case 'feia': case 'rica': case 'pobre': case 'bucetuda': case 'nazista': case 'ladra': case 'safada': case 'vesga': case 'bebada': case 'machista': case 'homofobica': case 'racista': case 'chata': case 'sortuda': case 'azarada': case 'forte': case 'fraca': case 'pegadora': case 'otaria': case 'boba': case 'nerd': case 'preguicosa': case 'trabalhadora': case 'braba': case 'linda': case 'malandra': case 'simpatica': case 'engracada': case 'charmosa': case 'misteriosa': case 'carinhosa': case 'desumilde': case 'humilde': case 'ciumenta': case 'corajosa': case 'covarde': case 'esperta': case 'talarica': case 'chorona': case 'brincalhona': case 'bolsonarista': case 'petista': case 'comunista': case 'lulista': case 'traidora': case 'bandida': case 'cachorra': case 'vagabunda': case 'pilantra': case 'mito': case 'padrao': case 'comedia': case 'psicopata': case 'fortona': case 'magrela': case 'bombada': case 'chefe': case 'presidenta': case 'rainha': case 'patroa': case 'playboy': case 'zueira': case 'gamer': case 'programadora': case 'visionaria': case 'bilionaria': case 'poderosa': case 'vencedora': case 'senhora': {
     if (!isGroup) return reply('❌ Este comando so pode ser usado em grupos.');
+    if (!isModoBn) return reply('❌ O modo brincadeira não esta ativo nesse grupo');
     let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games: {} };
     const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid || [];
     const target = mentioned.length > 0 ? mentioned[0] : sender;
