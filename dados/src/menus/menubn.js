@@ -1,7 +1,7 @@
-async function menu(prefix) {
+async function menubn(prefix) {
   return `
 ╭━━━━━━━━━━━━━━━━━━━━━╮
-┃🌟 *MENU DE BRINCADEIRAS* 🌟
+┃🌟 *MENU DE BRINCADEIRAS*
 ╰━━━━━━━━━━━━━━━━━━━━━╯
 
 ╭─────────────────────╮
@@ -90,9 +90,86 @@ async function menu(prefix) {
 ╰─────────────────────╯
 
 ╭─────────────────────╮
-│  📂 *Brincadeiras - Feminino* 
+│  📂 *Brincadeiras - Feminino*  
 ├─────────────────────┤
-│ _Comandos a serem adicionados..._
+│ ${prefix}lésbica  
+│ ${prefix}burra  
+│ ${prefix}inteligente  
+│ ${prefix}otaku  
+│ ${prefix}fiel  
+│ ${prefix}infiel  
+│ ${prefix}corna  
+│ ${prefix}gado  
+│ ${prefix}gostosa  
+│ ${prefix}feia  
+│ ${prefix}rica  
+│ ${prefix}pobre  
+│ ${prefix}bucetuda  
+│ ${prefix}nazista  
+│ ${prefix}ladra  
+│ ${prefix}safada  
+│ ${prefix}vesga  
+│ ${prefix}bêbada  
+│ ${prefix}machista  
+│ ${prefix}homofóbica  
+│ ${prefix}racista  
+│ ${prefix}chata  
+│ ${prefix}sortuda  
+│ ${prefix}azarada  
+│ ${prefix}forte  
+│ ${prefix}fraca  
+│ ${prefix}pegadora  
+│ ${prefix}otária  
+│ ${prefix}boba  
+│ ${prefix}nerd  
+│ ${prefix}preguiçosa  
+│ ${prefix}trabalhadora  
+│ ${prefix}braba  
+│ ${prefix}linda  
+│ ${prefix}malandra  
+│ ${prefix}simpática  
+│ ${prefix}engraçada  
+│ ${prefix}charmosa  
+│ ${prefix}misteriosa  
+│ ${prefix}carinhosa  
+│ ${prefix}desumilde  
+│ ${prefix}humilde  
+│ ${prefix}ciumenta  
+│ ${prefix}corajosa  
+│ ${prefix}covarde  
+│ ${prefix}esperta  
+│ ${prefix}talarica  
+│ ${prefix}chorona  
+│ ${prefix}brincalhona  
+│ ${prefix}bolsonarista  
+│ ${prefix}petista  
+│ ${prefix}comunista  
+│ ${prefix}lulista  
+│ ${prefix}traidora  
+│ ${prefix}bandida  
+│ ${prefix}cachorra  
+│ ${prefix}vagabunda  
+│ ${prefix}pilantra  
+│ ${prefix}mito  
+│ ${prefix}padrão  
+│ ${prefix}comédia  
+│ ${prefix}psicopata  
+│ ${prefix}fortona  
+│ ${prefix}magrela  
+│ ${prefix}bombada  
+│ ${prefix}chefe  
+│ ${prefix}presidenta  
+│ ${prefix}rainha  
+│ ${prefix}patroa  
+│ ${prefix}playgirl  
+│ ${prefix}zueira  
+│ ${prefix}gamer  
+│ ${prefix}programadora  
+│ ${prefix}visionária  
+│ ${prefix}bilionária  
+│ ${prefix}poderosa  
+│ ${prefix}vencedora  
+│ ${prefix}senhora  
 ╰─────────────────────╯
 
 ╭─────────────────────╮
@@ -114,4 +191,4 @@ async function menu(prefix) {
 ╰─────────────────────╯`;
 };
 
-module.exports = menu;
+module.exports = menubn;

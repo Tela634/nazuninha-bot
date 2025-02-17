@@ -13,6 +13,9 @@ async function menu(prefix) {
 │🛠️ *${prefix}menuadm*
 │  ➥ _Comandos de administração_
 │      _e ativações do grupo_
+│🎭 *${prefix}menubrincadeiras*
+│  ➥ _Comandos de brincadeiras_
+│      _e interações divertidas!_
 ╰─────────────────────╯
 
 ╭━━━━━━━━━━━━━━━━━━━━━╮

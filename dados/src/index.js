@@ -4,7 +4,7 @@
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { reportError, youtube, tiktok, pinterest, igdl, sendSticker }  = require(__dirname+'/.funcs/.exports.js');
-const { menu, menudown, menuadm } = require(__dirname+'/menus/index.js');
+const { menu, menudown, menuadm, menubn } = require(__dirname+'/menus/index.js');
 const axios = require('axios');
 const pathz = require('path');
 const fs = require('fs');
@@ -146,13 +146,16 @@ try {
    
    
    //MENUS AQUI BB
-   case 'menu':
+   case 'menu':case 'help':
    await reply(await menu(prefix));
    break
-   case 'menudown':
+   case 'menubn':case 'menubrincadeira':case 'menubrincadeiras':
+   await reply(await menubn(prefix));
+   break
+   case 'menudown':case 'menudownload':case 'menudownloads':
    await reply(await menudown(prefix));
    break
-   case 'menuadm':
+   case 'menuadm':case 'menuadmin':case 'menuadmins':
    await reply(await menuadm(prefix));
    break
    
