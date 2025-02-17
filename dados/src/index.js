@@ -226,7 +226,7 @@ try {
 
       buffzin = await axios.get(`https://api.apiflash.com/v1/urltoimage?access_key=7eea64787bd84cfbadb14358dad47976&url=https%3A%2F%2Fcount.getloli.com%2F%40nazuninha-totalcmd%3Fname%3Dnazuninha-totalcmd%26theme%3Dmiku%26padding%3D4%26offset%3D0%26align%3Dtop%26scale%3D2%26pixelated%3D1%26darkmode%3D1%26num%3D${String(comandos.length)}&format=png&width=1350&height=500&quality=100&no_cookie_banners=true&no_ads=true&no_tracking=true&transparent=true`, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': 'https://count.getloli.com' }, responseType: 'arraybuffer' });
       
-      await nazu.sendMessage(from, {image: buffzin.data, caption: `╭━━〔 🤖 *Meus Comandos* 〕━━╮\n` + `┣ 📌 Total: *${comandos.length}* comandos\n` + `┣ 📌 Comandos por Categoria:\n` + Object.keys(comandosPorCategoria).map(categoria => `┣ ${categoria}: *${comandosPorCategoria[categoria]}* comandos`).join('\n') + `\n┣ 📌 Sem categoria: *${comandosSemCategoria}* comandos\n` + `╰━━━━━━━━━━━━━━━━━━━╯`}, { quoted: info });
+      await nazu.sendMessage(from, {image: buffzin.data, caption: `╭━━〔 🤖 *Meus Comandos* 〕━━╮\n` + `┣ 📌 Total: *${comandos.length}* comandos\n` + `┣ 📌 Comandos por Categoria:\n┣\n` + Object.keys(comandosPorCategoria).map(categoria => `┣ 📌 ${categoria}: *${comandosPorCategoria[categoria]}* comandos`).join('\n') + `\n┣ 📌 Sem categoria: *${comandosSemCategoria}* comandos\n` + `╰━━━━━━━━━━━━━━━━━━━╯`}, { quoted: info });
     });
   break;
 
