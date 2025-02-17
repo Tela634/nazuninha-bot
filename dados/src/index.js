@@ -422,7 +422,7 @@ case 'fotogp':
     if (media?.image) {
         await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: [target] });
     } else if (media?.video) {
-        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: [target]});
+        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: [target], gifPlayback: true});
     } else {
         await nazu.sendMessage(from, {text: responseText, mentions: [target]});
     };
@@ -443,7 +443,7 @@ break;
     if (media?.image) {
         await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: [target] });
     } else if (media?.video) {
-        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: [target]});
+        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: [target], gifPlayback: true});
     } else {
         await nazu.sendMessage(from, {text: responseText, mentions: [target]});
     };
