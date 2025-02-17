@@ -111,7 +111,7 @@ Any amount helps to keep the project alive. Thank you! ❤️
 ## 👤 **Credits**  
 
 Developed by [**Hiudy**](https://github.com/hiudyy) ❤️  
-[![Hiudy's Profile](https://github-readme-stats.vercel.app/api?username=hiudyy&show_icons=true&theme=radical&locale=en)](https://github.com/hiudyy)  
+[![Hiudy's Profile](https://github-readme-stats.vercel.app/api?username=hiudyy&show_icons=true&theme=dracula&locale=pt-br)](https://github.com/hiudyy)  
 
 If you like this project, leave a ⭐ on the repository and share it! 🚀  
 
