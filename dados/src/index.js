@@ -153,18 +153,18 @@ try {
    
    
    //MENUS AQUI BB
-   case 'menu':case 'help':
-   await reply(await menu(prefix));
-   break
-   case 'menubn':case 'menubrincadeira':case 'menubrincadeiras':
-   await reply(await menubn(prefix));
-   break
-   case 'menudown':case 'menudownload':case 'menudownloads':
-   await reply(await menudown(prefix));
-   break
-   case 'menuadm':case 'menuadmin':case 'menuadmins':
-   await reply(await menuadm(prefix));
-   break
+   case 'menu': case 'help':
+  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menu(prefix)}, {quoted: info});
+  break;
+  case 'menubn': case 'menubrincadeira': case 'menubrincadeiras':
+  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menubn(prefix)}, {quoted: info});
+  break;
+  case 'menudown': case 'menudownload': case 'menudownloads':
+  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menudown(prefix)}, {quoted: info});
+  break;
+  case 'menuadm': case 'menuadmin': case 'menuadmins':
+  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menuadm(prefix)}, {quoted: info});
+  break;
    
    
    //COMANDOS DE DONO BB
