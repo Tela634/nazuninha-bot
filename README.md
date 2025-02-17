@@ -160,19 +160,24 @@ pkg install nodejs -y
 termux-setup-storage
 ```
 
-### **4️⃣ Clone the Repository**  
+### **4️⃣ Open your internal storage**  
+```
+cd /sdcard
+```
+
+### **5️⃣ Clone the Repository**  
 ```
 git clone https://github.com/hiudyy/nazuninha-bot.git
 cd nazuninha-bot
 ```
 
-### **5️⃣ Install Dependencies**  
+### **6️⃣ Install Dependencies**  
 ```
 npm run config  
 npm run config:install
 ```
 
-### **6️⃣ Start the Bot**  
+### **7️⃣ Start the Bot**  
 ```
 npm start
 ```
