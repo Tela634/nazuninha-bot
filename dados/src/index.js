@@ -433,8 +433,7 @@ case 'fotogp':
     case 'modobrincadeira': case 'modobrincadeiras': case 'modobn': {
     if (!isGroup) return reply('❌ Apenas para grupos.');
     if (!isGroupAdmin) return reply('🚫 Apenas admins.'); 
-    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;    
-     
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;
     if (!groupData.modobrincadeira || groupData.modobrincadeira === undefined) {
         groupData.modobrincadeira = true;
     } else {
@@ -447,6 +446,24 @@ case 'fotogp':
         await reply('⚠️ *Modo de Brincadeiras desativado!* O grupo não está mais no modo de brincadeiras.');
     }};
     break;
+    
+    case 'bemvindo': case 'bv': case 'boasvindas': {
+    if (!isGroup) return reply('❌ *Este comando só pode ser usado em grupos!*');
+    if (!isGroupAdmin) return reply('🚫 *Apenas administradores podem ativar ou desativar as boas-vindas!*');     
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;   
+    if (!groupData.bemvindo || groupData.bemvindo === undefined) {
+        groupData.bemvindo = true;
+    } else {
+        groupData.bemvindo = !groupData.bemvindo;
+    };
+    fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+    if (groupData.bemvindo) {
+        await reply(`✅ *Boas-vindas ativadas!* Agora, novos membros serão recebidos com uma mensagem personalizada.\n📝 Para configurar a mensagem, use: *${prefixo}legendabv*`);
+    } else {
+        await reply('⚠️ *Boas-vindas desativadas!* O grupo não enviará mais mensagens para novos membros.');
+    }
+};
+break;
     
     
     //COMANDOS DE BRINCADEIRAS

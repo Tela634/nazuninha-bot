@@ -40,18 +40,19 @@ async function startNazu(retryCount = 0) {
  
  nazu.ev.on('creds.update', saveCreds);
 
+ nazu.ev.on('group-participants.update', async (inf) {
+  from = inf.id;
+ });
+ 
  nazu.ev.on('connection.update', async (update) => {
    const { connection, lastDisconnect, qr } = update;
-    
    if (connection === 'close') {
      const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
      console.log(`⚠️ Conexão fechada, motivo: ${reason}`);
-     
      if (reason === DisconnectReason.loggedOut || reason === 401) {
        console.log('🗑️ Sessão inválida, excluindo autenticação...');
        execSync(`rm -rf ${AUTH_DIR}`);
      };
-      
      if (retryCount < 3) {
        console.log(`🔄 Tentando reconectar em 5 segundos... (${retryCount + 1}/3)`);
        setTimeout(() => startNazu(retryCount + 1), 5000);
@@ -59,7 +60,6 @@ async function startNazu(retryCount = 0) {
        console.log('❌ Muitas falhas na conexão. Verifique seu número ou tente mais tarde.');
      }
      }
-
    if (connection === 'open') {
      console.log(`============================================\nBot: ${nomebot}\nPrefix: ${prefixo}\nDono: ${nomedono}\nCriador: Hiudy\n============================================\n    ✅ BOT INICIADO COM SUCESSO\n============================================`);
      if(aviso) await nazu.sendMessage(numerodono+'@s.whatsapp.net', {text: 'Bot conectado ✅'});
