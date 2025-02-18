@@ -8,9 +8,9 @@ async function menuadm(prefix) {
 │ 🔧 *Comandos de Administração*
 ├─────────────────────┤
 │🔒 *${prefix}hidetag*
-│  ➥ _Marca todos os membros sem @_
+│  ➥ _Marca todos os membros_
 │🔖 *${prefix}marcar*
-│  ➥ _Marca todos os membros com @_
+│  ➥ _Marca todos os membros_
 │🚫 *${prefix}ban* ou *${prefix}b*
 │  ➥ _Bane um usuário do grupo_
 │📈 *${prefix}promover*
@@ -28,6 +28,8 @@ async function menuadm(prefix) {
 ├─────────────────────┤
 │🎮 *${prefix}modobn*
 │  ➥ _Ativa o modo brincadeiras_
+│🎮 *${prefix}bemvindo* ou *${prefix}bv
+│  ➥ _Ativa o sistema de bem vindo_
 ╰━━━━━━━━━━━━━━━━━━━━━╯
 `;
 }
