@@ -47,6 +47,7 @@ async function startNazu(retryCount = 0) {
    if(!fs.existsSync(__dirname + `/../database/grupos/${from}.json`)) return
    var jsonGp = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${from}.json`));
    try { var GroupMetadata = await nazu.groupMetadata(from) } catch (e) { return };
+   if(inf.action === 'add') {
    if(!jsonGp.bemvindo) return;
    const sender = inf.participants[0];
    const textBv = jsonGp.textbv && jsonGp.textbv.length > 1 ? jsonGp.textBv : 'Seja bem vindo(a) #numerodele# ao #nomedogp#!\nVocê é nosso membro número: *#membros#*!';
@@ -54,7 +55,8 @@ async function startNazu(retryCount = 0) {
    
    } else {
     await nazu.sendMessage(from, {text: textBv.replaceAll('#numerodele#', `@${sender.split('@')[0]}`).replaceAll('#nomedogp#', GroupMetadata.subject).replaceAll('#desc#', await GroupMetadata.desc).replaceAll('#membros#', GroupMetadata.participants.length), mentions: [sender]});
-   }
+   };
+   };
  });
  
  nazu.ev.on('connection.update', async (update) => {
