@@ -461,9 +461,8 @@ case 'fotogp':
         await reply(`✅ *Boas-vindas ativadas!* Agora, novos membros serão recebidos com uma mensagem personalizada.\n📝 Para configurar a mensagem, use: *${prefixo}legendabv*`);
     } else {
         await reply('⚠️ *Boas-vindas desativadas!* O grupo não enviará mais mensagens para novos membros.');
-    }
-};
-break;
+    }};
+    break;
     
     
     //COMANDOS DE BRINCADEIRAS

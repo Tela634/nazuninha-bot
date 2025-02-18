@@ -6,6 +6,7 @@ const { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchL
 const readline = require('readline');
 const { execSync } = require('child_process');
 const pino = require('pino');
+const fs = require('fs');
 const NodeCache = require("node-cache");
 
 const logger = pino({ level: 'silent' });
@@ -42,6 +43,10 @@ async function startNazu(retryCount = 0) {
 
  nazu.ev.on('group-participants.update', async (inf) {
   from = inf.id;
+  if(inf.participants[0].startsWith(nazu.user.id.split(':')[0])) return;
+  if(!fs.existsSync(__dirname + `/../database/grupos/${from}.json`)) return
+  var jsonGp = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${from}.json`));
+  if
  });
  
  nazu.ev.on('connection.update', async (update) => {
