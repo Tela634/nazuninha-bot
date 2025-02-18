@@ -41,7 +41,7 @@ async function startNazu(retryCount = 0) {
  
  nazu.ev.on('creds.update', saveCreds);
 
- nazu.ev.on('group-participants.update', async (inf) {
+ nazu.ev.on('group-participants.update', async (inf) => {
    const from = inf.id;
    if(inf.participants[0].startsWith(nazu.user.id.split(':')[0])) return;
    if(!fs.existsSync(__dirname + `/../database/grupos/${from}.json`)) return
