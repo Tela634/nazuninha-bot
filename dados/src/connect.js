@@ -42,11 +42,19 @@ async function startNazu(retryCount = 0) {
  nazu.ev.on('creds.update', saveCreds);
 
  nazu.ev.on('group-participants.update', async (inf) {
-  from = inf.id;
-  if(inf.participants[0].startsWith(nazu.user.id.split(':')[0])) return;
-  if(!fs.existsSync(__dirname + `/../database/grupos/${from}.json`)) return
-  var jsonGp = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${from}.json`));
-  if
+   const from = inf.id;
+   if(inf.participants[0].startsWith(nazu.user.id.split(':')[0])) return;
+   if(!fs.existsSync(__dirname + `/../database/grupos/${from}.json`)) return
+   var jsonGp = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${from}.json`));
+   try { var GroupMetadata = await nazu.groupMetadata(from) } catch (e) { return };
+   if(!jsonGp.bemvindo) return;
+   const sender = inf.participants[0];
+   const textBv = jsonGp.textbv && jsonGp.textbv.length > 1 ? jsonGp.textBv : 'Seja bem vindo(a) #numerodele# ao #nomedogp#';
+   if(jsonGp.imgbv) {
+   
+   } else {
+    await nazu.sendMessage(from, {text: textBv.replaceAll('#numerodele#', `@${sender.split('@')[0]}`).replaceAll('#nomedogp#', GroupMetadata.subject).replaceAll('#desc#', await GroupMetadata.desc).replaceAll('#membros#', GroupMetadata.participants.length), mentions: [sender]});
+   }
  });
  
  nazu.ev.on('connection.update', async (update) => {
