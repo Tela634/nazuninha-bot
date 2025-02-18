@@ -118,29 +118,6 @@ If you like this project, leave a ⭐ on the repository and share it! 🚀
 
 ---  
 
-## 💡 **Features**  
-✅ Lightning-fast response time  
-✅ Automated sticker creation  
-✅ Direct media downloads (videos/audio)  
-✅ Advanced group administration tools  
-✅ API integration for multiple services  
-
----
-
-## ⚙️ **Key Commands**  
-Here are some essential commands:
-
-| **Command**               | **Status**     | **Type**   |
-|---------------------------|----------------|------------|
-| `!play <name/link>`        | ✅ Working     | Scraper    |
-| `!instagram <name/link>`   | ✅ Working     | Scraper    |
-| `!tiktok <name/link>`      | ✅ Working     | Scraper    |
-| `!pinterest <name/link>`   | ✅ Working     | Scraper    |
-
-📌 **And much more!** Explore all commands directly on WhatsApp.
-
----
-
 ## 📱 **If you're running on Termux**  
 
 If you're running the bot in Termux, follow these steps:
