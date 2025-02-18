@@ -3,7 +3,7 @@
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
-const { reportError, youtube, tiktok, pinterest, igdl, sendSticker }  = require(__dirname+'/.funcs/.exports.js');
+const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL }  = require(__dirname+'/.funcs/.exports.js');
 const { menu, menudown, menuadm, menubn, menuDono } = require(__dirname+'/menus/index.js');
 const axios = require('axios');
 const pathz = require('path');
@@ -73,7 +73,18 @@ try {
  const isQuotedProduct = type === 'extendedTextMessage' && content.includes('productMessage')
 
  switch(command) {
-
+  
+  case 'assistir': {
+  if(!q) return reply('Cadê o nome do filme ou episódio de série? 🤔');
+  await reply('Um momento, estou buscando as informações para você 🕵️‍♂️');
+  datyz = await FilmesDL(q);
+  if(!datyz || !datyz.url) return reply('Desculpe, não consegui encontrar nada. Tente com outro nome de filme ou série. 😔');
+  anu = await axios.get(`https://tinyurl.com/api-create.php?url=${datyz.url}`);
+  linkEncurtado = anu.data;
+  await akame.sendMessage(from, {image: { url: datyz.img },caption: `Aqui está o que encontrei! 🎬\n\n*Nome*: ${datyz.name}\n\nSe tudo estiver certo, você pode assistir no link abaixo:\n${linkEncurtado}\n\nFique tranquilo, não é vírus! O link foi encurtado por ser muito longo.\n\n> Você pode apoiar o projeto de outra forma! 💖 Que tal dar uma estrela no repositório do GitHub? Isso ajuda a motivar e melhorar o bot!\n> ⭐ https://github.com/hiudyy/nazuninha-bot 🌟`}, { quoted: info });
+  };
+  break;
+  
   case 'play':
   case 'ytmp3':
   try {

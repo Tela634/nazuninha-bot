@@ -1,4 +1,3 @@
-//FUNÇÕES DE DOWNLOAD E PESQUISA DO TIKTOK
 //Criador: hiudy
 //Versão: 0.0.1
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
