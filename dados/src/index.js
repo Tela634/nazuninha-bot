@@ -464,6 +464,16 @@ case 'fotogp':
     }};
     break;
     
+    case 'legendabv': case 'textbv': {
+    if (!isGroup) return reply('❌ *Este comando só pode ser usado em grupos!*');
+    if (!isGroupAdmin) return reply('🚫 *Apenas administradores podem configurar a mensagem de boas-vindas!*');
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;
+    if (!q) return reply(`📝 *Configuração da Mensagem de Boas-Vindas*\n\nPara definir uma mensagem personalizada, digite o comando seguido do texto desejado. Você pode usar as seguintes variáveis:\n\n- *#numerodele#* → Marca o novo membro.\n- *#nomedogp#* → Nome do grupo.\n- *#desc#* → Descrição do grupo.\n- *#membros#* → Número total de membros no grupo.\n\n📌 *Exemplo:*\n${prefixo}legendabv Bem-vindo(a) #numerodele# ao grupo *#nomedogp#*! Agora somos #membros# membros. Leia a descrição: #desc#`);
+    groupData.textbv = q;
+    fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+    reply(`✅ *Mensagem de boas-vindas configurada com sucesso!*\n\n📌 Nova mensagem:\n"${groupData.textbv}"`);};
+break;
+    
     
     //COMANDOS DE BRINCADEIRAS
 
