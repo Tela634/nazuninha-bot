@@ -552,7 +552,7 @@ break;
     if(mentioned.length<=0) return reply('Marque um usuário.');
     let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games2: {} };
     let GamezinData = fs.existsSync(__dirname + '/.funcs/.json/.markgame.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.markgame.json')) : { ranks: {} };
-    let responseText = GamezinData[command] || `Voce acabou de dar um(a) ${command} no(a) @${mentioned[0].split('@')[0]}`;
+    let responseText = GamezinData[command].replaceAll('#nome#', `@${mentioned[0].split('@')[0]}`) || `Voce acabou de dar um(a) ${command} no(a) @${mentioned[0].split('@')[0]}`;
     let media = gamesData.games2[command];
     if (media?.image) {
         await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: mentioned });
