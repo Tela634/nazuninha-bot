@@ -49,7 +49,7 @@ async function startNazu(retryCount = 0) {
    try { var GroupMetadata = await nazu.groupMetadata(from) } catch (e) { return };
    if(!jsonGp.bemvindo) return;
    const sender = inf.participants[0];
-   const textBv = jsonGp.textbv && jsonGp.textbv.length > 1 ? jsonGp.textBv : 'Seja bem vindo(a) #numerodele# ao #nomedogp#';
+   const textBv = jsonGp.textbv && jsonGp.textbv.length > 1 ? jsonGp.textBv : 'Seja bem vindo(a) #numerodele# ao #nomedogp#!\nVocê é nosso membro número: *#membros#*!';
    if(jsonGp.imgbv) {
    
    } else {
