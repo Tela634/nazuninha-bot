@@ -3,7 +3,6 @@
 const { Boom } = require('@hapi/boom');
 const { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, DisconnectReason } = require('baileys');
 
-const { sendSticker } = require(__dirname+'/.funcs/.exports.js');
 const readline = require('readline');
 const { execSync } = require('child_process');
 const pino = require('pino');
@@ -37,48 +36,7 @@ async function startNazu(retryCount = 0) {
   return Promise.resolve({});
  };
  
- let nazu = makeWASocket({
-    version,
-    auth: {
-        creds: state.creds,
-        keys: makeCacheableSignalKeyStore(state.keys, logger),
-    },
-    printQRInTerminal: !process.argv.includes('--code'),
-    syncFullHistory: false,
-    markOnlineOnConnect: false,
-    fireInitQueriesEarly: true,
-    msgRetryCounterCache,
-    connectTimeoutMs: 180000,
-    defaultQueryTimeoutMs: 10000,
-    keepAliveIntervalMs: 10000,
-    retryRequestDelayMs: 5000,
-    generateHighQualityLinkPreview: true,
-    logger,
-    patchMessageBeforeSending: (message) => {
-    const requiresPatch = !!(
-    message?.interactiveMessage
-    );
-    if (requiresPatch) {
-    message = {
-    viewOnceMessage: {
-    message: {
-    messageContextInfo: {
-    deviceListMetadataVersion: 2,
-    deviceListMetadata: {},
-    },
-    ...message,
-    },
-    },
-    };
-    }
-    return message;
-    },
-    getMessage
-});
- 
- exports.nazu = nazu;
- 
- nazu.sendSticker = sendSticker;
+ let nazu = makeWASocket({version,auth: {creds: state.creds,keys: makeCacheableSignalKeyStore(state.keys, logger),},printQRInTerminal: !process.argv.includes('--code'),syncFullHistory: false,markOnlineOnConnect: false,fireInitQueriesEarly: true,msgRetryCounterCache,connectTimeoutMs: 180000,defaultQueryTimeoutMs: 10000,keepAliveIntervalMs: 10000,retryRequestDelayMs: 5000,generateHighQualityLinkPreview: true, logger, patchMessageBeforeSending: (message) => {const requiresPatch = !!(message?.interactiveMessage);if (requiresPatch) {message = {viewOnceMessage: {message: {messageContextInfo: {deviceListMetadataVersion: 2,deviceListMetadata: {},},...message,},},};}return message;}, getMessage});
  
  nazu.ev.on('creds.update', saveCreds);
 
