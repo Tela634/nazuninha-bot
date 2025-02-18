@@ -545,6 +545,24 @@ case 'ranklesbica': case 'rankburra': case 'rankinteligente': case 'rankotaku': 
 };
 break;
 
+   case 'chute': case 'chutar': case 'tapa': case 'soco': case 'socar': case 'beijo': case 'beijar': case 'beijob': case 'beijarb': case 'abraco': case 'abracar': case 'mata': case 'matar': case 'tapar': case 'goza': case 'gozar': case 'mamar': case 'mamada': case 'cafune': case 'morder': case 'mordida': case 'lamber': case 'lambida': case 'explodir':
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+    const mentioned = info.message?.extendedTextMessage?.contextInfo?.mentionedJid || (info.message?.extendedTextMessage?.contextInfo?.participant ? [info.message.extendedTextMessage.contextInfo.participant] : []) || [];
+    if(mentioned.length<=0) return reply('Marque um usuário.');
+    let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games2: {} };
+    let GamezinData = fs.existsSync(__dirname + '/.funcs/.json/.markgame.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.markgame.json')) : { ranks: {} };
+    let responseText = GamezinData[command] || `Voce acabou de dar um(a) ${command} no(a) @${mentioned[0].split('@')[0]}`;
+    let media = gamesData.games2[command];
+    if (media?.image) {
+        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: mentioned });
+    } else if (media?.video) {
+        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: mentioned, gifPlayback: true });
+    } else {
+        await nazu.sendMessage(from, { text: responseText, mentions: mentioned });
+    }
+   break;
+   
  default:
  if(isCmd) await nazu.react('❌');
  };
