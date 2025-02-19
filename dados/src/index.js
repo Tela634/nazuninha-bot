@@ -566,7 +566,7 @@ case 'ranklesbica': case 'rankburra': case 'rankinteligente': case 'rankotaku': 
     let top5 = membros.sort(() => Math.random() - 0.5).slice(0, 5);
     let cleanedCommand = command.endsWith('s') ? command.slice(0, -1) : command;
     let ranksData = fs.existsSync(__dirname + '/.funcs/.json/.ranks.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.ranks.json')) : { ranks: {} };
-    let responseText = ranksData[cleanedCommand] || `📊 *Ranking de ${cleanedCommand.replace('rank', '')}*:\n\n`;
+    let responseText = ranksData[cleanedCommand]+'\n\n' || `📊 *Ranking de ${cleanedCommand.replace('rank', '')}*:\n\n`;
     top5.forEach((m, i) => {
         responseText += `🏅 *#${i + 1}* - @${m.split('@')[0]}\n`;
     });
