@@ -68,7 +68,7 @@ async function startNazu(retryCount = 0) {
        console.log('🗑️ Sessão inválida, excluindo autenticação...');
        execSync(`rm -rf ${AUTH_DIR}`);
      };
-     if (retryCount < 3) {
+     if (retryCount < 999) {
        console.log(`🔄 Tentando reconectar em 5 segundos... (${retryCount + 1}/3)`);
        setTimeout(() => startNazu(retryCount + 1), 5000);
      } else {
