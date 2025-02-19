@@ -280,13 +280,12 @@ try {
   case 'mention':
   try {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-
     if (!q) return reply(`📢 *Configuração de Marcações*\n\n🔧 Escolha como deseja ser mencionado:\n\n✅ *${prefix}mention all* → Marcado em tudo (marcações e jogos).\n📢 *${prefix}mention marca* → Apenas em marcações de administradores.\n🎮 *${prefix}mention games* → Somente em jogos do bot.\n🚫 *${prefix}mention 0* → Não será mencionado em nenhuma ocasião.`);
-
     let options = {  all: '✨ Você agora será mencionado em todas as interações do bot, incluindo marcações de administradores e os jogos!', marca: '📢 A partir de agora, você será mencionado apenas quando um administrador marcar.',games: '🎮 Você optou por ser mencionado somente em jogos do bot.', 0: '🔕 Silêncio ativado! Você não será mais mencionado pelo bot, nem em marcações nem em jogos.'};
     if (options[q.toLowerCase()] !== undefined) {
+      if(!groupData.mark) groupData.mark = {};
       groupData.mark[sender] = q.toLowerCase();
-      fs.writeFileSync(file, JSON.stringify(groupData, null, 2));
+      fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
       return reply(`*${options[q.toLowerCase()]}*`);
     }
 
