@@ -44,16 +44,18 @@ async function startNazu(retryCount = 0) {
  nazu.ev.on('group-participants.update', async (inf) => {
    const from = inf.id;
    if(inf.participants[0].startsWith(nazu.user.id.split(':')[0])) return;
-   if(!fs.existsSync(__dirname + `/../database/grupos/${from}.json`)) return
+   if(!fs.existsSync(__dirname + `/../database`)) return;
+   if(!fs.existsSync(__dirname + `/../database/grupos`)) return;
+   if(!fs.existsSync(__dirname + `/../database/grupos/${from}.json`)) return;
    var jsonGp = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${from}.json`));
    try { var GroupMetadata = await nazu.groupMetadata(from) } catch (e) { return };
    if(inf.action === 'add') {
    if(!jsonGp.bemvindo) return;
    const sender = inf.participants[0];
-   const textBv = jsonGp.textbv && jsonGp.textbv.length > 1 ? jsonGp.textBv : 'Seja bem vindo(a) #numerodele# ao #nomedogp#!\nVocê é nosso membro número: *#membros#*!';
    if(jsonGp.imgbv) {
    
    } else {
+    const textBv = jsonGp.textbv && jsonGp.textbv.length > 1 ? jsonGp.textBv : 'Seja bem vindo(a) #numerodele# ao #nomedogp#!\nVocê é nosso membro número: *#membros#*!';
     await nazu.sendMessage(from, {text: textBv.replaceAll('#numerodele#', `@${sender.split('@')[0]}`).replaceAll('#nomedogp#', GroupMetadata.subject).replaceAll('#desc#', await GroupMetadata.desc).replaceAll('#membros#', GroupMetadata.participants.length), mentions: [sender]});
    };
    };
