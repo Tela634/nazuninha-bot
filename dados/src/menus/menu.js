@@ -23,6 +23,9 @@ async function menu(prefix) {
 │👑 *${prefix}menudono*
 │  ➥ _Comandos exclusivos_
 │      _para o dono do bot_
+│🌟 *${prefix}menumembros*
+│  ➥ _Comandos disponíveis_
+│      _para todos os membros_
 ╰─────────────────────╯
 
 ╭━━━━━━━━━━━━━━━━━━━━━╮

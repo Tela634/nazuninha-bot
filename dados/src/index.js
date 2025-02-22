@@ -4,7 +4,7 @@
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL }  = require(__dirname+'/.funcs/.exports.js');
-const { menu, menudown, menuadm, menubn, menuDono } = require(__dirname+'/menus/index.js');
+const { menu, menudown, menuadm, menubn, menuDono, menuMembros } = require(__dirname+'/menus/index.js');
 const axios = require('axios');
 const pathz = require('path');
 const fs = require('fs');
@@ -187,6 +187,9 @@ try {
   nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menudown(prefix)}, {quoted: info});
   break;
   case 'menuadm': case 'menuadmin': case 'menuadmins':
+  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menuadm(prefix)}, {quoted: info});
+  break;
+  case 'menumembros': case 'menumemb': case 'menugeral':
   nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menuadm(prefix)}, {quoted: info});
   break;
   case 'menudono': case 'ownermenu':
