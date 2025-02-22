@@ -77,6 +77,12 @@ try {
  const isQuotedLocation = type === 'extendedTextMessage' && content.includes('locationMessage')
  const isQuotedProduct = type === 'extendedTextMessage' && content.includes('productMessage')
 
+ //SISTEMA DE CONTADOR DE MENSAGENS :) 
+ //BY HIUDY (kiba não, rs)
+ if(isGroup) {
+  
+ };
+ //FIM SISTEMA
  switch(command) {
   
   case 'assistir': {
@@ -94,7 +100,7 @@ try {
   case 'ytmp3':
   try {
     if (!q) return reply(`Digite o nome da música.\n> Ex: ${prefix + command} Back to Black`);
-    nazu.react(['❤️','💖']);
+    nazu.react(['💖']);
     datinha = await youtube.search(q);
     if(!datinha.ok) return reply(datinha.msg);
     await nazu.sendMessage(from, { image: { url: datinha.data.thumbnail }, caption: `🎵 *Música Encontrada* 🎵\n\n📌 *Nome:* ${datinha.data.title}\n👤 *Canal:* ${datinha.data.author.name}\n👀 *Visualizações:* ${datinha.data.views}\n🔗 *Link:* ${datinha.data.url}`, footer: `By: ${nomebot}` }, { quoted: info });
@@ -111,7 +117,7 @@ try {
   case 'ytmp4':
   try {
     if (!q) return reply(`Digite o nome da música.\n> Ex: ${prefix + command} Back to Black`);
-    nazu.react(['❤️','💖']);
+    nazu.react(['💖']);
     datinha = await youtube.search(q);
     if(!datinha.ok) return reply(datinha.msg);
     await nazu.sendMessage(from, { image: { url: datinha.data.thumbnail }, caption: `🎵 *Música Encontrada* 🎵\n\n📌 *Nome:* ${datinha.data.title}\n👤 *Canal:* ${datinha.data.author.name}\n👀 *Visualizações:* ${datinha.data.views}\n🔗 *Link:* ${datinha.data.url}`, footer: `By: ${nomebot}` }, { quoted: info });
@@ -127,7 +133,7 @@ try {
   case 'tiktok': case 'tiktokaudio': case 'tiktokvideo': case 'tiktoks': case 'tiktoksearch': case 'ttk':
    try {
     if (!q) return reply(`Digite um nome ou o link de um vídeo.\n> Ex: ${prefix}${command} Gato`);
-    nazu.react(['❤️','💖']);
+    nazu.react(['💖']);
     let isTikTokUrl = /^https?:\/\/(?:www\.|m\.|vm\.|t\.)?tiktok\.com\//.test(q);
     let datinha = await (isTikTokUrl ? tiktok.dl(q) : tiktok.search(q));
     if (!datinha.ok) return reply(datinha.msg);
@@ -144,7 +150,7 @@ try {
    case 'instagram': case 'igdl': case 'ig': case 'instavideo':
   try {
     if (!q) return reply(`Digite um link do Instagram.\n> Ex: ${prefix}${command} https://www.instagram.com/reel/DFaq_X7uoiT/?igsh=M3Q3N2ZyMWU1M3Bo`);
-    nazu.react(['❤️', '📌']);
+    nazu.react(['📌']);
     const datinha = await igdl.dl(q);
     if (!datinha.ok) return reply(datinha.msg);
     await Promise.all(datinha.data.map(urlz => nazu.sendMessage(from, { [urlz.type]: urlz.buff }, { quoted: info })));
@@ -157,7 +163,7 @@ try {
   case 'pinterest': case 'pin': case 'pinterestdl': case 'pinterestsearch':
    try {
     if (!q) return reply(`Digite um nome ou envie um link do Pinterest.\n> Ex: ${prefix}${command} Gatos\n> Ex: ${prefix}${command} https://www.pinterest.com/pin/123456789/`);  
-    nazu.react(['❤️','📌']); 
+    nazu.react(['📌']); 
     let datinha = await (/^https?:\/\/(?:[a-zA-Z0-9-]+\.)?pinterest\.\w{2,6}(?:\.\w{2})?\/pin\/\d+|https?:\/\/pin\.it\/[a-zA-Z0-9]+/.test(q) ? pinterest.dl(q) : pinterest.search(q));
     if (!datinha.ok) return reply(datinha.msg);
     for (const urlz of datinha.urls) {
@@ -213,13 +219,7 @@ try {
     fs.readFile(__dirname + '/index.js', 'utf8', async (err, data) => {
       if (err) throw err;
       const comandos = [...data.matchAll(/case [`'"](\w+)[`'"]/g)].map(m => m[1]);
-      const categorias = [
-        { name: 'Sub Menus', files: ['/menus/menu.js'] },
-        { name: 'Downloads', files: ['/menus/menudown.js'] },
-        { name: 'Funções de adm', files: ['/menus/menuadm.js'] },
-        { name: 'Brincadeiras', files: ['/menus/menubn.js'] },
-        { name: 'Funções de dono', files: ['/menus/menudono.js'] },
-      ];
+      const categorias = [{ name: 'Sub Menus', files: ['/menus/menu.js'] },{ name: 'Downloads', files: ['/menus/menudown.js'] },{ name: 'Funções de adm', files: ['/menus/menuadm.js'] },{ name: 'Brincadeiras', files: ['/menus/menubn.js'] },{ name: 'Funções de dono', files: ['/menus/menudono.js'] }];
       let comandosPorCategoria = {};
       let totalComandosCategoria = 0;
       const countComandos = (filePath) => new Promise((resolve, reject) => {
