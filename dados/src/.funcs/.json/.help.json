@@ -46,6 +46,14 @@
 {
   "cmds": ["banir", "ban", "b", "kick"],
   "text": "🚫 O comando #comando# serve para os administradores do grupo banirem ou expulsarem alguém.\n\nPara utilizá-lo, marque a pessoa com '@' ou responda a uma mensagem dela com '#prefix#comando#'.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Exemplos:*\n- Para banir alguém marcando, digite:\n> #prefix#comando# @usuário\n- Para banir alguém respondendo a uma mensagem, digite:\n> #prefix#comando#"
+},
+{
+  "cmds": ["promover"],
+  "text": "👑 O comando #comando# serve para promover alguém a administrador do grupo.\n\nPara utilizá-lo, marque a pessoa com '@' ou responda a uma mensagem dela com '#prefix#comando#'.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Exemplos:*\n- Para promover alguém marcando, digite:\n> #prefix#comando# @usuário\n- Para promover alguém respondendo a uma mensagem, digite:\n> #prefix#comando#"
+},
+{
+  "cmds": ["rebaixar"],
+  "text": "🔻 O comando #comando# serve para rebaixar alguém, removendo seus privilégios de administrador.\n\nPara utilizá-lo, marque a pessoa com '@' ou responda a uma mensagem dela com '#prefix#comando#'.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Exemplos:*\n- Para rebaixar alguém marcando, digite:\n> #prefix#comando# @usuário\n- Para rebaixar alguém respondendo a uma mensagem, digite:\n> #prefix#comando#"
 }
 
 ]
