@@ -32,7 +32,6 @@ async function convertToWebp(media, isVideo = false) {
                 reject(err);
             })
             .on("end", () => {
-                console.log("Conversão concluída com sucesso.");
                 resolve(true);
             })
             .addOutputOptions([
