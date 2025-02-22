@@ -29,7 +29,12 @@ try {
  const args = body.trim().split(/ +/).slice(1);
  const q = args.join(' ');
  const budy2 = body.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
- 
+ const menc_prt = info.message?.extendedTextMessage?.contextInfo?.participant;
+ const menc_jid = args?.join(" ").replace("@", "") + "@s.whatsapp.net";
+ const menc_jid2 = info.message?.extendedTextMessage?.contextInfo?.mentionedJid;
+ const menc_os2 = q.includes("@") ? menc_jid : menc_prt;
+ const sender_ou_n = q.includes("@") ? menc_jid : menc_prt ? menc_prt : sender;
+
  var isCmd = body.trim().startsWith(prefix);
  const command = isCmd ? budy2.trim().slice(1).split(/ +/).shift().toLocaleLowerCase().trim().replaceAll(' ', '') : null;
  
@@ -293,6 +298,7 @@ try {
   //COMANDOS DE ADM
   case 'banir':
   case 'ban':
+  case 'b':
   case 'kick':
   try {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
