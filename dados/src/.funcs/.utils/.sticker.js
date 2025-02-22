@@ -27,8 +27,14 @@ async function convertToWebp(media, isVideo = false) {
 
     await new Promise((resolve, reject) => {
         const ff = require('fluent-ffmpeg')(tmpFileIn)
-            .on("error", reject)
-            .on("end", () => resolve(true))
+            .on("error", (err) => {
+                console.error("Erro ao converter mídia:", err);
+                reject(err);
+            })
+            .on("end", () => {
+                console.log("Conversão concluída com sucesso.");
+                resolve(true);
+            })
             .addOutputOptions([
                 "-vcodec", "libwebp",
                 "-vf", "scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse",
@@ -39,8 +45,8 @@ async function convertToWebp(media, isVideo = false) {
     });
 
     const buff = await fs.readFile(tmpFileOut);
-    await fs.unlink(tmpFileOut);
-    await fs.unlink(tmpFileIn);
+    await fs.unlink(tmpFileOut).catch(err => console.error("Erro ao excluir arquivo temporário de saída:", err));
+    await fs.unlink(tmpFileIn).catch(err => console.error("Erro ao excluir arquivo temporário de entrada:", err));
     return buff;
 }
 
@@ -66,7 +72,7 @@ async function writeExif(media, metadata, isVideo = false) {
         exif.writeUIntLE(jsonBuff.length, 14, 4);
 
         await img.load(tmpFileIn);
-        await fs.unlink(tmpFileIn);
+        await fs.unlink(tmpFileIn).catch(err => console.error("Erro ao excluir arquivo temporário de entrada:", err));
         img.exif = exif;
         await img.save(tmpFileOut);
         return tmpFileOut;

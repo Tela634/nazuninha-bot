@@ -267,12 +267,13 @@ try {
   case 'stk':
   case 'sticker':
   case 's': {
-    var RSM = info.message?.extendedTextMessage?.contextInfo?.quotedMessage
-    var midia = RSM?.imageMessage || info.message?.imageMessage || RSM?.viewOnceMessage?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || RSM?.videoMessage || info.message?.videoMessage || RSM?.viewOnceMessage?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage
-    if (!midia) return reply(`Marque uma imagem ou um vídeo de até 9.9 segundos para fazer figurinha, com o comando: ${prefix + command} (mencionando a mídia)`);
-    var isVideo = !!midia.videoMessage
+    var RSM = info.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+    var boij2 = RSM?.imageMessage || info.message?.imageMessage || RSM?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || RSM?.viewOnceMessage?.message?.imageMessage;
+   var boij = RSM?.videoMessage || info.message?.videoMessage || RSM?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage || RSM?.viewOnceMessage?.message?.videoMessage;
+    if (!boij && !boij2) return reply(`Marque uma imagem ou um vídeo de até 9.9 segundos para fazer figurinha, com o comando: ${prefix + command} (mencionando a mídia)`);
+    var isVideo = !!boij;
     if (isVideo && midia.seconds > 9.9) return reply(`O vídeo precisa ter no máximo 9.9 segundos para ser convertido em figurinha.`);
-    var buffer = await getFileBuffer(midia, isVideo ? 'video' : 'image')
+    var buffer = await getFileBuffer(isVideo ? boij : boij2, isVideo ? 'video' : 'image')
     await sendSticker(nazu, from, { sticker: buffer, author: '.', packname: '.', type: isVideo ? 'video' : 'image'}, { quoted: info })
   }
   break
