@@ -24,8 +24,7 @@ function getEffectFilter(effect, isVideo) {
 
     switch (effect) {
         case 'circle':
-            // Corta a imagem/vídeo em formato circular
-            baseFilter = "scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse, format=rgba, drawbox=0:0:320:320:white@0.0:t=fill, vignette=PI/2:aspect=1";
+            baseFilter = "scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease, " +"pad=320:320:-1:-1:color=white@0.0, " +"format=rgba, " +"drawbox=x=0:y=0:w=320:h=320:color=white@1:t=fill, " +"drawcircle=x=160:y=160:r=160:color=black@1:t=fill, " +"format=rgba, " +"crop=w=320:h=320:x=0:y=0";
             break;
         case 'blur':
             // Aplica um efeito de desfoque
