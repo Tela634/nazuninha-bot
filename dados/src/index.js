@@ -406,34 +406,66 @@ case 'setdesc':
   
   case 'totag':
   case 'cita':
-  case 'hidetag':
+  case 'hidetag': {
   if (!isGroup) return reply('❌ Apenas para grupos.');
   if (!isGroupAdmin) return reply('🚫 Apenas admins.');
   if (!isBotAdmin) return reply('🤖 O bot precisa ser admin.');
-    const rsm4 = info.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-    const messageTypes = {image: isQuotedImage ? rsm4?.imageMessage : info.message?.imageMessage, video: isQuotedVideo ? rsm4?.videoMessage : info.message?.videoMessage, document: isQuotedDocument ? rsm4?.documentMessage : info.message?.documentMessage, documentWithCaption: isQuotedDocW ? rsm4?.documentWithCaptionMessage?.message?.documentMessage : info.message?.documentWithCaptionMessage?.message?.documentMessage, audio: isQuotedAudio ? rsm4.audioMessage : "", sticker: isQuotedSticker ? rsm4.stickerMessage : "", conversation: isQuotedMsg && !rsm4.audioMessage && !rsm4.stickerMessage && !rsm4.imageMessage && !rsm4.videoMessage && !rsm4.documentMessage && !rsm4.documentWithCaptionMessage ? rsm4.conversation : info.message?.conversation, extendedText: rsm4?.extendedTextMessage?.text || info?.message?.extendedTextMessage?.text
-    };
+    
+    var DFC4 = "";
+    var rsm4 = info.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+    var pink4 = isQuotedImage ? rsm4?.imageMessage : info.message?.imageMessage;
+    var blue4 = isQuotedVideo ? rsm4?.videoMessage : info.message?.videoMessage;
+    var purple4 = isQuotedDocument ? rsm4?.documentMessage : info.message?.documentMessage;
+    var yellow4 = isQuotedDocW ? rsm4?.documentWithCaptionMessage?.message?.documentMessage : info.message?.documentWithCaptionMessage?.message?.documentMessage;
+    var aud_d4 = isQuotedAudio ? rsm4.audioMessage : "";
+    var figu_d4 = isQuotedSticker ? rsm4.stickerMessage : "";
+    var red4 = isQuotedMsg && !aud_d4 && !figu_d4 && !pink4 && !blue4 && !purple4 && !yellow4 ? rsm4.conversation : info.message?.conversation;
+    var green4 = rsm4?.extendedTextMessage?.text || info?.message?.extendedTextMessage?.text;
     let path = __dirname + '/../database/grupos/' + from + '.json';
     let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
-    const MRC_TD4 = AllgroupMembers.filter(m => !['0', 'games'].includes(data.mark[m]));
-    let DFC4;
-    const createMessage = (type, message, caption) => {message.caption = caption;message.mentions = MRC_TD4;message[type] = {url: message.url};return message;};
-    if (messageTypes.image && !messageTypes.audio && !messageTypes.document) {
-        DFC4 = createMessage('image', messageTypes.image, q.length > 1 ? `\n${q}` : messageTypes.image.caption.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`));
-    } else if (messageTypes.video && !messageTypes.audio && !messageTypes.document) {
-        DFC4 = createMessage('video', messageTypes.video, q.length > 1 ? `\n${q.trim()}` : messageTypes.video.caption.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`).trim());
-    } else if (messageTypes.conversation) {
-        DFC4 = {text: messageTypes.conversation.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`).trim(), mentions: MRC_TD4};
-    } else if (messageTypes.extendedText) {
-        DFC4 = {text: messageTypes.extendedText.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`).trim(), mentions: MRC_TD4};
-    } else if (messageTypes.document) {
-        DFC4 = createMessage('document', messageTypes.document, q.length > 1 ? `\n${q.trim()}` : messageTypes.document.caption.replace(new RegExp(prefix + command, "gi"), `❪ *Marcação do(a) Adm:* ${pushname}\n\n`).trim());
-    } else if (messageTypes.sticker && !messageTypes.audio) {
-        DFC4 = createMessage('sticker', messageTypes.sticker);
-    } else if (messageTypes.audio) {
-        DFC4 = {audio: { url: messageTypes.audio.url },mentions: MRC_TD4,ptt: true};
+    var MRC_TD4 = AllgroupMembers.filter(m => !['0', 'games'].includes(data.mark[m]));
+
+    if (pink4 && !aud_d4 && !purple4) {
+        var DFC4 = pink4;
+        pink4.caption = q.length > 1 ? q : pink4.caption.replace(new RegExp(prefix + command, "gi"), `${pushname}\n\n`);
+        pink4.image = { url: pink4.url };
+        pink4.mentions = MRC_TD4;
+    } else if (blue4 && !aud_d4 && !purple4) {
+        var DFC4 = blue4;
+        blue4.caption = q.length > 1 ? q.trim() : blue4.caption.replace(new RegExp(prefix + command, "gi"), `${pushname}\n\n`).trim();
+        blue4.video = { url: blue4.url };
+        blue4.mentions = MRC_TD4;
+    } else if (red4 && !aud_d4 && !purple4) {
+        var black4 = {};
+        black4.text = red4.replace(new RegExp(prefix + command, "gi"), `${pushname}\n\n`).trim();
+        black4.mentions = MRC_TD4;
+        var DFC4 = black4;
+    } else if (!aud_d4 && !figu_d4 && green4 && !purple4) {
+        var brown4 = {};
+        brown4.text = green4.replace(new RegExp(prefix + command, "gi"), `${pushname}\n\n`).trim();
+        brown4.mentions = MRC_TD4;
+        var DFC4 = brown4;
+    } else if (purple4) {
+        var DFC4 = purple4;
+        purple4.document = { url: purple4.url };
+        purple4.mentions = MRC_TD4;
+    } else if (yellow4 && !aud_d4) {
+        var DFC4 = yellow4;
+        yellow4.caption = q.length > 1 ? q.trim() : yellow4.caption.replace(new RegExp(prefix + command, "gi"), `${pushname}\n\n`).trim();
+        yellow4.document = { url: yellow4.url };
+        yellow4.mentions = MRC_TD4;
+    } else if (figu_d4 && !aud_d4) {
+        var DFC4 = figu_d4;
+        figu_d4.sticker = { url: figu_d4.url };
+        figu_d4.mentions = MRC_TD4;
+    } else if (aud_d4) {
+        var DFC4 = aud_d4;
+        aud_d4.audio = { url: aud_d4.url };
+        aud_d4.mentions = MRC_TD4;
+        aud_d4.ptt = true;
     };
     await nazu.sendMessage(from, DFC4).catch((error) => {});
+    }
     break;
     
     case 'modobrincadeira': case 'modobrincadeiras': case 'modobn': {
