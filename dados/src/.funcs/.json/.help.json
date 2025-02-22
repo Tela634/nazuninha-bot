@@ -11,5 +11,14 @@
   "cmds": ["pinterest", "pin", "pinterestdl", "pinterestsearch"],
   "text": "📌 O comando #comando# serve para baixar imagens ou buscar conteúdos no Pinterest.\n\nPara utilizá-lo, basta digitar '#prefix#comando#' + o nome da pesquisa ou link do Pinterest.\n\n👉 *Exemplos:*\n- Para baixar uma imagem do Pinterest pelo link, digite:\n> #prefix#comando# https://www.pinterest.com/pin/123456789\n- Para buscar imagens no Pinterest, digite:\n> #prefix#comando# paisagens naturais"
 },
+{
+  "cmds": ["instagram", "igdl", "ig", "instavideo"],
+  "text": "📸 O comando #comando# serve para baixar fotos ou vídeos do Instagram.\n\nPara utilizá-lo, basta digitar '#prefix#comando#' + o link do post do Instagram.\n\n👉 *Exemplos:*\n- Para baixar uma foto ou vídeo do Instagram, digite:\n> #prefix#comando# https://www.instagram.com/p/ABC12345678/"
+},
+{
+  "cmds": ["menu", "help", "menubn", "menubrincadeira", "menubrincadeiras", "menudown", "menudownload", "menudownloads", "menuadm", "menuadmin", "menuadmins", "menudono", "ownermenu"],
+  "text": "📜 O comando #comando# serve para exibir um menu de opções.\n\nPara utilizá-lo, basta digitar '#prefix#comando#'.\n\n👉 *Exemplo:*\n- Para ver o menu, digite:\n> #prefix#comando#"
+},
+
 
 ]
