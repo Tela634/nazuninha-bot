@@ -43,7 +43,7 @@ try {
   const AllgroupMembers = !isGroup ? [] : groupMetadata.participants.map(p => p.id);
   const groupAdmins = !isGroup ? [] : groupMetadata.participants.filter(p => p.admin).map(p => p.id);
   const botNumber = nazu.user.id.split(':')[0] + '@s.whatsapp.net';
-  const isGroupAdmin = !isGroup ? null : groupAdmins.includes(sender);
+  const isGroupAdmin = !isGroup ? null : groupAdmins.includes(sender) || isOwner;
   const isBotAdmin = !isGroup ? null : groupAdmins.includes(botNumber);
   if(isGroup) {
   if (!fs.existsSync(__dirname + `/../database/grupos`)) fs.mkdirSync(__dirname + `/../database/grupos`, { recursive: true });
