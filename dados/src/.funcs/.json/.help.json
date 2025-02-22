@@ -37,7 +37,7 @@
 },
 {
   "cmds": ["mention"],
-  "text": "🔔 O comando #comando# serve para você decidir como quer ser mencionado pelo bot.\n\nPara utilizá-lo, basta digitar '#prefix##comando#' + uma das opções abaixo:\n\n✅ *${prefix}mention all* → Marcado em tudo (marcações e jogos).\n📢 *${prefix}mention marca* → Apenas em marcações de administradores.\n🎮 *${prefix}mention games* → Somente em jogos do bot.\n🚫 *${prefix}mention 0* → Não será mencionado em nenhuma ocasião.\n\n👉 *Exemplo:*\n- Para ser marcado em tudo, digite:\n> #prefix##comando# all"
+  "text": "🔔 O comando #comando# serve para você decidir como quer ser mencionado pelo bot.\n\nPara utilizá-lo, basta digitar '#prefix##comando#' + uma das opções abaixo:\n\n✅ *#prefix#mention all* → Marcado em tudo (marcações e jogos).\n📢 *#prefix#mention marca* → Apenas em marcações de administradores.\n🎮 *#prefix#mention games* → Somente em jogos do bot.\n🚫 *#prefix#mention 0* → Não será mencionado em nenhuma ocasião.\n\n👉 *Exemplo:*\n- Para ser marcado em tudo, digite:\n> #prefix##comando# all"
 },
 {
   "cmds": ["help", "ajuda"],
