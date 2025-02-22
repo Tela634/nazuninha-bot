@@ -19,6 +19,22 @@
   "cmds": ["menu", "help", "menubn", "menubrincadeira", "menubrincadeiras", "menudown", "menudownload", "menudownloads", "menuadm", "menuadmin", "menuadmins", "menudono", "ownermenu"],
   "text": "📜 O comando #comando# serve para exibir um menu de opções.\n\nPara utilizá-lo, basta digitar '#prefix#comando#'.\n\n👉 *Exemplo:*\n- Para ver o menu, digite:\n> #prefix#comando#"
 },
+{
+  "cmds": ["prefixo", "numerodono", "nomedono", "nomebot"],
+  "text": "⚙️ O comando #comando# serve para o dono mudar as configurações do bot.\n\nPara utilizá-lo, basta digitar '#prefix#comando# valor'.\n\n👉 *Exemplos:*\n- Para mudar o prefixo do bot, digite:\n> #prefix#prefixo !\n- Para mudar o número do dono, digite:\n> #prefix#numerodono 5511999999999\n- Para mudar o nome do dono, digite:\n> #prefix#nomedono NovoNome\n- Para mudar o nome do bot, digite:\n> #prefix#nomebot NovoNomeBot"
+},
+{
+  "cmds": ["totalcmd", "totalcomando"],
+  "text": "📊 O comando #comando# serve para ver o total de comandos que o bot possui.\n\nPara utilizá-lo, basta digitar '#prefix#comando#'.\n\n👉 *Exemplo:*\n- Para ver o total de comandos, digite:\n> #prefix#comando#"
+},
+{
+  "cmds": ["ping"],
+  "text": "🏓 O comando #comando# serve para ver a velocidade de resposta do bot e há quanto tempo ele está online.\n\nPara utilizá-lo, basta digitar '#prefix#comando#'.\n\n👉 *Exemplo:*\n- Para ver a velocidade e o tempo online, digite:\n> #prefix#comando#"
+},
+{
+  "cmds": ["st", "stk", "sticker", "s"],
+  "text": "🖼️ O comando #comando# serve para criar figurinhas (stickers) a partir de fotos ou vídeos.\n\nPara utilizá-lo, basta enviar uma foto ou vídeo com a legenda '#prefix#comando#' ou marcar uma foto/vídeo já enviado com '#prefix#comando#'.\n\n👉 *Exemplos:*\n- Para criar uma figurinha de uma foto, envie a foto com a legenda:\n> #prefix#comando#\n- Para criar uma figurinha de um vídeo, envie o vídeo com a legenda:\n> #prefix#comando#\n- Para criar uma figurinha de uma mídia já enviada, marque a mídia com:\n> #prefix#comando#"
+},
 
 
 ]
