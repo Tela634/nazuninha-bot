@@ -54,6 +54,18 @@
 {
   "cmds": ["rebaixar"],
   "text": "🔻 O comando #comando# serve para rebaixar alguém, removendo seus privilégios de administrador.\n\nPara utilizá-lo, marque a pessoa com '@' ou responda a uma mensagem dela com '#prefix#comando#'.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Exemplos:*\n- Para rebaixar alguém marcando, digite:\n> #prefix#comando# @usuário\n- Para rebaixar alguém respondendo a uma mensagem, digite:\n> #prefix#comando#"
+},
+{
+  "cmds": ["setname"],
+  "text": "📝 O comando #comando# serve para mudar o nome do grupo.\n\nPara utilizá-lo, digite '#prefix#comando#' + o novo nome do grupo.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Exemplo:*\n- Para mudar o nome do grupo, digite:\n> #prefix#comando# Novo Nome do Grupo"
+},
+{
+  "cmds": ["setdesc"],
+  "text": "📄 O comando #comando# serve para mudar a descrição do grupo.\n\nPara utilizá-lo, digite '#prefix#comando#' + a nova descrição do grupo.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Exemplo:*\n- Para mudar a descrição do grupo, digite:\n> #prefix#comando# Esta é a nova descrição do grupo."
+},
+{
+  "cmds": ["marcar"],
+  "text": "🔔 O comando #comando# serve para marcar todos os membros do grupo com uma mensagem.\n\nPara utilizá-lo, basta digitar '#prefix#comando#'.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Exemplo:*\n- Para marcar todos os membros do grupo, digite:\n> #prefix#comando#"
 }
 
 ]
