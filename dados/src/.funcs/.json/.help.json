@@ -41,7 +41,7 @@
 },
 {
   "cmds": ["help", "ajuda"],
-  "text": "📚 O comando #comando# serve para saber como utilizar o bot.\n\nVocê pode usá-lo de duas formas:\n\n1️⃣ *Uso básico*: Digite '#prefix#comando#' para ver uma lista de comandos disponíveis e como usar o bot.\n2️⃣ *Uso específico*: Digite '#prefix#comando# NomeDoComando' para ver detalhes sobre um comando específico.\n\n👉 *Exemplos:*\n- Para ver a lista de comandos, digite:\n> #prefix#comando#\n- Para ver como usar o comando 'sticker', digite:\n> #prefix#comando# sticker"
+  "text": "📚 O comando #comando# serve para saber como utilizar o bot.\n\nVocê pode usá-lo de duas formas:\n\n1️⃣ *Uso básico*: Digite '#prefix#comando#' para ver uma lista de comandos disponíveis e como usar o bot.\n2️⃣ *Uso específico*: Digite '#prefix#comando# NomeDoComando' para ver detalhes sobre um comando específico.\n\n👉 *Exemplos:*\n- Para receber ajuda Basica, digite:\n> #prefix#comando#\n- Para ver como usar o comando 'sticker', digite:\n> #prefix#comando# sticker"
 }
 
 ]
