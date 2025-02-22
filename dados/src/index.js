@@ -298,7 +298,7 @@ try {
   if (!q) {
     await reply(`Oiii, me chamo Nazuninha Bot! Essa é minha central de ajuda.\n\nCaso nunca tenha utilizado um bot antes, é bem simples. Basta você digitar o prefixo (no meu caso é ${prefix}) mais o comando.\n\nPor exemplo:\nSe quiser usar o comando *menu*, você vai digitar: ${prefix}menu.\nBem simples, né? 😊\n\n👉 *Dicas extras:*\n- Caso precise de ajuda ou queira saber como funciona um comando específico, digite: ${prefix}${command} NomeDoComando\n- Exemplo: ${prefix}${command} menu`);
   } else {
-    const helpData = JSON.parse(fs.readFileSync('./.funcs/.json/.help.json', 'utf-8'));
+    const helpData = JSON.parse(fs.readFileSync(__dirname+'/.funcs/.json/.help.json', 'utf-8'));
     const commandInfo = helpData.find(item => item.cmds.includes(q.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase()));
     if (commandInfo) {
       const responseText = commandInfo.text.replace(/#comando#/g, q.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase()).replace(/#prefix#/g, prefix);
