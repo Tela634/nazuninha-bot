@@ -272,7 +272,7 @@ try {
    var boij = RSM?.videoMessage || info.message?.videoMessage || RSM?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage || RSM?.viewOnceMessage?.message?.videoMessage;
     if (!boij && !boij2) return reply(`Marque uma imagem ou um vídeo de até 9.9 segundos para fazer figurinha, com o comando: ${prefix + command} (mencionando a mídia)`);
     var isVideo = !!boij;
-    if (isVideo && midia.seconds > 9.9) return reply(`O vídeo precisa ter no máximo 9.9 segundos para ser convertido em figurinha.`);
+    if (isVideo && boij.seconds > 9.9) return reply(`O vídeo precisa ter no máximo 9.9 segundos para ser convertido em figurinha.`);
     var buffer = await getFileBuffer(isVideo ? boij : boij2, isVideo ? 'video' : 'image')
     await sendSticker(nazu, from, { sticker: buffer, author: '.', packname: '.', type: isVideo ? 'video' : 'image'}, { quoted: info })
   }
