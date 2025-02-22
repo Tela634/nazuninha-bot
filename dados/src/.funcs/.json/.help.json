@@ -1,6 +1,6 @@
 [
 {
- "cmds": ["play", "playvid", "ytmp3", "ytmp4"],
- "text": "o comando #comando# serve para realizar download de um video/audio do YouTube, para utilizá-lo é bem simples.\nBasta digitar '#prefix##comando#' + o nome da música.\nExemplos:\nCaso queira baixar a música 'back to você ira digitar '#prefix##comando#' (sem as aspas)."
+  "cmds": ["play", "playvid", "ytmp3", "ytmp4"],
+  "text": "🎵 O comando #comando# serve para realizar o download de um vídeo ou áudio do YouTube.\n\nPara utilizá-lo, basta digitar '#prefix#comando#' + o nome da música ou link do vídeo.\n\n👉 *Exemplos:*\n- Para baixar a música 'Back to Black', digite:\n  `#prefix#comando# Back to Black`\n- Para baixar um vídeo pelo link, digite:\n  `#prefix#comando# https://www.youtube.com/watch?v=exemplo`"
 }
 ]
