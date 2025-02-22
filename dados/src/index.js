@@ -222,7 +222,7 @@ try {
     fs.readFile(__dirname + '/index.js', 'utf8', async (err, data) => {
       if (err) throw err;
       const comandos = [...data.matchAll(/case [`'"](\w+)[`'"]/g)].map(m => m[1]);
-      const categorias = [{ name: 'Sub Menus', files: ['/menus/menu.js'] },{ name: 'Downloads', files: ['/menus/menudown.js'] },{ name: 'Funções de adm', files: ['/menus/menuadm.js'] },{ name: 'Brincadeiras', files: ['/menus/menubn.js'] },{ name: 'Funções de dono', files: ['/menus/menudono.js'] }, ,{ name: 'Funções Gerais', files: ['/menus/menumemb.js'] }];
+      const categorias = [{ name: 'Sub Menus', files: ['/menus/menu.js'] },{ name: 'Downloads', files: ['/menus/menudown.js'] },{ name: 'Funções de adm', files: ['/menus/menuadm.js'] },{ name: 'Brincadeiras', files: ['/menus/menubn.js'] },{ name: 'Funções de dono', files: ['/menus/menudono.js'] },{ name: 'Funções Gerais', files: ['/menus/menumemb.js'] }];
       let comandosPorCategoria = {};
       let totalComandosCategoria = 0;
       const countComandos = (filePath) => new Promise((resolve, reject) => {
