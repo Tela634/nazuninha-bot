@@ -18,8 +18,34 @@ async function getBuffer(url) {
     return Buffer.from(response.data, 'binary');
 }
 
+// Função para aplicar efeitos
+function getEffectFilter(effect, isVideo) {
+    let baseFilter = "scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse";
+
+    switch (effect) {
+        case 'circle':
+            baseFilter += ", format=rgba, drawbox=0:0:320:320:white@0.0:t=fill, vignette=PI/2";
+            break;
+        case 'blur':
+            baseFilter += ", boxblur=10:5";
+            break;
+        case 'grayscale':
+            baseFilter += ", format=gray";
+            break;
+        case 'rounded':
+            baseFilter += ", format=rgba, drawbox=0:0:320:320:white@0.0:t=fill, vignette=PI/4";
+            break;
+        // Adicione mais efeitos aqui
+        default:
+            // Sem efeito adicional
+            break;
+    }
+
+    return baseFilter;
+}
+
 // Função genérica para converter mídia para WebP
-async function convertToWebp(media, isVideo = false) {
+async function convertToWebp(media, isVideo = false, effect = null) {
     const tmpFileOut = generateTempFileName('webp');
     const tmpFileIn = generateTempFileName(isVideo ? 'mp4' : 'jpg');
 
@@ -36,7 +62,7 @@ async function convertToWebp(media, isVideo = false) {
             })
             .addOutputOptions([
                 "-vcodec", "libwebp",
-                "-vf", "scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse",
+                "-vf", getEffectFilter(effect, isVideo),
                 ...(isVideo ? ["-loop", "0", "-ss", "00:00:00", "-t", "00:00:05", "-preset", "default", "-an", "-vsync", "0"] : [])
             ])
             .toFormat("webp")
@@ -79,7 +105,7 @@ async function writeExif(media, metadata, isVideo = false) {
 }
 
 // Função principal para enviar sticker
-const sendSticker = async (nazu, jid, { sticker: path, type = 'image', packname = '', author = '' }, { quoted } = {}) => {
+const sendSticker = async (nazu, jid, { sticker: path, type = 'image', packname = '', author = '', effect = null }, { quoted } = {}) => {
     if (!type || !['image', 'video'].includes(type)) {
         throw new Error('O tipo de mídia deve ser "image" ou "video".');
     }
@@ -90,7 +116,7 @@ const sendSticker = async (nazu, jid, { sticker: path, type = 'image', packname 
     if (packname || author) {
         buffer = await writeExif(buff, { packname, author }, type === 'video');
     } else {
-        buffer = await convertToWebp(buff, type === 'video');
+        buffer = await convertToWebp(buff, type === 'video', effect);
     }
 
     await nazu.sendMessage(jid, { sticker: { url: buffer }, ...(packname || author ? { packname, author } : {}) }, { quoted });
