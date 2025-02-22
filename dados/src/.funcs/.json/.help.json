@@ -78,6 +78,10 @@
 {
   "cmds": ["bemvindo", "bv", "boasvindas"],
   "text": "👋 O comando #comando# serve para ativar ou desativar as mensagens de boas-vindas no grupo.\n\nPara utilizá-lo, basta digitar '#prefix#comando#'.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Funcionamento:*\n- Se as boas-vindas estiverem ativas, elas serão desativadas.\n- Se estiverem desativadas, elas serão ativadas.\n\n👉 *Exemplo:*\n- Para ativar/desativar, digite:\n> #prefix#comando#"
+},
+{
+  "cmds": ["legendabv", "textbv"],
+  "text": "📝 O comando #comando# serve para alterar o texto de boas-vindas que o bot envia quando alguém entra no grupo.\n\nPara utilizá-lo, digite '#prefix#comando#' + o novo texto.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Códigos especiais:*\n- *#numerodele#* → Marca o novo membro.\n- *#nomedogp#* → Nome do grupo.\n- *#desc#* → Descrição do grupo.\n- *#membros#* → Número total de membros no grupo.\n\n📌 *Exemplo:*\n> #prefix#comando# Bem-vindo(a) #numerodele# ao grupo *#nomedogp#*! Agora somos #membros# membros. Leia a descrição: #desc#"
 }
 
 ]
