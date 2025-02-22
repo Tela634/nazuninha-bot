@@ -207,7 +207,6 @@ try {
   case 'totalcomando':
     fs.readFile(__dirname + '/index.js', 'utf8', async (err, data) => {
       if (err) throw err;
-
       const comandos = [...data.matchAll(/case [`'"](\w+)[`'"]/g)].map(m => m[1]);
       const categorias = [
         { name: 'Sub Menus', files: ['/menus/menu.js'] },
@@ -216,10 +215,8 @@ try {
         { name: 'Brincadeiras', files: ['/menus/menubn.js'] },
         { name: 'Funções de dono', files: ['/menus/menudono.js'] },
       ];
-
       let comandosPorCategoria = {};
       let totalComandosCategoria = 0;
-
       const countComandos = (filePath) => new Promise((resolve, reject) => {
         fs.readFile(__dirname + filePath, 'utf8', (err, data) => {
           if (err) return reject(err);
@@ -227,7 +224,6 @@ try {
           resolve(count);
         });
       });
-
       for (const categoria of categorias) {
         let comandosCategoria = 0;
         for (const file of categoria.files) {
@@ -239,13 +235,9 @@ try {
         }
         comandosPorCategoria[categoria.name] = comandosCategoria;
         totalComandosCategoria += comandosCategoria;
-      }
-
+      };
       const comandosSemCategoria = comandos.length - totalComandosCategoria;
-
-      buffzin = await axios.get(`https://api.apiflash.com/v1/urltoimage?access_key=7eea64787bd84cfbadb14358dad47976&url=https%3A%2F%2Fcount.getloli.com%2F%40nazuninha-totalcmd%3Fname%3Dnazuninha-totalcmd%26theme%3Dmiku%26padding%3D4%26offset%3D0%26align%3Dtop%26scale%3D2%26pixelated%3D1%26darkmode%3D1%26num%3D${String(comandos.length)}&format=png&width=1350&height=500&quality=100&no_cookie_banners=true&no_ads=true&no_tracking=true&transparent=true`, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': 'https://count.getloli.com' }, responseType: 'arraybuffer' });
-      
-      await nazu.sendMessage(from, {image: buffzin.data, caption: `╭━━〔 🤖 *Meus Comandos* 〕━━╮\n` + `┣ 📌 Total: *${comandos.length}* comandos\n` + `┣ 📌 Comandos por Categoria:\n┣\n` + Object.keys(comandosPorCategoria).map(categoria => `┣ 📌 ${categoria}: *${comandosPorCategoria[categoria]}* comandos`).join('\n') + `\n┣ 📌 Sem categoria: *${comandosSemCategoria}* comandos\n` + `╰━━━━━━━━━━━━━━━━━━━╯`}, { quoted: info });
+      await nazu.sendMessage(from, {image: {url: `https://nazuninha-banner-gen.onrender.com/banner?num=${String(comandos.length)}&theme=miku`}, caption: `╭━━〔 🤖 *Meus Comandos* 〕━━╮\n` + `┣ 📌 Total: *${comandos.length}* comandos\n` + `┣ 📌 Comandos por Categoria:\n┣\n` + Object.keys(comandosPorCategoria).map(categoria => `┣ 📌 ${categoria}: *${comandosPorCategoria[categoria]}* comandos`).join('\n') + `\n┣ 📌 Sem categoria: *${comandosSemCategoria}* comandos\n` + `╰━━━━━━━━━━━━━━━━━━━╯`}, { quoted: info });
     });
   break;
 
@@ -256,7 +248,7 @@ try {
     const config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
     function formatUptime(seconds) {let d = Math.floor(seconds / (24 * 3600));let h = Math.floor((seconds % (24 * 3600)) / 3600);let m = Math.floor((seconds % 3600) / 60);let s = Math.floor(seconds % 60);let uptimeStr = [];if (d > 0) uptimeStr.push(`${d}d`);if (h > 0) uptimeStr.push(`${h}h`);if (m > 0) uptimeStr.push(`${m}m`);if (s > 0) uptimeStr.push(`${s}s`);return uptimeStr.join(' ');};    
     const uptime = formatUptime(process.uptime());
-    axios.get(`https://api.apiflash.com/v1/urltoimage?access_key=7eea64787bd84cfbadb14358dad47976&url=https%3A%2F%2Fcount.getloli.com%2F%40nazuninha-ping%3Fname%3Dnazuninha-ping%26theme%3Dbooru-lewd%26padding%3D4%26offset%3D0%26align%3Dtop%26scale%3D2%26pixelated%3D1%26darkmode%3D1%26num%3D${String(speedConverted.toFixed(3)).replaceAll('.', '')}&format=png&width=369&height=210&quality=100&no_cookie_banners=true&no_ads=true&no_tracking=true&transparent=true`, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': 'https://count.getloli.com' }, responseType: 'arraybuffer' }).then(async r => await nazu.sendMessage(from, { image: r.data, caption: `\n📡 *Status do Bot*\n-----------------------------------\n🤖 *Nome:* ${config.nomebot}\n👤 *Dono:* ${config.nomedono}\n\n📌 *Prefixo:* ${config.prefixo}\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime:* ${uptime}` }, { quoted: info })).catch(e => (console.error('Erro ao obter a imagem:', e), nazu.sendMessage(from, { text: '❌ Erro ao obter o status do bot. Tente novamente mais tarde.' }, { quoted: info })));
+    await nazu.sendMessage(from, { image: {url: `https://nazuninha-banner-gen.onrender.com/banner?num=${String(speedConverted.toFixed(3))}&theme=original`}caption: `\n📡 *Status do Bot*\n-----------------------------------\n🤖 *Nome:* ${config.nomebot}\n👤 *Dono:* ${config.nomedono}\n\n📌 *Prefixo:* ${config.prefixo}\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime:* ${uptime}` }, { quoted: info })
   } catch (e) {
     console.error(e);
     reply('❌ Ocorreu um erro ao obter as informações.');
@@ -306,9 +298,8 @@ try {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
     if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para remover membros.');
-    const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid;
-    if (!mentioned) return reply('❌ Marque o usuário que deseja banir.');   
-    await nazu.groupParticipantsUpdate(from, mentioned, 'remove');
+    if (!menc_os2) return reply('❌ Marque o usuário que deseja banir.');   
+    await nazu.groupParticipantsUpdate(from, [menc_os2], 'remove');
     reply(`✅ Usuário banido com sucesso!`);
   } catch (e) {
     console.error(e);
@@ -321,9 +312,8 @@ case 'promover':
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
     if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para promover membros.');
-    const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid;
-    if (!mentioned) return reply('❌ Marque o usuário que deseja promover.');
-    await nazu.groupParticipantsUpdate(from, mentioned, 'promote');
+    if (!menc_os2) return reply('❌ Marque o usuário que deseja promover.');
+    await nazu.groupParticipantsUpdate(from, [menc_os2], 'promote');
     reply(`✅ Usuário promovido a administrador!`);
   } catch (e) {
     console.error(e);
@@ -336,9 +326,8 @@ case 'rebaixar':
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
     if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para rebaixar membros.');
-    const mentioned = info.message.extendedTextMessage?.contextInfo?.mentionedJid;
-    if (!mentioned) return reply('❌ Marque o usuário que deseja rebaixar.');
-    await nazu.groupParticipantsUpdate(from, mentioned, 'demote');
+    if (!menc_os2) return reply('❌ Marque o usuário que deseja rebaixar.');
+    await nazu.groupParticipantsUpdate(from, [menc_os2], 'demote');
     reply(`✅ Usuário rebaixado com sucesso!`);
   } catch (e) {
     console.error(e);
@@ -373,22 +362,6 @@ case 'setdesc':
   } catch (e) {
     console.error(e);
     reply('❌ Ocorreu um erro ao tentar mudar a descrição do grupo.');
-  }
-  break;
-
-case 'setpp':
-case 'fotogp':
-  try {
-    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
-    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para mudar a foto do grupo.');
-    if (!info.message.imageMessage) return reply('❌ Envie uma imagem com o comando para definir como foto do grupo.');
-    const imageBuffer = await getFileBuffer(info.message.imageMessage, 'image');
-    await nazu.updateProfilePicture(from, imageBuffer);    
-    reply('✅ Foto do grupo alterada com sucesso!');
-  } catch (e) {
-    console.error(e);
-    reply('❌ Ocorreu um erro ao tentar mudar a foto do grupo.');
   }
   break;
   
@@ -492,8 +465,7 @@ break;
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não esta ativo nesse grupo');
     let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games: {} };
-    const mentioned = info.message?.extendedTextMessage?.contextInfo?.mentionedJid || (info.message?.extendedTextMessage?.contextInfo?.participant ? [info.message.extendedTextMessage.contextInfo.participant] : []) || [];
-    const target = mentioned.length > 0 ? mentioned[0] : sender;
+    const target = menc_os2 ? menc_os2 : sender;
     const targetName = `@${target.split('@')[0]}`;
     const level = Math.floor(Math.random() * 101);
     let responses = fs.existsSync(__dirname + '/.funcs/.json/.gamestext.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.gamestext.json')) : {};
@@ -513,8 +485,7 @@ break;
     if (!isGroup) return reply('❌ Este comando so pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não esta ativo nesse grupo');
     let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games: {} };
-    const mentioned = info.message?.extendedTextMessage?.contextInfo?.mentionedJid || (info.message?.extendedTextMessage?.contextInfo?.participant ? [info.message.extendedTextMessage.contextInfo.participant] : []) || [];
-    const target = mentioned.length > 0 ? mentioned[0] : sender;
+    const target = menc_os2 ? menc_os2 : sender;
     const targetName = `@${target.split('@')[0]}`;
     const level = Math.floor(Math.random() * 101);
     let responses = fs.existsSync(__dirname + '/.funcs/.json/.gamestext2.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.gamestext2.json')) : {};
@@ -585,18 +556,17 @@ break;
    case 'chute': case 'chutar': case 'tapa': case 'soco': case 'socar': case 'beijo': case 'beijar': case 'beijob': case 'beijarb': case 'abraco': case 'abracar': case 'mata': case 'matar': case 'tapar': case 'goza': case 'gozar': case 'mamar': case 'mamada': case 'cafune': case 'morder': case 'mordida': case 'lamber': case 'lambida': case 'explodir':
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
-    const mentioned = info.message?.extendedTextMessage?.contextInfo?.mentionedJid || (info.message?.extendedTextMessage?.contextInfo?.participant ? [info.message.extendedTextMessage.contextInfo.participant] : []) || [];
-    if(mentioned.length<=0) return reply('Marque um usuário.');
+    if(!menc_os2) return reply('Marque um usuário.');
     let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games2: {} };
     let GamezinData = fs.existsSync(__dirname + '/.funcs/.json/.markgame.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.markgame.json')) : { ranks: {} };
-    let responseText = GamezinData[command].replaceAll('#nome#', `@${mentioned[0].split('@')[0]}`) || `Voce acabou de dar um(a) ${command} no(a) @${mentioned[0].split('@')[0]}`;
+    let responseText = GamezinData[command].replaceAll('#nome#', `@${menc_os2.split('@')[0]}`) || `Voce acabou de dar um(a) ${command} no(a) @${menc_os2.split('@')[0]}`;
     let media = gamesData.games2[command];
     if (media?.image) {
-        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: mentioned });
+        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: [menc_os2] });
     } else if (media?.video) {
-        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: mentioned, gifPlayback: true });
+        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: [menc_os2], gifPlayback: true });
     } else {
-        await nazu.sendMessage(from, { text: responseText, mentions: mentioned });
+        await nazu.sendMessage(from, { text: responseText, mentions: [menc_os2] });
     }
    break;
    
