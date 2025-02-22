@@ -74,6 +74,10 @@
 {
   "cmds": ["modobrincadeira", "modobrincadeiras", "modobn"],
   "text": "🎮 O comando #comando# serve para ativar ou desativar o modo brincadeira no grupo.\n\nPara utilizá-lo, basta digitar '#prefix#comando#'.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Funcionamento:*\n- Se o modo brincadeira estiver ativo, ele será desativado.\n- Se estiver desativado, ele será ativado.\n\n👉 *Exemplo:*\n- Para ativar/desativar, digite:\n> #prefix#comando#"
+},
+{
+  "cmds": ["bemvindo", "bv", "boasvindas"],
+  "text": "👋 O comando #comando# serve para ativar ou desativar as mensagens de boas-vindas no grupo.\n\nPara utilizá-lo, basta digitar '#prefix#comando#'.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Funcionamento:*\n- Se as boas-vindas estiverem ativas, elas serão desativadas.\n- Se estiverem desativadas, elas serão ativadas.\n\n👉 *Exemplo:*\n- Para ativar/desativar, digite:\n> #prefix#comando#"
 }
 
 ]
