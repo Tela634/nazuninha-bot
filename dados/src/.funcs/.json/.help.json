@@ -70,6 +70,10 @@
 {
   "cmds": ["totag", "cita", "hidetag"],
   "text": "👥 O comando #comando# serve para marcar todos os membros do grupo de forma oculta, sem exibir os @ na mensagem.\n\nPara utilizá-lo, você pode:\n- Marcar uma mensagem com '#prefix#comando#'.\n- Digitar '#prefix#comando#' + um texto.\n- Usar '#prefix#comando#' na legenda de uma mídia (foto, vídeo, etc.).\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Exemplo:*\n- Para marcar todos ocultamente, responda a uma mensagem com:\n> #prefix#comando#\n- Para enviar uma marcação oculta com um texto, digite:\n> #prefix#comando# Olá, pessoal!"
+},
+{
+  "cmds": ["modobrincadeira", "modobrincadeiras", "modobn"],
+  "text": "🎮 O comando #comando# serve para ativar ou desativar o modo brincadeira no grupo.\n\nPara utilizá-lo, basta digitar '#prefix#comando#'.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Funcionamento:*\n- Se o modo brincadeira estiver ativo, ele será desativado.\n- Se estiver desativado, ele será ativado.\n\n👉 *Exemplo:*\n- Para ativar/desativar, digite:\n> #prefix#comando#"
 }
 
 ]
