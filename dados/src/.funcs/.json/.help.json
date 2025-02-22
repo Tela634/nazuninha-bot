@@ -1,6 +1,15 @@
 [
 {
   "cmds": ["play", "playvid", "ytmp3", "ytmp4"],
-  "text": "🎵 O comando #comando# serve para realizar o download de um vídeo ou áudio do YouTube.\n\nPara utilizá-lo, basta digitar '#prefix#comando#' + o nome da música ou link do vídeo.\n\n👉 *Exemplos:*\n- Para baixar a música 'Back to Black', digite:\n  `#prefix#comando# Back to Black`\n- Para baixar um vídeo pelo link, digite:\n  `#prefix#comando# https://www.youtube.com/watch?v=exemplo`"
-}
+  "text": "🎵 O comando #comando# serve para realizar o download de um vídeo ou áudio do YouTube.\n\nPara utilizá-lo, basta digitar '#prefix#comando#' + o nome da música ou link do vídeo.\n\n👉 *Exemplos:*\n- Para baixar a música 'Back to Black', digite:\n> #prefix#comando# Back to Black\n- Para baixar um vídeo pelo link, digite:\n> #prefix#comando# https://www.youtube.com/watch?v=exemplo"
+},
+{
+  "cmds": ["tiktok", "tiktokaudio", "tiktokvideo", "tiktoks", "tiktoksearch", "ttk"],
+  "text": "🎵 O comando #comando# serve para baixar vídeos, áudios ou buscar conteúdos no TikTok.\n\nPara utilizá-lo, basta digitar '#prefix#comando#' + o nome do vídeo, descrição ou link do TikTok.\n\n👉 *Exemplos:*\n- Para baixar um vídeo do TikTok pelo link, digite:\n> #prefix#comando# https://www.tiktok.com/@usuario/video/123456789\n- Para buscar vídeos no TikTok por uma descrição, digite:\n> #prefix#comando# música relaxante"
+},
+{
+  "cmds": ["pinterest", "pin", "pinterestdl", "pinterestsearch"],
+  "text": "📌 O comando #comando# serve para baixar imagens ou buscar conteúdos no Pinterest.\n\nPara utilizá-lo, basta digitar '#prefix#comando#' + o nome da pesquisa ou link do Pinterest.\n\n👉 *Exemplos:*\n- Para baixar uma imagem do Pinterest pelo link, digite:\n> #prefix#comando# https://www.pinterest.com/pin/123456789\n- Para buscar imagens no Pinterest, digite:\n> #prefix#comando# paisagens naturais"
+},
+
 ]
