@@ -8,7 +8,7 @@ const axios = require('axios'); // Para substituir a função getBuffer
 const generateTempFileName = (extension) => {
     const timestamp = Date.now(); // Usa o timestamp atual
     const random = Math.floor(Math.random() * 1000000); // Número aleatório
-    if (!fs2.existsSync(__dirname+'/../../../database/tmp')) fs2.mkdirSync(__dirname+'/../../../database/tmp', { recursive: true });
+    if (!fs2.existsSync(__dirname + '/../../../database/tmp')) fs2.mkdirSync(__dirname + '/../../../database/tmp', { recursive: true });
     return path.join(__dirname, '/../../../database/tmp', `${timestamp}_${random}.${extension}`);
 };
 
@@ -24,18 +24,21 @@ function getEffectFilter(effect, isVideo) {
 
     switch (effect) {
         case 'circle':
-            baseFilter += ", format=rgba, drawbox=0:0:320:320:white@0.0:t=fill, vignette=PI/2";
+            // Corta a imagem/vídeo em formato circular
+            baseFilter = "scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse, format=rgba, drawbox=0:0:320:320:white@0.0:t=fill, vignette=PI/2:aspect=1";
             break;
         case 'blur':
+            // Aplica um efeito de desfoque
             baseFilter += ", boxblur=10:5";
             break;
         case 'grayscale':
+            // Converte para preto e branco
             baseFilter += ", format=gray";
             break;
         case 'rounded':
+            // Adiciona bordas arredondadas
             baseFilter += ", format=rgba, drawbox=0:0:320:320:white@0.0:t=fill, vignette=PI/4";
             break;
-        // Adicione mais efeitos aqui
         default:
             // Sem efeito adicional
             break;
