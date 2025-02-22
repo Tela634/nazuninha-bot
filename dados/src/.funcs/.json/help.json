@@ -1,0 +1,6 @@
+[
+{
+ "cmds": ["play", "playvid", "ytmp3", "ytmp4"],
+ "text": "o comando #comando# serve para realizar download de um video/audio do YouTube, para utilizá-lo é bem simples.\nBasta digitar '#prefix##comando#' + o nome da música.\nExemplos:\nCaso queira baixar a música 'back to você ira digitar '#prefix##comando#' (sem as aspas)."
+}
+]
