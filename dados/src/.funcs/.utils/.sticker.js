@@ -24,7 +24,7 @@ function getEffectFilter(effect, isVideo) {
 
     switch (effect) {
         case 'circle':
-            baseFilter = "scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease, " +"pad=320:320:-1:-1:color=white@0.0, " +"format=rgba, " +"drawbox=x=0:y=0:w=320:h=320:color=white@1:t=fill, " +"drawcircle=x=160:y=160:r=160:color=black@1:t=fill, " +"format=rgba, " +"crop=w=320:h=320:x=0:y=0";
+            baseFilter = "scale=320:320:force_original_aspect_ratio=decrease, pad=320:320:(ow-iw)/2:(oh-ih)/2:color=white@0, format=rgba, drawbox=w=320:h=320:x=0:y=0:color=white@0:t=fill, geq=lum='p(X,Y)':a='if(gt((X-160)^2+(Y-160)^2,160^2),0,255)'";
             break;
         case 'blur':
             // Aplica um efeito de desfoque
