@@ -394,6 +394,7 @@ case 'setdesc':
   try {
     let path = __dirname + '/../database/grupos/' + from + '.json';
     let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
+    if(!data.mark) data.mark = {};
     let membros = AllgroupMembers.filter(m => !['0', 'games'].includes(data.mark[m]));
     if (!membros.length) return reply('❌ Nenhum membro para mencionar.');
     let msg = `📢 *Membros mencionados:* ${q ? `\n💬 *Mensagem:* ${q}` : ''}\n\n`;
@@ -423,6 +424,7 @@ case 'setdesc':
     var green4 = rsm4?.extendedTextMessage?.text || info?.message?.extendedTextMessage?.text;
     let path = __dirname + '/../database/grupos/' + from + '.json';
     let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
+    if(!data.mark) data.mark = {};
     var MRC_TD4 = AllgroupMembers.filter(m => !['0', 'games'].includes(data.mark[m]));
 
     if (pink4 && !aud_d4 && !purple4) {
