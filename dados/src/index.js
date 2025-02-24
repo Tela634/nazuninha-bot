@@ -244,7 +244,7 @@ try {
     if (!boij && !boij2) return reply(`Marque uma imagem ou um vídeo, com o comando: ${prefix + command} (mencionando a mídia)`);
     var isVideo = !!boij;
     var buffer = (await getFileBuffer(isVideo ? boij : boij2, isVideo ? 'video' : 'image')).toString('base64');
-    fs.writeFileSync(__dirname+'/../midias/menu.'+isVideo?'mp4':'jpg', buffer);
+    fs.writeFileSync(__dirname+'/../midias/menu.' + (isVideo ? 'mp4' : 'jpg'), buffer);
     await reply('✅ Mídia do menu atualizada com sucesso.');
   } catch(e) {
    console.error(e);
