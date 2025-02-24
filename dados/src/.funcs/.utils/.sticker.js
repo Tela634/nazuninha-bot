@@ -79,7 +79,7 @@ async function convertToWebp(media, isVideo = false, effect = null) {
 
 // Função para adicionar metadados EXIF
 async function writeExif(media, metadata, isVideo = false, rename = false) {
-    const wMedia = rename ? media.toString('base64') : await convertToWebp(media, isVideo);
+    const wMedia = rename ? media : await convertToWebp(media, isVideo);
     const tmpFileIn = generateTempFileName('webp');
     const tmpFileOut = generateTempFileName('webp');
 
@@ -112,7 +112,7 @@ const sendSticker = async (nazu, jid, { sticker: path, type = 'image', packname 
         throw new Error('O tipo de mídia deve ser "image" ou "video".');
     }
 
-    let buff = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : fs.existsSync(path) ? await fs.readFile(path) : path.url ? await getBuffer(path.url) : Buffer.alloc(0);
+    let buff = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : fs2.existsSync(path) ? await fs2.readFileSync(path) : path.url ? await getBuffer(path.url) : Buffer.alloc(0);
 
     let buffer;
     if (packname || author) {

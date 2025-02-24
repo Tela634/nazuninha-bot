@@ -262,7 +262,7 @@ try {
     menc = [];
     blad = `*🏆 Rank dos ${blue67.length < 10 ? blue67.length : 10} mais ativos do grupo:*\n`;
     for (i6 = 0; i6 < (blue67.length < 10 ? blue67.length : 10); i6++) {
-        if (i6 != null) blad += `\n*🏅 ${i6 + 1}º Lugar:* @${blue67[i6].id.split('@')[0]}\n- mensagens encaminhadas: *${blue67[i6].msg}*\n- comandos executados: *${blue67[i6].cmd}*\n• Figurinhas encaminhadas: *${blue67[i6].figu}*\n`;
+        if (i6 != null) blad += `\n*🏅 ${i6 + 1}º Lugar:* @${blue67[i6].id.split('@')[0]}\n- mensagens encaminhadas: *${blue67[i6].msg}*\n- comandos executados: *${blue67[i6].cmd}*\n- Figurinhas encaminhadas: *${blue67[i6].figu}*\n`;
         menc.push(blue67[i6].id);
     };
     await nazu.sendMessage(from, {text: blad, mentions: menc}, {quoted: info});
@@ -276,7 +276,7 @@ try {
     menc = [];
     blad = `*🗑️ Rank dos ${blue67.length < 10 ? blue67.length : 10} mais inativos do grupo:*\n`;
     for (i6 = 0; i6 < (blue67.length < 10 ? blue67.length : 10); i6++) {
-        if (i6 != null) blad += `\n*🏅 ${i6 + 1}º Lugar:* @${blue67[i6].id.split('@')[0]}\n- mensagens encaminhadas: *${blue67[i6].msg}*\n- comandos executados: *${blue67[i6].cmd}*\n• Figurinhas encaminhadas: *${blue67[i6].figu}*\n`;
+        if (i6 != null) blad += `\n*🏅 ${i6 + 1}º Lugar:* @${blue67[i6].id.split('@')[0]}\n- mensagens encaminhadas: *${blue67[i6].msg}*\n- comandos executados: *${blue67[i6].cmd}*\n- Figurinhas encaminhadas: *${blue67[i6].figu}*\n`;
         menc.push(blue67[i6].id);
     };
     await nazu.sendMessage(from, {text: blad, mentions: menc}, {quoted: info});
@@ -371,7 +371,7 @@ try {
    author = q.split(`/`)[0];packname = q.split(`/`)[1];
    if(!q || !author || !packname) return reply(`Formato errado, utilize:\n${prefix}${command} Autor/Pack\nEx: ${prefix}${command} By:/Hiudy`);
    encmediats = await getFileBuffer(info.message.extendedTextMessage.contextInfo.quotedMessage.stickerMessage, 'sticker');
-   await sendSticker(nazu, from, { sticker: encmediats, author: author, packname: packname, rename: true}, { quoted: info });
+   await sendSticker(nazu, from, { sticker: `data:image/jpeg;base64,${encmediats.toString('base64')}`, author: author, packname: packname, rename: true}, { quoted: info });
   };
   break;
   
