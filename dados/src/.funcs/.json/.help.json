@@ -16,7 +16,7 @@
   "text": "📸 O comando #comando# serve para baixar fotos ou vídeos do Instagram.\n\nPara utilizá-lo, basta digitar '#prefix##comando#' + o link do post do Instagram.\n\n👉 *Exemplos:*\n- Para baixar uma foto ou vídeo do Instagram, digite:\n> #prefix##comando# https://www.instagram.com/p/ABC12345678/"
 },
 {
-  "cmds": ["menu", "help", "menubn", "menubrincadeira", "menubrincadeiras", "menudown", "menudownload", "menudownloads", "menuadm", "menuadmin", "menuadmins", "menudono", "ownermenu", "menumembros", "menumemb", "menugeral", "menuferramentas", "menuferramenta", "ferramentas"],
+  "cmds": ["menu", "help", "menubn", "menubrincadeira", "menubrincadeiras", "menudown", "menudownload", "menudownloads", "menuadm", "menuadmin", "menuadmins", "menudono", "ownermenu", "menumembros", "menumemb", "menugeral", "menuferramentas", "menuferramenta", "ferramentas","menufig", "menusticker", "stickermenu"],
   "text": "📜 O comando #comando# serve para exibir um menu de opções.\n\nPara utilizá-lo, basta digitar '#prefix##comando#'.\n\n👉 *Exemplo:*\n- Para ver o menu, digite:\n> #prefix##comando#"
 },
 {
