@@ -3,8 +3,8 @@
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
-const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL }  = require(__dirname+'/.funcs/.exports.js');
-const { menu, menudown, menuadm, menubn, menuDono, menuMembros } = require(__dirname+'/menus/index.js');
+const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix }  = require(__dirname+'/.funcs/.exports.js');
+const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker } = require(__dirname+'/menus/index.js');
 const axios = require('axios');
 const pathz = require('path');
 const fs = require('fs');
@@ -17,7 +17,7 @@ try {
  const sender = isGroup ? info.key.participant.includes(':') ? info.key.participant.split(':')[0] +'@s.whatsapp.net': info.key.participant : info.key.remoteJid;
  const isStatus = from.endsWith('@broadcast');
  const nmrdn = numerodono.replace(new RegExp("[()+-/ +/]", "gi"), "") + `@s.whatsapp.net`
- const isOwner = nmrdn == sender ? true : false;
+ const isOwner = (nmrdn == sender ? true : false) || info.key.fromMe;
  
  const baileys = require('baileys');
  const type = baileys.getContentType(info.message);
@@ -52,7 +52,20 @@ try {
   let groupData = {};
   try {groupData = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${from}.json`));} catch (error) {};
   const isModoBn = groupData.modobrincadeira ? true : false;
-     
+ 
+ //CONTADOR DE MENSAGEM 🤓
+ if(isGroup) {
+ if(!groupData.contador) groupData.contador = [];
+ if(JSON.stringify(groupData.contador).includes(sender)) {
+  const i2 = groupData.contador.map(i => i.id).indexOf(sender);
+  if(isCmd) {groupData.contador[i2].cmd++} else if(type=="stickerMessage") {groupData.contador[i2].figu++} else {groupData.contador[i2].msg++};
+  fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+ } else {
+  groupData.contador.push({id:sender,msg:isCmd?0:1,cmd:isCmd?1:0,figu:type=="stickerMessage"?1:0});
+  fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+ }};
+ //FIM DO CONTADOR
+ 
  //FUNÇÕES BASICAS
  async function reply(text) { return nazu.sendMessage(from, {text: text.trim()}, {sendEphemeral: true, contextInfo: { forwardingScore: 50, isForwarded: true, externalAdReply: { showAdAttribution: true }}, quoted: info})};nazu.reply=reply;
  
@@ -76,15 +89,17 @@ try {
  const isQuotedContact = type === 'extendedTextMessage' && content.includes('contactMessage')
  const isQuotedLocation = type === 'extendedTextMessage' && content.includes('locationMessage')
  const isQuotedProduct = type === 'extendedTextMessage' && content.includes('productMessage')
-
- //SISTEMA DE CONTADOR DE MENSAGENS :) 
- //BY HIUDY (kiba não, rs)
- if(isGroup) {
-  
- };
- //FIM SISTEMA
+ 
  switch(command) {
+  //FERRAMENTAS
+  case 'nick': case 'gerarnick': {
+  if(!q) return reply('Digite o nick após o comando.');
+  datzn = await styleText(q);
+  await reply(datzn.join('\n'));
+  };
+  break
   
+  //DOWNLOADS
   case 'assistir': {
   if(!q) return reply('Cadê o nome do filme ou episódio de série? 🤔');
   await reply('Um momento, estou buscando as informações para você 🕵️‍♂️');
@@ -130,7 +145,7 @@ try {
   }
   break;
   
-  case 'tiktok': case 'tiktokaudio': case 'tiktokvideo': case 'tiktoks': case 'tiktoksearch': case 'ttk':
+  case 'tiktok': case 'tiktokaudio': case 'tiktokvideo': case 'tiktoks': case 'tiktoksearch': case 'ttk': case 'tkk':
    try {
     if (!q) return reply(`Digite um nome ou o link de um vídeo.\n> Ex: ${prefix}${command} Gato`);
     nazu.react(['💖']);
@@ -177,32 +192,36 @@ try {
    
    
    //MENUS AQUI BB
-   case 'menu': case 'help':
-  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menu(prefix)}, {quoted: info});
+  case 'menu': case 'help':
+  nazu.sendMessage(from, {image: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menu(prefix), gifPlayback: true}, {quoted: info});
   break;
   case 'menubn': case 'menubrincadeira': case 'menubrincadeiras':
-  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menubn(prefix)}, {quoted: info});
+  nazu.sendMessage(from, {image: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menubn(prefix), gifPlayback: true}, {quoted: info});
   break;
   case 'menudown': case 'menudownload': case 'menudownloads':
-  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menudown(prefix)}, {quoted: info});
+  nazu.sendMessage(from, {image: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menudown(prefix), gifPlayback: true}, {quoted: info});
+  break;
+  case 'ferramentas': case 'menuferramentas': case 'menuferramenta':
+  nazu.sendMessage(from, {image: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menuFerramentas(prefix), gifPlayback: true}, {quoted: info});
   break;
   case 'menuadm': case 'menuadmin': case 'menuadmins':
-  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menuadm(prefix)}, {quoted: info});
+  nazu.sendMessage(from, {image: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menuadm(prefix), gifPlayback: true}, {quoted: info});
   break;
   case 'menumembros': case 'menumemb': case 'menugeral':
-  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menuadm(prefix)}, {quoted: info});
+  nazu.sendMessage(from, {image: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menuadm(prefix), gifPlayback: true}, {quoted: info});
   break;
   case 'menudono': case 'ownermenu':
   if(!isOwner) return reply('Apenas meu dono.');
-  nazu.sendMessage(from, {image: fs.readFileSync(__dirname+'/../midias/menu.jpg'), caption: await menuDono(prefix)}, {quoted: info});
+  nazu.sendMessage(from, {image: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menuDono(prefix), gifPlayback: true}, {quoted: info});
+  break;
+  case 'stickermenu': case 'menusticker':case 'menufig':
+  if(!isOwner) return reply('Apenas meu dono.');
+  nazu.sendMessage(from, {image: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menuSticker(prefix), gifPlayback: true}, {quoted: info});
   break;
    
    
    //COMANDOS DE DONO BB
-   case 'prefixo':
-   case 'numerodono':
-   case 'nomedono':
-   case 'nomebot': try {
+   case 'prefixo':case 'numerodono':case 'nomedono':case 'nomebot': try {
     if(!isOwner) return reply('Apenas meu dono.');
     if (!q) return reply(`Uso correto: ${prefix}${command} <valor>`);
      let config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
@@ -215,14 +234,61 @@ try {
    };
   break;
   
+  case 'fotomenu':case 'videomenu':case 'mediamenu':case 'midiamenu': try {
+   if(!isOwner) return reply('Apenas meu dono.');
+   if(fs.existsSync(__dirname+'/../midias/menu.jpg')) fs.unlinkSync(__dirname+'/../midias/menu.jpg');
+   if(fs.existsSync(__dirname+'/../midias/menu.mp4')) fs.unlinkSync(__dirname+'/../midias/menu.mp4');
+   var RSM = info.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+    var boij2 = RSM?.imageMessage || info.message?.imageMessage || RSM?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || RSM?.viewOnceMessage?.message?.imageMessage;
+   var boij = RSM?.videoMessage || info.message?.videoMessage || RSM?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage || RSM?.viewOnceMessage?.message?.videoMessage;
+    if (!boij && !boij2) return reply(`Marque uma imagem ou um vídeo, com o comando: ${prefix + command} (mencionando a mídia)`);
+    var isVideo = !!boij;
+    var buffer = (await getFileBuffer(isVideo ? boij : boij2, isVideo ? 'video' : 'image')).toString('base64');
+    fs.writeFileSync(__dirname+'/../midias/menu.'+isVideo?'mp4':'jpg', buffer);
+    await reply('✅ Mídia do menu atualizada com sucesso.');
+  } catch(e) {
+   console.error(e);
+   reply('❌ Ocorreu um erro ao salvar a mídia');
+  }
+  break
+  
   
   //COMANDOS GERAIS
+  
+  case 'rankativos': 
+  case 'rankativo': {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    blue67 = groupData.contador.sort((a, b) => ((a.figu == undefined ? a.figu = 0 : a.figu + a.msg + a.cmd) < (b.figu == undefined ? b.figu = 0 : b.figu + b.cmd + b.msg)) ? 0 : -1);
+    menc = [];
+    blad = `*🏆 Rank dos ${blue67.length < 10 ? blue67.length : 10} mais ativos do grupo:*\n`;
+    for (i6 = 0; i6 < (blue67.length < 10 ? blue67.length : 10); i6++) {
+        if (i6 != null) blad += `\n*🏅 ${i6 + 1}º Lugar:* @${blue67[i6].id.split('@')[0]}\n- mensagens encaminhadas: *${blue67[i6].msg}*\n- comandos executados: *${blue67[i6].cmd}*\n• Figurinhas encaminhadas: *${blue67[i6].figu}*\n`;
+        menc.push(blue67[i6].id);
+    };
+    await nazu.sendMessage(from, {text: blad, mentions: menc}, {quoted: info});
+  };
+  break;
+  
+  case 'rankinativos': 
+  case 'rankinativo': {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    blue67 = groupData.contador.sort((a, b) => ((a.msg + a.cmd) < (b.cmd + b.msg)) ? 0 : -1);
+    menc = [];
+    blad = `*🗑️ Rank dos ${blue67.length < 10 ? blue67.length : 10} mais inativos do grupo:*\n`;
+    for (i6 = 0; i6 < (blue67.length < 10 ? blue67.length : 10); i6++) {
+        if (i6 != null) blad += `\n*🏅 ${i6 + 1}º Lugar:* @${blue67[i6].id.split('@')[0]}\n- mensagens encaminhadas: *${blue67[i6].msg}*\n- comandos executados: *${blue67[i6].cmd}*\n• Figurinhas encaminhadas: *${blue67[i6].figu}*\n`;
+        menc.push(blue67[i6].id);
+    };
+    await nazu.sendMessage(from, {text: blad, mentions: menc}, {quoted: info});
+  };
+  break;
+  
   case 'totalcmd':
   case 'totalcomando':
     fs.readFile(__dirname + '/index.js', 'utf8', async (err, data) => {
       if (err) throw err;
       const comandos = [...data.matchAll(/case [`'"](\w+)[`'"]/g)].map(m => m[1]);
-      const categorias = [{ name: 'Sub Menus', files: ['/menus/menu.js'] },{ name: 'Downloads', files: ['/menus/menudown.js'] },{ name: 'Funções de adm', files: ['/menus/menuadm.js'] },{ name: 'Brincadeiras', files: ['/menus/menubn.js'] },{ name: 'Funções de dono', files: ['/menus/menudono.js'] },{ name: 'Funções Gerais', files: ['/menus/menumemb.js'] }];
+      const categorias = [{ name: 'Sub Menus', files: ['/menus/menu.js'] },{ name: 'Downloads', files: ['/menus/menudown.js'] },{ name: 'Funções de adm', files: ['/menus/menuadm.js'] },{ name: 'Brincadeiras', files: ['/menus/menubn.js'] },{ name: 'Funções de dono', files: ['/menus/menudono.js'] },{ name: 'Funções Gerais', files: ['/menus/menumemb.js'] },{ name: 'Ferramentas', files: ['/menus/ferramentas.js'] }];
       let comandosPorCategoria = {};
       let totalComandosCategoria = 0;
       const countComandos = (filePath) => new Promise((resolve, reject) => {
@@ -263,10 +329,27 @@ try {
   }
   break;
   
-  case 'st':
-  case 'stk':
-  case 'sticker':
-  case 's': {
+  
+  //COMANDOS DE FIGURINHAS
+  case 'emojimix': {
+  emoji1 = q.split(`/`)[0];emoji2 = q.split(`/`)[1];
+  if(!q || !emoji1 || !emoji2) return reply(`Formato errado, utilize:\n${prefix}${command} emoji1/emoji2\nEx: ${prefix}${command} 🤓/🙄`);
+  datzc = await emojiMix(emoji1, emoji2);
+  await sendSticker(nazu, from, { sticker: {url: datzc}, author: 'By:', packname: 'Hiudy', type: 'image'}, { quoted: info });
+  };
+  break;
+  
+  case 'ttp': {
+  if(!q) return reply('Cadê o texto?');
+  cor = ["f702ff","ff0202","00ff2e","efff00","00ecff","3100ff","ffb400","ff00b0","00ff95","efff00"];
+  fonte = ["Days%20One","Domine","Exo","Fredoka%20One","Gentium%20Basic","Gloria%20Hallelujah","Great%20Vibes","Orbitron","PT%20Serif","Pacifico"];
+  cores = cor[Math.floor(Math.random() * (cor.length))];
+  fontes = fonte[Math.floor(Math.random() * (fonte.length))];
+  await sendSticker(nazu, from, { sticker: {url: `https://huratera.sirv.com/PicsArt_08-01-10.00.42.png?profile=Example-Text&text.0.text=${q}&text.0.outline.color=000000&text.0.outline.blur=0&text.0.outline.opacity=55&text.0.color=${cores}&text.0.font.family=${fontes}&text.0.background.color=ff0000`}, author: 'By:', packname: 'Hiudy', type: 'image'}, { quoted: info });
+  };
+  break;
+  
+  case 'st':case 'stk':case 'sticker':case 's': {
     var RSM = info.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     var boij2 = RSM?.imageMessage || info.message?.imageMessage || RSM?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || RSM?.viewOnceMessage?.message?.imageMessage;
    var boij = RSM?.videoMessage || info.message?.videoMessage || RSM?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage || RSM?.viewOnceMessage?.message?.videoMessage;
@@ -274,9 +357,26 @@ try {
     var isVideo = !!boij;
     if (isVideo && boij.seconds > 9.9) return reply(`O vídeo precisa ter no máximo 9.9 segundos para ser convertido em figurinha.`);
     var buffer = await getFileBuffer(isVideo ? boij : boij2, isVideo ? 'video' : 'image')
-    await sendSticker(nazu, from, { sticker: buffer, author: '.', packname: '.', type: isVideo ? 'video' : 'image'}, { quoted: info })
+    await sendSticker(nazu, from, { sticker: buffer, author: 'By:', packname: 'Hiudy', type: isVideo ? 'video' : 'image'}, { quoted: info });
   }
   break
+  
+  case 'figualeatoria':case 'randomsticker': {
+   await nazu.sendMessage(from, { sticker: { url: `https://raw.githubusercontent.com/badDevelopper/Testfigu/main/fig (${Math.floor(Math.random() * 8051)}).webp`}}, {quoted: info});
+  };
+  break;
+  
+  case 'rename':case 'roubar': {
+   if(!isQuotedSticker) return reply('Você usou de forma errada... Marque uma figurinha.')
+   author = q.split(`/`)[0];packname = q.split(`/`)[1];
+   if(!q || !author || !packname) return reply(`Formato errado, utilize:\n${prefix}${command} Autor/Pack\nEx: ${prefix}${command} By:/Hiudy`);
+   encmediats = await getFileBuffer(info.message.extendedTextMessage.contextInfo.quotedMessage.stickerMessage, 'sticker');
+   await sendSticker(nazu, from, { sticker: encmediats, author: author, packname: packname, rename: true}, { quoted: info });
+  };
+  break;
+  
+  //FIM COMANDOS DE FIGURINHAS
+  
   
   case 'mention':
   try {
@@ -504,6 +604,23 @@ case 'setdesc':
     }};
     break;
     
+    case 'soadm': case 'onlyadm': case 'soadmin': {
+    if (!isGroup) return reply('❌ *Este comando só pode ser usado em grupos!*');
+    if (!isGroupAdmin) return reply('🚫 *Apenas administradores podem utilizar este comando!*');     
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;   
+    if (!groupData.soadm || groupData.soadm === undefined) {
+        groupData.soadm = true;
+    } else {
+        groupData.soadm = !groupData.soadm;
+    };
+    fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+    if (groupData.soadm) {
+        await reply(`✅ *Modo apenas adm ativado!* Agora apenas administrdores do grupo poderam utilizar o bot*`);
+    } else {
+        await reply('⚠️ *Modo apenas adm desativado!* Agora todos os membros podem utilizar o bot novamente.');
+    }};
+    break;
+    
     case 'legendabv': case 'textbv': {
     if (!isGroup) return reply('❌ *Este comando só pode ser usado em grupos!*');
     if (!isGroupAdmin) return reply('🚫 *Apenas administradores podem configurar a mensagem de boas-vindas!*');
@@ -512,7 +629,7 @@ case 'setdesc':
     groupData.textbv = q;
     fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
     reply(`✅ *Mensagem de boas-vindas configurada com sucesso!*\n\n📌 Nova mensagem:\n"${groupData.textbv}"`);};
-break;
+  break;
     
     
     //COMANDOS DE BRINCADEIRAS

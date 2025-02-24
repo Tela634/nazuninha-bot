@@ -4,7 +4,7 @@
   "text": "🎵 O comando #comando# serve para realizar o download de um vídeo ou áudio do YouTube.\n\nPara utilizá-lo, basta digitar '#prefix##comando#' + o nome da música ou link do vídeo.\n\n👉 *Exemplos:*\n- Para baixar a música 'Back to Black', digite:\n> #prefix##comando# Back to Black\n- Para baixar um vídeo pelo link, digite:\n> #prefix##comando# https://www.youtube.com/watch?v=exemplo"
 },
 {
-  "cmds": ["tiktok", "tiktokaudio", "tiktokvideo", "tiktoks", "tiktoksearch", "ttk"],
+  "cmds": ["tiktok", "tiktokaudio", "tiktokvideo", "tiktoks", "tiktoksearch", "ttk", "tkk"],
   "text": "🎵 O comando #comando# serve para baixar vídeos, áudios ou buscar conteúdos no TikTok.\n\nPara utilizá-lo, basta digitar '#prefix##comando#' + o nome do vídeo, descrição ou link do TikTok.\n\n👉 *Exemplos:*\n- Para baixar um vídeo do TikTok pelo link, digite:\n> #prefix##comando# https://www.tiktok.com/@usuario/video/123456789\n- Para buscar vídeos no TikTok por uma descrição, digite:\n> #prefix##comando# música relaxante"
 },
 {
@@ -16,7 +16,7 @@
   "text": "📸 O comando #comando# serve para baixar fotos ou vídeos do Instagram.\n\nPara utilizá-lo, basta digitar '#prefix##comando#' + o link do post do Instagram.\n\n👉 *Exemplos:*\n- Para baixar uma foto ou vídeo do Instagram, digite:\n> #prefix##comando# https://www.instagram.com/p/ABC12345678/"
 },
 {
-  "cmds": ["menu", "help", "menubn", "menubrincadeira", "menubrincadeiras", "menudown", "menudownload", "menudownloads", "menuadm", "menuadmin", "menuadmins", "menudono", "ownermenu", "menumembros", "menumemb", "menugeral"],
+  "cmds": ["menu", "help", "menubn", "menubrincadeira", "menubrincadeiras", "menudown", "menudownload", "menudownloads", "menuadm", "menuadmin", "menuadmins", "menudono", "ownermenu", "menumembros", "menumemb", "menugeral", "menuferramentas", "menuferramenta", "ferramentas"],
   "text": "📜 O comando #comando# serve para exibir um menu de opções.\n\nPara utilizá-lo, basta digitar '#prefix##comando#'.\n\n👉 *Exemplo:*\n- Para ver o menu, digite:\n> #prefix##comando#"
 },
 {
@@ -80,6 +80,10 @@
   "text": "👋 O comando #comando# serve para ativar ou desativar as mensagens de boas-vindas no grupo.\n\nPara utilizá-lo, basta digitar '#prefix##comando#'.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Funcionamento:*\n- Se as boas-vindas estiverem ativas, elas serão desativadas.\n- Se estiverem desativadas, elas serão ativadas.\n\n👉 *Exemplo:*\n- Para ativar/desativar, digite:\n> #prefix##comando#"
 },
 {
+  "cmds": ["soadm", "onlyadm", "soadmin"],
+  "text": "👋 O comando #comando# serve para ativar ou desativar o modo de apenas administradores utilizarem o bot no grupo.\n\nPara utilizá-lo, basta digitar '#prefix##comando#'.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Funcionamento:*\n- Se o sistema estiver ativado, ele será desativado.\n- Se o sistema estiver desativado, ele será ativado.\n\n👉 *Exemplo:*\n- Para ativar/desativar, digite:\n> #prefix##comando#"
+},
+{
   "cmds": ["legendabv", "textbv"],
   "text": "📝 O comando #comando# serve para alterar o texto de boas-vindas que o bot envia quando alguém entra no grupo.\n\nPara utilizá-lo, digite '#prefix##comando#' + o novo texto.\n\n⚠️ *Requisitos:*\n- O bot precisa ser administrador do grupo.\n- Apenas administradores podem usar este comando.\n\n👉 *Códigos especiais:*\n- *#numerodele#* → Marca o novo membro.\n- *#nomedogp#* → Nome do grupo.\n- *#desc#* → Descrição do grupo.\n- *#membros#* → Número total de membros no grupo.\n\n📌 *Exemplo:*\n> #prefix##comando# Bem-vindo(a) #numerodele# ao grupo *#nomedogp#*! Agora somos #membros# membros. Leia a descrição: #desc#"
 },
@@ -94,5 +98,13 @@
 {
   "cmds": ["chute", "chutar", "tapa", "soco", "socar", "beijo", "beijar", "beijob", "beijarb", "abraco", "abracar", "mata", "matar", "tapar", "goza", "gozar", "mamar", "mamada", "cafune", "morder", "mordida", "lamber", "lambida", "explodir"],
   "text": "👥 Os comandos #comando# servem para brincadeiras de interação. Para utilizá-los, você precisa marcar a mensagem ou o @. Além disso, o modo brincadeira precisa estar ativo.\n\n⚠️ *Requisitos:*\n- O modo brincadeira precisa estar ativo.\n\n👉 *Exemplo:*\n- Para interagir com alguém, responda a uma mensagem ou mencione a pessoa com:\n> #prefix##comando# @usuário"
+},
+{
+  "cmds": ["rankativo", "rankativos"]
+  "text": "👥 O comando #comando# serve para ver os usuários mais ativos do grupo.\n\n👉 *Exemplo:*\n- Para ver os usuários mais ativos do grupo digite:\n> #prefix##comando#"
+},
+{
+  "cmds": ["rankinativo", "rankinativos"]
+  "text": "👥 O comando #comando# serve para ver os usuários menos ativos do grupo.\n\n👉 *Exemplo:*\n- Para ver os usuários menos ativos do grupo digite:\n> #prefix##comando#"
 }
 ]

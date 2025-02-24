@@ -11,6 +11,8 @@ const pinterest = require(__dirname+'/.downloads/.pinterest.js');
 const igdl = require(__dirname+'/.downloads/.igdl.js');
 const FilmesDL = require(__dirname+'/.downloads/.filmes.js');
 const reportError = require(__dirname+'/.utils/.debug.js');
+const styleText = require(__dirname+'/.utils/.gerarnick.js');
+const emojiMix = require(__dirname+'/.utils/.emojimix.js');
 const { sendSticker } = require(__dirname+'/.utils/.sticker.js');
 
-module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL };
+module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix };

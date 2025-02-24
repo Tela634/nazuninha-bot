@@ -26,6 +26,12 @@ async function menu(prefix) {
 │🌟 *${prefix}menumembros*
 │  ➥ _Comandos disponíveis_
 │      _para todos os membros_
+│⚒️ *${prefix}ferramentas*
+│  ➥ _Algumas funções úteis_
+│      _e funcionais_
+│💫 *${prefix}menufig*
+│  ➥ _Criar, baixar e modificar_
+│      _suas figurinhas_
 ╰─────────────────────╯
 
 ╭━━━━━━━━━━━━━━━━━━━━━╮

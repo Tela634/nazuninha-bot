@@ -1,7 +1,7 @@
-async function menuDono(prefix) {
+async function menuMembros(prefix) {
   return `
 ╭━━━━━━━━━━━━━━━━━━━━━╮
-┃ 🌸 *MENU DO DONO* 🌸
+┃ ⚒️ *MENU DE FERRAMENTAS*
 ╰━━━━━━━━━━━━━━━━━━━━━╯
 ╭─────────────────────╮
 │ 🆘 *Precisa de ajuda?*
@@ -9,20 +9,15 @@ async function menuDono(prefix) {
 ╰─────────────────────╯
 
 ╭─────────────────────╮
-│  📂 *Configurar Bot* 
+│  📚 *Comandos Disponíveis*
 ├─────────────────────┤
-│ *${prefix}prefixo* 
-│ *${prefix}numerodono* 
-│ *${prefix}nomedono* 
-│ *${prefix}nomebot* 
-│ *${prefix}fotomenu* 
-│ *${prefix}videomenu* 
+│ *${prefix}gerarnick* ou *${prefix}nick*
 ╰─────────────────────╯
 
 ╭━━━━━━━━━━━━━━━━━━━━━╮
-┃ 🌸 *Explore e Divirta-se!* 🌸
+┃ 🌟 *Divirta-se e Explore!* 🌟
 ╰━━━━━━━━━━━━━━━━━━━━━╯
 `;
 }
 
-module.exports = menuDono;
+module.exports = menuMembros;

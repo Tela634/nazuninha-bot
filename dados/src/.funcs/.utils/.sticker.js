@@ -78,8 +78,8 @@ async function convertToWebp(media, isVideo = false, effect = null) {
 }
 
 // Função para adicionar metadados EXIF
-async function writeExif(media, metadata, isVideo = false) {
-    const wMedia = await convertToWebp(media, isVideo);
+async function writeExif(media, metadata, isVideo = false, rename = false) {
+    const wMedia = rename ? : media.toString('base64') : await convertToWebp(media, isVideo);
     const tmpFileIn = generateTempFileName('webp');
     const tmpFileOut = generateTempFileName('webp');
 
@@ -91,7 +91,7 @@ async function writeExif(media, metadata, isVideo = false) {
             "sticker-pack-id": `https://github.com/hiudyy`,
             "sticker-pack-name": metadata.packname,
             "sticker-pack-publisher": metadata.author,
-            "emojis": metadata.categories ? metadata.categories : [""]
+            "emojis": ["NazuninhaBot"]
         };
         const exifAttr = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00]);
         const jsonBuff = Buffer.from(JSON.stringify(json), "utf-8");
@@ -107,7 +107,7 @@ async function writeExif(media, metadata, isVideo = false) {
 }
 
 // Função principal para enviar sticker
-const sendSticker = async (nazu, jid, { sticker: path, type = 'image', packname = '', author = '', effect = null }, { quoted } = {}) => {
+const sendSticker = async (nazu, jid, { sticker: path, type = 'image', packname = '', author = '', effect = null, rename = false }, { quoted } = {}) => {
     if (!type || !['image', 'video'].includes(type)) {
         throw new Error('O tipo de mídia deve ser "image" ou "video".');
     }
@@ -116,7 +116,7 @@ const sendSticker = async (nazu, jid, { sticker: path, type = 'image', packname 
 
     let buffer;
     if (packname || author) {
-        buffer = await writeExif(buff, { packname, author }, type === 'video');
+        buffer = await writeExif(buff, { packname, author }, type === 'video', rename);
     } else {
         buffer = await convertToWebp(buff, type === 'video', effect);
     }
