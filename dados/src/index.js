@@ -335,7 +335,7 @@ try {
   emoji1 = q.split(`/`)[0];emoji2 = q.split(`/`)[1];
   if(!q || !emoji1 || !emoji2) return reply(`Formato errado, utilize:\n${prefix}${command} emoji1/emoji2\nEx: ${prefix}${command} 🤓/🙄`);
   datzc = await emojiMix(emoji1, emoji2);
-  await sendSticker(nazu, from, { sticker: {url: datzc}, author: 'By:', packname: 'Hiudy', type: 'image'}, { quoted: info });
+  await sendSticker(nazu, from, { sticker: {url: datzc}, author: 'Hiudy', packname: 'By:', type: 'image'}, { quoted: info });
   };
   break;
   
@@ -345,7 +345,7 @@ try {
   fonte = ["Days%20One","Domine","Exo","Fredoka%20One","Gentium%20Basic","Gloria%20Hallelujah","Great%20Vibes","Orbitron","PT%20Serif","Pacifico"];
   cores = cor[Math.floor(Math.random() * (cor.length))];
   fontes = fonte[Math.floor(Math.random() * (fonte.length))];
-  await sendSticker(nazu, from, { sticker: {url: `https://huratera.sirv.com/PicsArt_08-01-10.00.42.png?profile=Example-Text&text.0.text=${q}&text.0.outline.color=000000&text.0.outline.blur=0&text.0.outline.opacity=55&text.0.color=${cores}&text.0.font.family=${fontes}&text.0.background.color=ff0000`}, author: 'By:', packname: 'Hiudy', type: 'image'}, { quoted: info });
+  await sendSticker(nazu, from, { sticker: {url: `https://huratera.sirv.com/PicsArt_08-01-10.00.42.png?profile=Example-Text&text.0.text=${q}&text.0.outline.color=000000&text.0.outline.blur=0&text.0.outline.opacity=55&text.0.color=${cores}&text.0.font.family=${fontes}&text.0.background.color=ff0000`}, author: 'Hiudy', packname: 'By:', type: 'image'}, { quoted: info });
   };
   break;
   
@@ -357,7 +357,7 @@ try {
     var isVideo = !!boij;
     if (isVideo && boij.seconds > 9.9) return reply(`O vídeo precisa ter no máximo 9.9 segundos para ser convertido em figurinha.`);
     var buffer = await getFileBuffer(isVideo ? boij : boij2, isVideo ? 'video' : 'image')
-    await sendSticker(nazu, from, { sticker: buffer, author: 'By:', packname: 'Hiudy', type: isVideo ? 'video' : 'image'}, { quoted: info });
+    await sendSticker(nazu, from, { sticker: buffer, author: 'Hiudy', packname: 'By:', type: isVideo ? 'video' : 'image'}, { quoted: info });
   }
   break
   
@@ -371,7 +371,7 @@ try {
    author = q.split(`/`)[0];packname = q.split(`/`)[1];
    if(!q || !author || !packname) return reply(`Formato errado, utilize:\n${prefix}${command} Autor/Pack\nEx: ${prefix}${command} By:/Hiudy`);
    encmediats = await getFileBuffer(info.message.extendedTextMessage.contextInfo.quotedMessage.stickerMessage, 'sticker');
-   await sendSticker(nazu, from, { sticker: `data:image/jpeg;base64,${encmediats.toString('base64')}`, author: author, packname: packname, rename: true}, { quoted: info });
+   await sendSticker(nazu, from, { sticker: `data:image/jpeg;base64,${encmediats.toString('base64')}`, author: packname, packname: author, rename: true}, { quoted: info });
   };
   break;
   
