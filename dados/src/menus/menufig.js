@@ -13,7 +13,7 @@ async function menuMembros(prefix) {
 ├─────────────────────┤
 │ *${prefix}emojimix*
 │ *${prefix}ttp*
-│ *${prefix}st*
+│ *${prefix}sticker* ou *${prefix}s*
 ╰─────────────────────╯
 
 ╭─────────────────────╮
