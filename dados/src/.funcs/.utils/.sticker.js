@@ -79,7 +79,7 @@ async function convertToWebp(media, isVideo = false, effect = null) {
 
 // Função para adicionar metadados EXIF
 async function writeExif(media, metadata, isVideo = false, rename = false) {
-    const wMedia = rename ? : media.toString('base64') : await convertToWebp(media, isVideo);
+    const wMedia = rename ? media.toString('base64') : await convertToWebp(media, isVideo);
     const tmpFileIn = generateTempFileName('webp');
     const tmpFileOut = generateTempFileName('webp');
 
