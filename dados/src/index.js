@@ -243,7 +243,7 @@ try {
    var boij = RSM?.videoMessage || info.message?.videoMessage || RSM?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage || RSM?.viewOnceMessage?.message?.videoMessage;
     if (!boij && !boij2) return reply(`Marque uma imagem ou um vídeo, com o comando: ${prefix + command} (mencionando a mídia)`);
     var isVideo = !!boij;
-    var buffer = (await getFileBuffer(isVideo ? boij : boij2, isVideo ? 'video' : 'image')).toString('base64');
+    var buffer = await getFileBuffer(isVideo ? boij : boij2, isVideo ? 'video' : 'image');
     fs.writeFileSync(__dirname+'/../midias/menu.' + (isVideo ? 'mp4' : 'jpg'), buffer);
     await reply('✅ Mídia do menu atualizada com sucesso.');
   } catch(e) {
