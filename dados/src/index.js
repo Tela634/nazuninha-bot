@@ -52,6 +52,9 @@ try {
   let groupData = {};
   try {groupData = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${from}.json`));} catch (error) {};
   const isModoBn = groupData.modobrincadeira ? true : false;
+  const isOnlyAdmin = groupData.soadm ? true : false;
+  if(isGroup && !isGroupAdmin && isOnlyAdmin) return;
+  if(isGroup && !isGroupAdmin && isCmd && groupData.blockedCommands && groupData.blockedCommands[command]) return reply('Este comando foi bloqueado pelos administradores do grupo.');
  
  //CONTADOR DE MENSAGEM 🤓
  if(isGroup) {
@@ -630,7 +633,85 @@ case 'setdesc':
     fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
     reply(`✅ *Mensagem de boas-vindas configurada com sucesso!*\n\n📌 Nova mensagem:\n"${groupData.textbv}"`);};
   break;
+  
+  case 'mute':
+  case 'mutar':
+  try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para mutar membros.');
+    if (!menc_os2) return reply('❌ Marque o usuário que deseja mutar.');
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;
+    let groupData = fs.existsSync(groupFilePath) ? JSON.parse(fs.readFileSync(groupFilePath)) : { mutedUsers: {} };
+    groupData.mutedUsers = groupData.mutedUsers || {};
+    groupData.mutedUsers[menc_os2] = true;
+    fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+    await nazu.sendMessage(from, {text: `✅ @${menc_os2.split('@')[0]} foi mutado. Se enviar mensagens, será banido.`, mentions: [menc_os2] }, { quoted: info });
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao tentar mutar o usuário.');
+  }
+  break;
+  
+  case 'desmute':
+  case 'desmutar':
+  try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!menc_os2) return reply('❌ Marque o usuário que deseja desmutar.');
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;
+    let groupData = fs.existsSync(groupFilePath) ? JSON.parse(fs.readFileSync(groupFilePath)) : { mutedUsers: {} };
+    groupData.mutedUsers = groupData.mutedUsers || {};
+    if (groupData.mutedUsers[menc_os2]) {
+      delete groupData.mutedUsers[menc_os2];
+      fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+      await nazu.sendMessage(from, {text: `✅ @${menc_os2.split('@')[0]} foi desmutado e pode enviar mensagens novamente.`, mentions: [menc_os2]}, { quoted: info });
+    } else {
+      reply('❌ Este usuário não está mutado.');
+    }
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao tentar desmutar o usuário.');
+  }
+  break;
+  
+  case 'blockcmd':
+  try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!q) return reply('❌ Digite o comando que deseja bloquear. Exemplo: /blockcmd sticker');
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;
+    let groupData = fs.existsSync(groupFilePath) ? JSON.parse(fs.readFileSync(groupFilePath)) : { blockedCommands: {} };
+    groupData.blockedCommands = groupData.blockedCommands || {};
+    groupData.blockedCommands[q.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replaceAll(prefix, '')] = true;
+    fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+    reply(`✅ O comando *${q.trim()}* foi bloqueado e só pode ser usado por administradores.`);
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao tentar bloquear o comando.');
+  }
+  break;
     
+  case 'unblockcmd':
+  try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!q) return reply('❌ Digite o comando que deseja desbloquear. Exemplo: /unblockcmd sticker');
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;
+    let groupData = fs.existsSync(groupFilePath) ? JSON.parse(fs.readFileSync(groupFilePath)) : { blockedCommands: {} };
+    groupData.blockedCommands = groupData.blockedCommands || {};
+    if (groupData.blockedCommands[q.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replaceAll(prefix, '')]) {
+      delete groupData.blockedCommands[q.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replaceAll(prefix, '')];
+      fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+      reply(`✅ O comando *${q.trim()}* foi desbloqueado e pode ser usado por todos.`);
+    } else {
+      reply('❌ Este comando não está bloqueado.');
+    }
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao tentar desbloquear o comando.');
+  }
+  break;
     
     //COMANDOS DE BRINCADEIRAS
 

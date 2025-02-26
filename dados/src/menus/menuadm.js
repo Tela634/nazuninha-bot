@@ -16,6 +16,10 @@ async function menuadm(prefix) {
 │ *${prefix}ban* ou *${prefix}b*
 │ *${prefix}promover*
 │ *${prefix}rebaixar*
+│ *${prefix}mute*
+│ *${prefix}desmute*
+│ *${prefix}blockcmd*
+│ *${prefix}unblockcmd*
 │ *${prefix}setname*
 │ *${prefix}setdesc*
 ╰─────────────────────╯
