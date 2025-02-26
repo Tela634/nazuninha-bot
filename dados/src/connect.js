@@ -87,6 +87,7 @@ async function startNazu(retryCount = 0) {
   try {
     if (!m.messages || !Array.isArray(m.messages)) return;
     for (const info of m.messages) {
+    console.log(info);
     if(!info.message) return;
     if(m.type == "append") return;  
     const indexModulePath = __dirname + '/index.js';
