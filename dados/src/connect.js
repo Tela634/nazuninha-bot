@@ -20,6 +20,17 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 return new Promise(resolve => rl.question(question, (answer) => { rl.close(); resolve(answer.trim());}));
 };
 
+async function getMessageByIdFromServer(sock, chatId, messageId, limit = 15) {
+    try {
+        const messages = await sock.fetchMessagesFromWA(chatId, limit);
+        const message = messages.find(msg => msg.key.id === messageId);        
+        return message || null;
+    } catch (error) {
+        console.error('Erro ao buscar mensagem:', error);
+        return null;
+    };
+};
+
 async function startNazu(retryCount = 0) {
  const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
  const { version } = await fetchLatestBaileysVersion();
@@ -87,6 +98,9 @@ async function startNazu(retryCount = 0) {
   try {
     if (!m.messages || !Array.isArray(m.messages)) return;
     for (const info of m.messages) {
+    if(info.messageStubType && info.messageStubType == 2) {
+    info.message = await getMessageByIdFromServer(nazu, info.key.remoteJid, info.key.id);
+    };
     console.log(info);
     if(!info.message) return;
     if(m.type == "append") return;  
