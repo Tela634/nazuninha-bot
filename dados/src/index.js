@@ -83,8 +83,36 @@ try {
  const getFileBuffer = async (mediakey, MediaType) => {const stream = await downloadContentFromMessage(mediakey, MediaType);let buffer = Buffer.from([]);for await(const chunk of stream) {buffer = Buffer.concat([buffer, chunk]) };return buffer}
  //FIM FUNÇÕES BASICAS
  
- //SISTEMA ANTI PORNOGRAFIA (CRIP) 🤫
- const _0x4c386a=_0x134f;function _0x134f(_0x1666e1,_0x50d246){const _0x18a571=_0x18a5();return _0x134f=function(_0x134fc3,_0x39a54b){_0x134fc3=_0x134fc3-0xff;let _0x2b066c=_0x18a571[_0x134fc3];return _0x2b066c;},_0x134f(_0x1666e1,_0x50d246);}(function(_0x20349f,_0x1bd72c){const _0x314b33=_0x134f,_0x2bedda=_0x20349f();while(!![]){try{const _0x29db89=parseInt(_0x314b33(0x10d))/0x1+parseInt(_0x314b33(0x114))/0x2*(parseInt(_0x314b33(0x10a))/0x3)+parseInt(_0x314b33(0x106))/0x4+parseInt(_0x314b33(0x11e))/0x5+parseInt(_0x314b33(0x10b))/0x6+-parseInt(_0x314b33(0x111))/0x7*(-parseInt(_0x314b33(0x102))/0x8)+-parseInt(_0x314b33(0x11b))/0x9;if(_0x29db89===_0x1bd72c)break;else _0x2bedda['push'](_0x2bedda['shift']());}catch(_0x555b27){_0x2bedda['push'](_0x2bedda['shift']());}}}(_0x18a5,0x5354f));if(isGroup&&isAntiPorn&&(isImage||isVisuU||isVisuU2)){const midiaz=info[_0x4c386a(0x115)]?.[_0x4c386a(0x101)]||info[_0x4c386a(0x115)]?.['viewOnceMessageV2']?.[_0x4c386a(0x115)]?.[_0x4c386a(0x101)]||info[_0x4c386a(0x115)]?.[_0x4c386a(0x100)]?.['message']?.[_0x4c386a(0x101)]||info['message']?.['videoMessage']||info[_0x4c386a(0x115)]?.['stickerMessage']||info[_0x4c386a(0x115)]?.[_0x4c386a(0x105)]?.[_0x4c386a(0x115)]?.[_0x4c386a(0x104)]||info['message']?.[_0x4c386a(0x100)]?.['message']?.[_0x4c386a(0x104)];if(midiaz)try{const stream=await getFileBuffer(midiaz,_0x4c386a(0x10c)),imgbbResponse=await axios['post'](_0x4c386a(0x118),{'image':stream[_0x4c386a(0xff)](_0x4c386a(0x107))});if(imgbbResponse[_0x4c386a(0x103)]?.[_0x4c386a(0x103)]?.[_0x4c386a(0x113)]){const mediaURL=imgbbResponse[_0x4c386a(0x103)][_0x4c386a(0x103)][_0x4c386a(0x113)],deleteURL=imgbbResponse[_0x4c386a(0x103)]['data'][_0x4c386a(0x112)],apiResponse=await axios[_0x4c386a(0x11d)]('https://nsfw-demo.sashido.io/api/image/classify?url='+mediaURL),{Porn,Hentai}=apiResponse[_0x4c386a(0x103)][_0x4c386a(0x108)]((_0x240d51,_0x30936c)=>({..._0x240d51,[_0x30936c[_0x4c386a(0x10e)]]:_0x30936c[_0x4c386a(0x116)]}),{});let userMessage='',actionTaken=![];(Porn>0.6||Hentai>0.6)&&(await nazu[_0x4c386a(0x10f)](from,{'delete':info[_0x4c386a(0x109)]}),userMessage='🚫\x20@'+sender['split']('@')[0x0]+_0x4c386a(0x11a)+apiResponse[_0x4c386a(0x103)][0x0][_0x4c386a(0x10e)]+_0x4c386a(0x110)+apiResponse[_0x4c386a(0x103)][0x0][_0x4c386a(0x116)][_0x4c386a(0x11c)](0x2)+'\x20e\x20foi\x20removida!',await nazu[_0x4c386a(0x117)](from,[sender],'remove'),actionTaken=!![]),actionTaken&&await nazu[_0x4c386a(0x10f)](from,{'text':userMessage,'mentions':[sender]},{'quoted':info}),setTimeout(async()=>{const _0x5d7873=_0x4c386a;try{await axios[_0x5d7873(0x11d)](deleteURL);}catch(_0x4761f1){}},0x1388);}}catch(_0x3c4a28){console['error'](_0x4c386a(0x119),_0x3c4a28);}}function _0x18a5(){const _0x1cbc90=['https://api.imgbb.com/1/upload?key=c558a5ed201ebba7ad3720e01d53445c&expiration=60','Erro\x20ao\x20processar\x20imagem:','\x20foi\x20removido\x20por\x20compartilhar\x20conteúdo\x20impróprio.\x0a\x0a🚫\x20Esta\x20mídia\x20contém\x20conteúdo\x20adulto\x20(','5995395HstxOh','toFixed','get','593820SWtvDP','toString','viewOnceMessage','imageMessage','104JDAqsV','data','videoMessage','viewOnceMessageV2','965904uIjDRA','base64','reduce','key','259797LgJKeF','2588004WsDnCA','image','41507cNsuIx','className','sendMessage',')\x20com\x20uma\x20probabilidade\x20de\x20','47278dnkXgL','delete_url','url','2GoMuiF','message','probability','groupParticipantsUpdate'];_0x18a5=function(){return _0x1cbc90;};return _0x18a5();}
+  //SISTEMA ANTI PORNOGRAFIA (CRIP) 🤫
+ if (isGroup && isAntiPorn && (isImage || isVisuU || isVisuU2)) {
+    const midiaz = info.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || info.message?.videoMessage || info.message?.stickerMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage;
+    if (midiaz) {
+        try {
+            const stream = await getFileBuffer(midiaz, "image");
+            const imgbbResponse = await axios.post(`https://api.imgbb.com/1/upload?key=c558a5ed201ebba7ad3720e01d53445c&expiration=60`,{ image: stream });
+            if (imgbbResponse.data?.data?.url) {
+                const mediaURL = imgbbResponse.data.data.url;
+                const deleteURL = imgbbResponse.data.data.delete_url;
+                const apiResponse = await axios.get(`https://nsfw-demo.sashido.io/api/image/classify?url=${mediaURL}`);
+                const { Porn, Hentai } = apiResponse.data.reduce((acc, item) => ({...acc,[item.className]: item.probability}), {});
+                let userMessage = '';
+                let actionTaken = false;
+                if (Porn > 0.60 || Hentai > 0.60) {
+                    await nazu.sendMessage(from, { delete: info.key });
+                    userMessage = `🚫 @${sender.split('@')[0]} foi removido por compartilhar conteúdo impróprio.\n\n🚫 Esta mídia contém conteúdo adulto (${apiResponse.data[0].className}) com uma probabilidade de ${apiResponse.data[0].probability.toFixed(2)} e foi removida!`;
+                    await nazu.groupParticipantsUpdate(from, [sender], "remove");
+                    actionTaken = true;
+                }
+                if (actionTaken) {
+                    await nazu.sendMessage(from, { text: userMessage, mentions: [sender] }, { quoted: info });
+                }
+                setTimeout(async () => {try {await axios.get(deleteURL);} catch (err) {}}, 5000);
+            }
+        } catch (error) {
+            console.error("Erro ao processar imagem:", error);
+        }
+    }
+}
  //FIM 🤫
  
  //DEFINIÇÕES DE ISQUOTED
