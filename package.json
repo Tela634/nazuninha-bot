@@ -25,6 +25,7 @@
     "cheerio": "latest",
     "yt-search": "latest",
     "node-webpmux": "latest",
-    "fluent-ffmpeg": "latest"
+    "fluent-ffmpeg": "latest",
+    "form-data": "latest"
   }
 }

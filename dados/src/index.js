@@ -5,6 +5,7 @@
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix }  = require(__dirname+'/.funcs/.exports.js');
 const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker } = require(__dirname+'/menus/index.js');
+const FormData = require("form-data");
 const axios = require('axios');
 const pathz = require('path');
 const fs = require('fs');
@@ -89,7 +90,9 @@ try {
     if (midiaz) {
         try {
             const stream = await getFileBuffer(midiaz, "image");
-            const imgbbResponse = await axios.post(`https://api.imgbb.com/1/upload?key=c558a5ed201ebba7ad3720e01d53445c&expiration=60`,{ image: stream });
+            const form = new FormData();
+            form.append("image", stream);
+            const imgbbResponse = await axios.post("https://api.imgbb.com/1/upload", form, { headers: { ...form.getHeaders(),}, params: { key: "c558a5ed201ebba7ad3720e01d53445c", expiration: 60,},});
             if (imgbbResponse.data?.data?.url) {
                 const mediaURL = imgbbResponse.data.data.url;
                 const deleteURL = imgbbResponse.data.data.delete_url;
