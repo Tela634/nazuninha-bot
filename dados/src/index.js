@@ -3,7 +3,7 @@
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
-const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix }  = require(__dirname+'/.funcs/.exports.js');
+const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload }  = require(__dirname+'/.funcs/.exports.js');
 const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker } = require(__dirname+'/menus/index.js');
 const FormData = require("form-data");
 const axios = require('axios');
