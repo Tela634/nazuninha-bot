@@ -28,6 +28,7 @@ async function menuadm(prefix) {
 ┃  🌟 *Ativações disponíveis*
 ├─────────────────────┤
 │ *${prefix}modobn*
+│ *${prefix}modonsfw*
 │ *${prefix}bemvindo* ou *${prefix}bv
 │ *${prefix}soadm*
 ╰━━━━━━━━━━━━━━━━━━━━━╯

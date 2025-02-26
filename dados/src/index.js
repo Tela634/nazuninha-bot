@@ -624,6 +624,26 @@ case 'setdesc':
     }};
     break;
     
+    case 'modonsfw':
+    case 'modo+18':
+    try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem ativar o modo +18.');
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;
+    let groupData = fs.existsSync(groupFilePath) ? JSON.parse(fs.readFileSync(groupFilePath)) : { nsfwMode: false };
+    groupData.nsfwMode = !groupData.nsfwMode;
+    fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+    if (groupData.nsfwMode) {
+      await nazu.sendMessage(from, {text: `🔞 *Modo +18 ativado!*`,}, { quoted: info });
+    } else {
+      await nazu.sendMessage(from, {text: `✅ *Modo +18 desativado!.*`,}, { quoted: info });
+    }
+    } catch (e) {
+     console.error(e);
+     reply('❌ Ocorreu um erro ao tentar alterar o modo +18.');
+    }
+    break;
+    
     case 'legendabv': case 'textbv': {
     if (!isGroup) return reply('❌ *Este comando só pode ser usado em grupos!*');
     if (!isGroupAdmin) return reply('🚫 *Apenas administradores podem configurar a mensagem de boas-vindas!*');
