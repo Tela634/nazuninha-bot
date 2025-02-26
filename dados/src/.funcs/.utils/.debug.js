@@ -3,7 +3,7 @@
 */
 //Criador: hiudy
 //Versão: 0.0.1
-//Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
+//Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas
 
 const axios = require('axios');
 
