@@ -84,18 +84,128 @@ try {
  const getFileBuffer = async (mediakey, MediaType) => {const stream = await downloadContentFromMessage(mediakey, MediaType);let buffer = Buffer.from([]);for await(const chunk of stream) {buffer = Buffer.concat([buffer, chunk]) };return buffer}
  //FIM FUNÇÕES BASICAS
  
+ if (isGroup && (isImage || msg.message?.viewOnceMessageV2 || type == "viewOnceMessage" || isVisuU2 || isVisuU || isVideo)) {
+    const midiaz = msg.message?.imageMessage || msg.message?.viewOnceMessageV2?.message?.imageMessage || msg.message?.viewOnceMessage?.message?.imageMessage || msg.message?.videoMessage || msg.message?.stickerMessage || msg.message?.viewOnceMessageV2?.message?.videoMessage || msg.message?.viewOnceMessage?.message?.videoMessage;
+
+    if (!midiaz) return;
+
+    try {
+        const mimetype = midiaz.mimetype;
+        const isVideoType = mimetype.includes("video");
+        const isImageType = mimetype.includes("image") || mimetype.includes("viewOnceMessage")
+
+        async function uploadAndAnalyze(imagePath) {
+            const form = new FormData();
+            form.append("image", fs.createReadStream(imagePath));
+
+            
+
+            fs.unlinkSync(imagePath);
+
+            if (!imgbbResponse.data || !imgbbResponse.data.data?.url || !imgbbResponse.data.data?.delete_url) {
+                return reply("❌ Erro ao hospedar a mídia.");
+            }
+
+            const mediaURL = imgbbResponse.data.data.url;
+            const deleteURL = imgbbResponse.data.data.delete_url;
+
+            const apiResponse = await axios.get(`https://nsfw-demo.sashido.io/api/image/classify?url=${mediaURL}`);
+
+            const pornProbability = apiResponse.data.find(item => item.className === "Porn")?.probability || 0;
+            const sexyProbability = apiResponse.data.find(item => item.className === "Sexy")?.probability || 0;
+            const hentaiProbability = apiResponse.data.find(item => item.className === "Hentai")?.probability || 0;
+
+            let userMessage = '';
+            let actionTaken = false;
+
+            if (pornProbability > 0.60 || sexyProbability > 0.60 || hentaiProbability > 0.60) {
+                await bot.sendMessage(from, { delete: msg.key });
+                userMessage = `🚫 @${msg.key.participant.replace('@s.whatsapp.net', '')} foi removido por compartilhar conteúdo impróprio.\n\n🚫 Esta mídia contém conteúdo adulto (${apiResponse.data[0].className}) com uma probabilidade de ${apiResponse.data[0].probability.toFixed(2)} e foi removida!`;
+                await bot.groupParticipantsUpdate(from, [msg.key.participant], "remove");
+                actionTaken = true;
+            } else if (pornProbability > 0.50 || sexyProbability > 0.50 || hentaiProbability > 0.50) {
+                await bot.sendMessage(from, { delete: msg.key });
+                userMessage = `⚠️ @${msg.key.participant.replace('@s.whatsapp.net', '')} conteúdo inapropriado detectado. Na próxima é banimento.`;
+                actionTaken = true;
+            } else if (pornProbability > 0.40 || sexyProbability > 0.40 || hentaiProbability > 0.40) {
+                userMessage = `Cuidado com o que manda, amigo. Estou com o anti-pornografia ativo.`;
+                actionTaken = true;
+            }
+
+            if (actionTaken) {
+                await bot.sendMessage(from, { text: userMessage, mentions: [msg.key.participant] }, { quoted: msg });
+            }
+
+            setTimeout(async () => {
+                try {
+                    await axios.post(deleteURL);
+                    console.log("✅ Imagem excluída do ImgBB");
+                } catch (err) {
+                    console.log("❌ Falha ao excluir a imagem do ImgBB:", err.response?.data || err.message);
+                }
+            }, 5000);
+        }
+
+        if (isImageType) {
+            const stream = await downloadContentFromMessage(midiaz, "image");
+            let buffer = Buffer.alloc(0);
+
+            for await (const chunk of stream) {
+                buffer = Buffer.concat([buffer, chunk]);
+            }
+
+            if (buffer.length === 0) return reply("❌ Falha ao obter a mídia.");
+
+            const tempImagePath = `./temp_${Date.now()}.jpg`;
+            fs.writeFileSync(tempImagePath, buffer);
+
+            await uploadAndAnalyze(tempImagePath);
+        } 
+        else if (isVideoType) {
+            const stream = await downloadContentFromMessage(midiaz, "video");
+            let buffer = Buffer.alloc(0);
+
+            for await (const chunk of stream) {
+                buffer = Buffer.concat([buffer, chunk]);
+            }
+
+            if (buffer.length === 0) return reply("❌ Falha ao obter a mídia.");
+
+            let tempFilePath = `./temp_${Date.now()}.mp4`;
+            fs.writeFileSync(tempFilePath, buffer);
+
+            const tempImagePath = `./temp_${Date.now()}.jpg`;
+            await new Promise((resolve, reject) => {
+                ffmpeg(tempFilePath)
+                    .on('end', resolve)
+                    .on('error', reject)
+                    .screenshots({
+                        count: 1,
+                        folder: './',
+                        filename: tempImagePath
+                    });
+            });
+
+            fs.unlinkSync(tempFilePath);
+
+            await uploadAndAnalyze(tempImagePath);
+        } else {
+            return reply("❌ A mídia enviada não é nem uma imagem, nem um vídeo.");
+        }
+    } catch (error) {
+        console.error("❌ Erro ao analisar a mídia:", error);
+        reply("❌ Ocorreu um erro ao analisar a mídia.");
+    }
+}
+
   //SISTEMA ANTI PORNOGRAFIA (CRIP) 🤫
  if (isGroup && isAntiPorn && (isImage || isVisuU || isVisuU2)) {
     const midiaz = info.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || info.message?.videoMessage || info.message?.stickerMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage;
     if (midiaz) {
         try {
             const stream = await getFileBuffer(midiaz, "image");
-            const form = new FormData();
-            form.append("image", stream);
-            const imgbbResponse = await axios.post("https://api.imgbb.com/1/upload", form, { headers: { ...form.getHeaders(),}, params: { key: "c558a5ed201ebba7ad3720e01d53445c", expiration: 60,},});
-            if (imgbbResponse.data?.data?.url) {
-                const mediaURL = imgbbResponse.data.data.url;
-                const deleteURL = imgbbResponse.data.data.delete_url;
+            const mediaURL = await upload(stream, true);
+            if (mediaURL) {
                 const apiResponse = await axios.get(`https://nsfw-demo.sashido.io/api/image/classify?url=${mediaURL}`);
                 const { Porn, Hentai } = apiResponse.data.reduce((acc, item) => ({...acc,[item.className]: item.probability}), {});
                 let userMessage = '';
@@ -108,9 +218,8 @@ try {
                 }
                 if (actionTaken) {
                     await nazu.sendMessage(from, { text: userMessage, mentions: [sender] }, { quoted: info });
-                }
-                setTimeout(async () => {try {await axios.get(deleteURL);} catch (err) {}}, 5000);
-            }
+                };
+            };
         } catch (error) {
             console.error("Erro ao processar imagem:", error);
         }
