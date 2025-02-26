@@ -624,6 +624,59 @@ case 'setdesc':
     }};
     break;
     
+    case 'antilinkgp':
+    try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para banir membros.');
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;
+    let groupData = fs.existsSync(groupFilePath) ? JSON.parse(fs.readFileSync(groupFilePath)) : { antilinkgp: false };
+    groupData.antilinkgp = !groupData.antilinkgp;
+    fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+    const message = groupData.antilinkgp ? `✅ *Antilinkgp foi ativado com sucesso!*\n\nAgora, se alguém enviar links de outros grupos, será banido automaticamente. Mantenha o grupo seguro! 🛡️` : `✅ *Antilinkgp foi desativado.*\n\nLinks de outros grupos não serão mais bloqueados. Use com cuidado! ⚠️`;
+     reply(`${message}`);
+    } catch (e) {
+     console.error(e);
+     reply('❌ Ocorreu um erro ao tentar configurar o antilinkgp.');
+    }
+    break;
+    
+    case 'antiporn':
+    try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para banir membros.');
+
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;
+    let groupData = fs.existsSync(groupFilePath) ? JSON.parse(fs.readFileSync(groupFilePath)) : { antiporn: false };
+    groupData.antiporn = !groupData.antiporn;
+    fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+    const message = groupData.antiporn ? `✅ *Antiporn foi ativado com sucesso!*\n\nAgora, se alguém enviar conteúdo adulto (NSFW), será banido automaticamente. Mantenha o grupo seguro e adequado! 🛡️` : `✅ *Antiporn foi desativado.*\n\nConteúdo adulto não será mais bloqueado. Use com responsabilidade! ⚠️`;
+
+    reply(`${message}`);
+    } catch (e) {
+     console.error(e);
+     reply('❌ Ocorreu um erro ao tentar configurar o antiporn.');
+    }
+    break;
+    
+    case 'antigore':
+    try {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para banir membros.');
+    const groupFilePath = __dirname + `/../database/grupos/${from}.json`;
+    let groupData = fs.existsSync(groupFilePath) ? JSON.parse(fs.readFileSync(groupFilePath)) : { antigore: false };
+    groupData.antigore = !groupData.antigore;
+    fs.writeFileSync(groupFilePath, JSON.stringify(groupData));
+    const message = groupData.antigore ? `✅ *Antigore foi ativado com sucesso!*\n\nAgora, se alguém enviar conteúdo gore, será banido automaticamente. Mantenha o grupo seguro e saudável! 🛡️` : `✅ *Antigore foi desativado.*\n\nConteúdo gore não será mais bloqueado. Use com cuidado! ⚠️`;
+    reply(`${message}`);
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro ao tentar configurar o antigore.');
+  }
+  break;
+    
     case 'modonsfw':
     case 'modo+18':
     try {
