@@ -22,6 +22,9 @@ try {
  const baileys = require('baileys');
  const type = baileys.getContentType(info.message);
  
+ const isImage = type == 'imageMessage'
+ const isVideo = type == 'videoMessage'
+
  const pushname = info.pushName ? info.pushName : '';
  
  var body = info.message?.conversation || info.message?.viewOnceMessageV2?.message?.imageMessage?.caption || info.message?.viewOnceMessageV2?.message?.videoMessage?.caption || info.message?.imageMessage?.caption || info.message?.videoMessage?.caption || info.message?.extendedTextMessage?.text || info.message?.viewOnceMessage?.message?.videoMessage?.caption || info.message?.viewOnceMessage?.message?.imageMessage?.caption || info.message?.documentWithCaptionMessage?.message?.documentMessage?.caption || info.message?.editedMessage?.message?.protocolMessage?.editedMessage?.extendedTextMessage?.text || info.message?.editedMessage?.message?.protocolMessage?.editedMessage?.imageMessage?.caption || info?.text || '';
@@ -53,15 +56,50 @@ try {
   try {groupData = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${from}.json`));} catch (error) {};
   const isModoBn = groupData.modobrincadeira ? true : false;
   const isOnlyAdmin = groupData.soadm ? true : false;
+  const isAntiPorn = groupData.antiporn ? true : false;
   if(isGroup && !isGroupAdmin && isOnlyAdmin) return;
   if(isGroup && !isGroupAdmin && isCmd && groupData.blockedCommands && groupData.blockedCommands[command]) return reply('Este comando foi bloqueado pelos administradores do grupo.');
+ 
+ 
+ //SISTEMA ANTI PORNOGRAFIA (CRIP) 🤫
+if (isGroup && isAntiPorn && isImage) {
+    const midiaz = info.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || info.message?.videoMessage || info.message?.stickerMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage;
+    if (midiaz) {
+        try {
+            const stream = await getFileBuffer(midiaz, "image");
+            const imgbbResponse = await axios.post(`https://api.imgbb.com/1/upload?key=c558a5ed201ebba7ad3720e01d53445c&expiration=60`,{ image: stream.toString('base64') });
+            if (imgbbResponse.data?.data?.url) {
+                const mediaURL = imgbbResponse.data.data.url;
+                const deleteURL = imgbbResponse.data.data.delete_url;
+                const apiResponse = await axios.get(`https://nsfw-demo.sashido.io/api/image/classify?url=${mediaURL}`);
+                const { Porn, Hentai } = apiResponse.data.reduce((acc, item) => ({...acc,[item.className]: item.probability}), {});
+                let userMessage = '';
+                let actionTaken = false;
+                if (Porn > 0.60 || Hentai > 0.60) {
+                    await nazu.sendMessage(from, { delete: info.key });
+                    userMessage = `🚫 @${sender.split('@')[0]} foi removido por compartilhar conteúdo impróprio.\n\n🚫 Esta mídia contém conteúdo adulto (${apiResponse.data[0].className}) com uma probabilidade de ${apiResponse.data[0].probability.toFixed(2)} e foi removida!`;
+                    await nazu.groupParticipantsUpdate(from, [sender], "remove");
+                    actionTaken = true;
+                }
+                if (actionTaken) {
+                    await nazu.sendMessage(from, { text: userMessage, mentions: [sender] }, { quoted: info });
+                }
+                setTimeout(async () => {try {await axios.get(deleteURL);} catch (err) {}}, 5000);
+            }
+        } catch (error) {
+            console.error("Erro ao processar imagem:", error);
+        }
+    }
+}
+ //FIM 🤫
+ 
  
  //CONTADOR DE MENSAGEM 🤓
  if(isGroup) {
  if(!groupData.contador) groupData.contador = [];
  if(JSON.stringify(groupData.contador).includes(sender)) {
   const i2 = groupData.contador.map(i => i.id).indexOf(sender);
-  if(isCmd) {groupData.contador[i2].cmd++} else if(type=="stickerMessage") {groupData.contador[i2].figu++} else {groupData.contador[i2].msg++};
+  if(isCmd && groupData.contador[i2].cmd) {groupData.contador[i2].cmd++} else if(type=="stickerMessage" && groupData.contador[i2].figu) {groupData.contador[i2].figu++} else if(groupData.contador[i2].msg) {groupData.contador[i2].msg++};
   fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
  } else {
   groupData.contador.push({id:sender,msg:isCmd?0:1,cmd:isCmd?1:0,figu:type=="stickerMessage"?1:0});

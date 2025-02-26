@@ -29,6 +29,8 @@ async function menuadm(prefix) {
 ├─────────────────────┤
 │ *${prefix}modobn*
 │ *${prefix}modonsfw*
+│ *${prefix}antilinkgp*
+│ *${prefix}antiporn*
 │ *${prefix}bemvindo* ou *${prefix}bv
 │ *${prefix}soadm*
 ╰━━━━━━━━━━━━━━━━━━━━━╯
