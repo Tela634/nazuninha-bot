@@ -103,6 +103,7 @@ try {
                     await nazu.groupParticipantsUpdate(from, [sender], "remove");
                     actionTaken = true;
                     } else {
+                    await nazu.sendMessage(from, { delete: info.key });
                     await reply('Conteudo adulto detectado, porem como você é um administrador não irei banir.');
                     }
                 }
