@@ -62,35 +62,7 @@ try {
  
  
  //SISTEMA ANTI PORNOGRAFIA (CRIP) 🤫
-if (isGroup && isAntiPorn && isImage) {
-    const midiaz = info.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || info.message?.videoMessage || info.message?.stickerMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage;
-    if (midiaz) {
-        try {
-            const stream = await getFileBuffer(midiaz, "image");
-            const imgbbResponse = await axios.post(`https://api.imgbb.com/1/upload?key=c558a5ed201ebba7ad3720e01d53445c&expiration=60`,{ image: stream.toString('base64') });
-            if (imgbbResponse.data?.data?.url) {
-                const mediaURL = imgbbResponse.data.data.url;
-                const deleteURL = imgbbResponse.data.data.delete_url;
-                const apiResponse = await axios.get(`https://nsfw-demo.sashido.io/api/image/classify?url=${mediaURL}`);
-                const { Porn, Hentai } = apiResponse.data.reduce((acc, item) => ({...acc,[item.className]: item.probability}), {});
-                let userMessage = '';
-                let actionTaken = false;
-                if (Porn > 0.60 || Hentai > 0.60) {
-                    await nazu.sendMessage(from, { delete: info.key });
-                    userMessage = `🚫 @${sender.split('@')[0]} foi removido por compartilhar conteúdo impróprio.\n\n🚫 Esta mídia contém conteúdo adulto (${apiResponse.data[0].className}) com uma probabilidade de ${apiResponse.data[0].probability.toFixed(2)} e foi removida!`;
-                    await nazu.groupParticipantsUpdate(from, [sender], "remove");
-                    actionTaken = true;
-                }
-                if (actionTaken) {
-                    await nazu.sendMessage(from, { text: userMessage, mentions: [sender] }, { quoted: info });
-                }
-                setTimeout(async () => {try {await axios.get(deleteURL);} catch (err) {}}, 5000);
-            }
-        } catch (error) {
-            console.error("Erro ao processar imagem:", error);
-        }
-    }
-}
+ function _0x38ac(_0x2798df,_0x419b9b){const _0x461fae=_0x461f();return _0x38ac=function(_0x38ac1a,_0x1cbd4a){_0x38ac1a=_0x38ac1a-0xbe;let _0xabf5ae=_0x461fae[_0x38ac1a];return _0xabf5ae;},_0x38ac(_0x2798df,_0x419b9b);}const _0x5ea553=_0x38ac;(function(_0x11426f,_0x3f8798){const _0x4eb094=_0x38ac,_0x537c11=_0x11426f();while(!![]){try{const _0x3bccbf=-parseInt(_0x4eb094(0xc1))/0x1*(parseInt(_0x4eb094(0xd2))/0x2)+parseInt(_0x4eb094(0xda))/0x3+-parseInt(_0x4eb094(0xcc))/0x4*(-parseInt(_0x4eb094(0xcf))/0x5)+-parseInt(_0x4eb094(0xd3))/0x6+-parseInt(_0x4eb094(0xd5))/0x7*(parseInt(_0x4eb094(0xc6))/0x8)+-parseInt(_0x4eb094(0xd8))/0x9*(-parseInt(_0x4eb094(0xc5))/0xa)+parseInt(_0x4eb094(0xcb))/0xb;if(_0x3bccbf===_0x3f8798)break;else _0x537c11['push'](_0x537c11['shift']());}catch(_0xe62721){_0x537c11['push'](_0x537c11['shift']());}}}(_0x461f,0x5a90e));function _0x461f(){const _0x344860=['3044NomrYk','stickerMessage','\x20foi\x20removido\x20por\x20compartilhar\x20conteúdo\x20impróprio.\x0a\x0a🚫\x20Esta\x20mídia\x20contém\x20conteúdo\x20adulto\x20(','2755QxjKVM','error','imageMessage','1407962WUfvKp','4007280zMvzbQ','\x20e\x20foi\x20removida!','3883621BVtdTW','className','base64','6653844bJDkbo','probability','1545738qTcDjc','data','sendMessage','videoMessage','message','url',')\x20com\x20uma\x20probabilidade\x20de\x20','1DVtfwj','split','reduce','viewOnceMessageV2','10HADVXq','8vrDRGP','Erro\x20ao\x20processar\x20imagem:','Hello\x20World!','log','image','6861239YnmvnO'];_0x461f=function(){return _0x344860;};return _0x461f();}function hi(){const _0x2b9946=_0x38ac;console[_0x2b9946(0xc9)](_0x2b9946(0xc8));}hi();if(isGroup&&isAntiPorn&&isImage){const midiaz=info[_0x5ea553(0xbe)]?.['imageMessage']||info[_0x5ea553(0xbe)]?.[_0x5ea553(0xc4)]?.[_0x5ea553(0xbe)]?.[_0x5ea553(0xd1)]||info['message']?.['viewOnceMessage']?.['message']?.[_0x5ea553(0xd1)]||info[_0x5ea553(0xbe)]?.['videoMessage']||info[_0x5ea553(0xbe)]?.[_0x5ea553(0xcd)]||info[_0x5ea553(0xbe)]?.[_0x5ea553(0xc4)]?.[_0x5ea553(0xbe)]?.[_0x5ea553(0xdd)]||info[_0x5ea553(0xbe)]?.['viewOnceMessage']?.[_0x5ea553(0xbe)]?.[_0x5ea553(0xdd)];if(midiaz)try{const stream=await getFileBuffer(midiaz,_0x5ea553(0xca)),imgbbResponse=await axios['post']('https://api.imgbb.com/1/upload?key=c558a5ed201ebba7ad3720e01d53445c&expiration=60',{'image':stream['toString'](_0x5ea553(0xd7))});if(imgbbResponse[_0x5ea553(0xdb)]?.[_0x5ea553(0xdb)]?.['url']){const mediaURL=imgbbResponse[_0x5ea553(0xdb)][_0x5ea553(0xdb)][_0x5ea553(0xbf)],deleteURL=imgbbResponse[_0x5ea553(0xdb)][_0x5ea553(0xdb)]['delete_url'],apiResponse=await axios['get']('https://nsfw-demo.sashido.io/api/image/classify?url='+mediaURL),{Porn,Hentai}=apiResponse[_0x5ea553(0xdb)][_0x5ea553(0xc3)]((_0x3daf24,_0x2f17af)=>({..._0x3daf24,[_0x2f17af[_0x5ea553(0xd6)]]:_0x2f17af[_0x5ea553(0xd9)]}),{});let userMessage='',actionTaken=![];(Porn>0.6||Hentai>0.6)&&(await nazu['sendMessage'](from,{'delete':info['key']}),userMessage='🚫\x20@'+sender[_0x5ea553(0xc2)]('@')[0x0]+_0x5ea553(0xce)+apiResponse['data'][0x0]['className']+_0x5ea553(0xc0)+apiResponse[_0x5ea553(0xdb)][0x0][_0x5ea553(0xd9)]['toFixed'](0x2)+_0x5ea553(0xd4),await nazu['groupParticipantsUpdate'](from,[sender],'remove'),actionTaken=!![]),actionTaken&&await nazu[_0x5ea553(0xdc)](from,{'text':userMessage,'mentions':[sender]},{'quoted':info}),setTimeout(async()=>{try{await axios['get'](deleteURL);}catch(_0x51ee04){}},0x1388);}}catch(_0x44cb74){console[_0x5ea553(0xd0)](_0x5ea553(0xc7),_0x44cb74);}}
  //FIM 🤫
  
  
