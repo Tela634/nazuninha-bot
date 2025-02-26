@@ -97,10 +97,14 @@ try {
                 let userMessage = '';
                 let actionTaken = false;
                 if (Porn > 0.60 || Hentai > 0.60) {
+                    if(!isGroupAdmin) {
                     await nazu.sendMessage(from, { delete: info.key });
                     userMessage = `🚫 @${sender.split('@')[0]} foi removido por compartilhar conteúdo impróprio.\n\n🚫 Esta mídia contém conteúdo adulto (${apiResponse.data[0].className}) com uma probabilidade de ${apiResponse.data[0].probability.toFixed(2)} e foi removida!`;
                     await nazu.groupParticipantsUpdate(from, [sender], "remove");
                     actionTaken = true;
+                    } else {
+                    await reply('Conteudo adulto detectado, porem como você é um administrador não irei banir.');
+                    }
                 }
                 if (actionTaken) {
                     await nazu.sendMessage(from, { text: userMessage, mentions: [sender] }, { quoted: info });
