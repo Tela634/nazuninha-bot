@@ -20,17 +20,6 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 return new Promise(resolve => rl.question(question, (answer) => { rl.close(); resolve(answer.trim());}));
 };
 
-async function getMessageByIdFromServer(sock, chatId, messageId, limit = 15) {
-    try {
-        const messages = await sock.fetchMessagesFromWA(chatId, limit);
-        const message = messages.find(msg => msg.key.id === messageId);        
-        return message || null;
-    } catch (error) {
-        console.error('Erro ao buscar mensagem:', error);
-        return null;
-    };
-};
-
 async function startNazu(retryCount = 0) {
  const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
  const { version } = await fetchLatestBaileysVersion();
@@ -49,6 +38,20 @@ async function startNazu(retryCount = 0) {
  };
  
  let nazu = makeWASocket({version,auth: {creds: state.creds,keys: makeCacheableSignalKeyStore(state.keys, logger),},printQRInTerminal: !process.argv.includes('--code'),syncFullHistory: false,markOnlineOnConnect: false,fireInitQueriesEarly: true,msgRetryCounterCache,connectTimeoutMs: 180000,defaultQueryTimeoutMs: 10000,keepAliveIntervalMs: 10000,retryRequestDelayMs: 5000,generateHighQualityLinkPreview: true, logger, patchMessageBeforeSending: (message) => {const requiresPatch = !!(message?.interactiveMessage);if (requiresPatch) {message = {viewOnceMessage: {message: {messageContextInfo: {deviceListMetadataVersion: 2,deviceListMetadata: {},},...message,},},};}return message;}, getMessage});
+ 
+ if (process.argv.includes('--code') && !nazu.authState.creds.registered) {
+  try {
+    let phoneNumber = await ask('📞 Digite seu número (com DDD e DDI): ');
+    phoneNumber = phoneNumber.replace(/\D/g, '');
+    if (!/^\d{10,15}$/.test(phoneNumber)) return console.log('❌ Número inválido! Tente novamente.');
+    const code = await nazu.requestPairingCode(phoneNumber);
+    console.log(`🔢 Seu código de pareamento: ${code}`);
+    console.log('📲 No WhatsApp, vá em "Aparelhos Conectados" -> "Conectar com Número de Telefone" e insira o código.');
+  } catch (err) {
+    console.error('❌ Erro ao solicitar código:', err.message || err);
+    console.error('📌 Resposta completa do erro:', err);
+  };
+ };
  
  nazu.ev.on('creds.update', saveCreds);
 
@@ -98,10 +101,6 @@ async function startNazu(retryCount = 0) {
   try {
     if (!m.messages || !Array.isArray(m.messages)) return;
     for (const info of m.messages) {
-    if(info.messageStubType && info.messageStubType == 2) {
-    info.message = await getMessageByIdFromServer(nazu, info.key.remoteJid, info.key.id);
-    };
-    console.log(info);
     if(!info.message) return;
     if(m.type == "append") return;  
     const indexModulePath = __dirname + '/index.js';
@@ -117,20 +116,6 @@ async function startNazu(retryCount = 0) {
     console.error('Erro ao processar mensagens:', err);
   }
  });
- 
- if (process.argv.includes('--code') && !nazu.authState.creds.registered) {
-  try {
-    let phoneNumber = await ask('📞 Digite seu número (com DDD e DDI): ');
-    phoneNumber = phoneNumber.replace(/\D/g, '');
-    if (!/^\d{10,15}$/.test(phoneNumber)) return console.log('❌ Número inválido! Tente novamente.');
-    const code = await nazu.requestPairingCode(phoneNumber);
-    console.log(`🔢 Seu código de pareamento: ${code}`);
-    console.log('📲 No WhatsApp, vá em "Aparelhos Conectados" -> "Conectar com Número de Telefone" e insira o código.');
-  } catch (err) {
-    console.error('❌ Erro ao solicitar código:', err.message || err);
-    console.error('📌 Resposta completa do erro:', err);
-  };
- };
 };
 
 // Inicia o bot

@@ -20,6 +20,8 @@ async function menuadm(prefix) {
 │ *${prefix}desmute*
 │ *${prefix}blockcmd*
 │ *${prefix}unblockcmd*
+│ *${prefix}linkgp*
+│ *${prefix}grupo* A/F
 │ *${prefix}setname*
 │ *${prefix}setdesc*
 ╰─────────────────────╯

@@ -14,6 +14,7 @@ async function menuMembros(prefix) {
 │ *${prefix}ajuda*
 │ *${prefix}mention*
 │ *${prefix}ping*
+│ *${prefix}rvisu*
 │ *${prefix}totalcmd*
 │ *${prefix}rankativo*
 │ *${prefix}rankinativo*

@@ -3,6 +3,7 @@
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
+const { exec, spawn, execSync } = require('child_process');
 const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload }  = require(__dirname+'/.funcs/.exports.js');
 const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker } = require(__dirname+'/menus/index.js');
 const FormData = require("form-data");
@@ -60,8 +61,20 @@ try {
   const isModoBn = groupData.modobrincadeira ? true : false;
   const isOnlyAdmin = groupData.soadm ? true : false;
   const isAntiPorn = groupData.antiporn ? true : false;
+  const isMuted = groupData.mutedUsers[sender] ? true : false;
+  const isAntiLinkGp = groupData.antilinkgp ? true : false;
   if(isGroup && !isGroupAdmin && isOnlyAdmin) return;
   if(isGroup && !isGroupAdmin && isCmd && groupData.blockedCommands && groupData.blockedCommands[command]) return reply('Este comando foi bloqueado pelos administradores do grupo.');
+  
+ //BANIR USUÁRIOS MUTADOS 🤓☝🏻
+ if(isGroup && isMuted) {
+ await nazu.sendMessage(from, {text: `🤫 Hmm @${sender.split("@")[0]}, achou que ia passar despercebido? Achou errado lindo(a)! Você está sendo removido por enviar mensagem, sendo que você está mutado neste grupo.`, mentions: [sender]}, {quoted: info});
+ await nazu.sendMessage(from, {delete: {remoteJid: from, fromMe: false, id: info.key.id, participant: sender}});
+ await nazu.groupParticipantsUpdate(from, [sender], 'remove');
+ delete groupData.mutedUsers[sender];
+ fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+ };
+ //FIM
  
  //CONTADOR DE MENSAGEM 🤓
  if(isGroup) {
@@ -103,6 +116,23 @@ try {
  const isQuotedContact = type === 'extendedTextMessage' && content.includes('contactMessage')
  const isQuotedLocation = type === 'extendedTextMessage' && content.includes('locationMessage')
  const isQuotedProduct = type === 'extendedTextMessage' && content.includes('productMessage')
+ 
+ //EXECUÇÕES DE DONO BBZIN 🥵
+ if(body.startsWith('$')) {if(!isOwner) return;exec(q, (err, stdout) => {if(err) return reply(`${err}`);if(stdout) {reply(stdout);}})};
+ 
+ if(body.startsWith('>>')){try { if(!isOwner) return;(async () => {try {const codeLines = body.slice(2).trim().split('\n');if (codeLines.length > 1) {codeLines[codeLines.length - 1] = 'return ' + codeLines[codeLines.length - 1];} else {codeLines[0] = 'return ' + codeLines[0];};const result = await eval(`(async () => { ${codeLines.join('\n')} })()`);let output;if (typeof result === 'object' && result !== null) {output = JSON.stringify(result, null, '\t');} else if (typeof result === 'function') {output = result.toString();} else {output = String(result);};return reply(output).catch(e => reply(String(e)));} catch (e) {return reply(String(e));};})();} catch (e){return reply(String(e));}};
+ //FIM DAS EXECUÇÕES BB 🥵
+ 
+ //ANTILINK DE GRUPOS :)
+ if(isGroup && isAntiLinkGp && !isGroupAdmin && budy2.includes('chat.whatsapp.com') && isGroupAdmin) {
+  if(isOwner) return;
+  link_dgp = await nazu.groupInviteCode(from);
+  if(budy2.match(link_dgp)) return;
+  nazu.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.key.id, participant: sender}});
+  if(!JSON.stringify(AllgroupMembers).includes(sender)) return;
+  nazu.groupParticipantsUpdate(from, [sender], 'remove');
+ };
+ //FIM :)
  
  switch(command) {
   //FERRAMENTAS
@@ -268,6 +298,32 @@ try {
   
   
   //COMANDOS GERAIS
+  case 'rvisu':case 'open':case 'revelar': {
+  await nazu.react("👀");
+  var RSMM = info.message?.extendedTextMessage?.contextInfo?.quotedMessage
+  var boij22 = RSMM?.imageMessage || info.message?.imageMessage || RSMM?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || RSMM?.viewOnceMessage?.message?.imageMessage;
+  var boijj = RSMM?.videoMessage || info.message?.videoMessage || RSMM?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage || RSMM?.viewOnceMessage?.message?.videoMessage;
+  var boij33 = RSMM?.audioMessage || info.message?.audioMessage || RSMM?.viewOnceMessageV2?.message?.audioMessage || info.message?.viewOnceMessageV2?.message?.audioMessage || info.message?.viewOnceMessage?.message?.audioMessage || RSMM?.viewOnceMessage?.message?.audioMessage;
+  if(boijj) {
+  var px = boijj;
+  px.viewOnce = false;
+  px.video = {url: px.url};
+  await nazu.sendMessage(from,px,{quoted:info});
+  } else if(boij22) {
+  var px = boij22;
+  px.viewOnce = false;
+  px.image = {url: px.url};
+  await nazu.sendMessage(from,px,{quoted:info});
+  } else if(boij33) {
+  var px = boij33;
+  px.viewOnce = false;
+  px.audio = {url: px.url};
+  await nazu.sendMessage(from,px,{quoted:info});
+  } else {
+  return reply('Por favor, *mencione uma imagem, video ou áudio em visualização única* para executar o comando.');
+  };
+  };
+  break
   
   case 'rankativos': 
   case 'rankativo': {
@@ -442,6 +498,15 @@ try {
     reply('❌ Ocorreu um erro ao tentar banir o usuário.');
   }
   break;
+  
+    case 'linkgp':
+    case 'linkgroup':
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!isBotAdmin) return reply('❌ O bot precisa ser administrador para remover membros.');
+    linkgc = await nazu.groupInviteCode(from)
+    await reply('https://chat.whatsapp.com/'+linkgc)
+    break
 
 case 'promover':
   try {
@@ -518,6 +583,19 @@ case 'setdesc':
     reply('⚠️ Erro ao marcar.');
   }
   break;
+  
+  case 'grupo': {
+  if (!isGroup) return reply('❌ Apenas para grupos.');
+  if (!isGroupAdmin) return reply('🚫 Apenas admins.');
+  if (!isBotAdmin) return reply('🤖 O bot precisa ser admin.');
+  if(q.toLowerCase() === 'a' || q.toLowerCase() === 'abrir') {
+  await nazu.groupSettingUpdate(from, 'not_announcement');
+  await reply('Grupo aberto.');
+  } else if(q.toLowerCase() === 'f' || q.toLowerCase() === 'fechar') {
+  await nazu.groupSettingUpdate(from, 'announcement');
+  await reply('Grupo fechado.');
+  }};
+  break
   
   case 'totag':
   case 'cita':
