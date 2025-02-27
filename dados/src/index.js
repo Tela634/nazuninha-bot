@@ -61,7 +61,7 @@ try {
   const isModoBn = groupData.modobrincadeira ? true : false;
   const isOnlyAdmin = groupData.soadm ? true : false;
   const isAntiPorn = groupData.antiporn ? true : false;
-  const isMuted = groupData.mutedUsers[sender] ? true : false;
+  const isMuted = (groupData.mutedUsers && groupData.mutedUsers[sender]) ? true : false;
   const isAntiLinkGp = groupData.antilinkgp ? true : false;
   if(isGroup && !isGroupAdmin && isOnlyAdmin) return;
   if(isGroup && !isGroupAdmin && isCmd && groupData.blockedCommands && groupData.blockedCommands[command]) return reply('Este comando foi bloqueado pelos administradores do grupo.');
