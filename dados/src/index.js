@@ -445,6 +445,30 @@ try {
   };
   break;
   
+  case 'rgtake': {
+  if (!isQuotedSticker) return reply('Você usou de forma errada... Marque uma figurinha.');
+  const [author, pack] = q.split('/');
+  if (!q || !author || !pack) return reply(`Formato errado, utilize:\n${prefix}${command} Autor/Pack\nEx: ${prefix}${command} By:/Hiudy`);
+  const filePath = __dirname + '/../database/users/take.json';
+  const dataTake = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath, 'utf-8')) : {};
+  dataTake[sender] = { author, pack };
+  fs.writeFileSync(filePath, JSON.stringify(dataTake, null, 2), 'utf-8');
+  reply(`Autor e pacote salvos com sucesso!\nAutor: ${author}\nPacote: ${pack}`);
+  };
+  break;
+  
+  case 'take': {
+  if (!isQuotedSticker) return reply('Você usou de forma errada... Marque uma figurinha.');
+  const filePath = __dirname + '/../database/users/take.json';
+  if (!fs.existsSync(filePath)) return reply('Nenhum autor e pacote salvos. Use o comando *rgtake* primeiro.');
+  const dataTake = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  if (!dataTake[sender]) return reply('Você não tem autor e pacote salvos. Use o comando *rgtake* primeiro.');
+  const { author, pack } = dataTake[sender];
+  const encmediats = await getFileBuffer(info.message.extendedTextMessage.contextInfo.quotedMessage.stickerMessage, 'sticker');
+  await sendSticker(nazu, from, { sticker: `data:image/jpeg;base64,${encmediats.toString('base64')}`, author: pack, packname: author, rename: true }, { quoted: info });
+  };
+  break;
+  
   //FIM COMANDOS DE FIGURINHAS
   
   
