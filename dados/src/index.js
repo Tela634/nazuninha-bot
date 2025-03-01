@@ -54,6 +54,7 @@ try {
   const isBotAdmin = !isGroup ? null : groupAdmins.includes(botNumber);
   if(isGroup) {
   if (!fs.existsSync(__dirname + `/../database/grupos`)) fs.mkdirSync(__dirname + `/../database/grupos`, { recursive: true });
+  if (!fs.existsSync(__dirname + `/../database/users`)) fs.mkdirSync(__dirname + `/../database/users`, { recursive: true });
   if (!fs.existsSync(__dirname + `/../database/grupos/${from}.json`)) fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify({ mark: {} }, null, 2));
   };
   let groupData = {};
