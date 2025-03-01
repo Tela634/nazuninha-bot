@@ -21,6 +21,8 @@ async function menuMembros(prefix) {
 ├─────────────────────┤
 │ *${prefix}figualetoria*
 │ *${prefix}rename*
+│ *${prefix}rgtake*
+│ *${prefix}take*
 ╰─────────────────────╯
 
 ╭━━━━━━━━━━━━━━━━━━━━━╮

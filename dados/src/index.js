@@ -446,7 +446,6 @@ try {
   break;
   
   case 'rgtake': {
-  if (!isQuotedSticker) return reply('Você usou de forma errada... Marque uma figurinha.');
   const [author, pack] = q.split('/');
   if (!q || !author || !pack) return reply(`Formato errado, utilize:\n${prefix}${command} Autor/Pack\nEx: ${prefix}${command} By:/Hiudy`);
   const filePath = __dirname + '/../database/users/take.json';
