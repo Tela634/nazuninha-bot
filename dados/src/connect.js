@@ -32,7 +32,44 @@ async function startNazu() {
   return msg ? msg.message : undefined;
  };
  
- let nazu = makeWASocket({version,auth: {creds: state.creds,keys: makeCacheableSignalKeyStore(state.keys, logger),},printQRInTerminal: !process.argv.includes('--code'),syncFullHistory: true,markOnlineOnConnect: false,fireInitQueriesEarly: true,msgRetryCounterCache,connectTimeoutMs: 180000,defaultQueryTimeoutMs: 0,keepAliveIntervalMs: 60000,retryRequestDelayMs: 10000,generateHighQualityLinkPreview: true, logger, patchMessageBeforeSending: (message) => {const requiresPatch = !!(message?.interactiveMessage);if (requiresPatch) {message = {viewOnceMessage: {message: {messageContextInfo: {deviceListMetadataVersion: 2,deviceListMetadata: {},},...message,},},};}return message;},getMessage,shouldSyncHistoryMessage: () => true,browser: ['Ubuntu', 'Edge', '110.0.1587.56']);
+ let nazu = makeWASocket({
+    version,
+    auth: {
+        creds: state.creds,
+        keys: makeCacheableSignalKeyStore(state.keys, logger),
+    },
+    printQRInTerminal: !process.argv.includes('--code'),
+    syncFullHistory: true,
+    markOnlineOnConnect: false,
+    fireInitQueriesEarly: true,
+    msgRetryCounterCache,
+    connectTimeoutMs: 180000,
+    defaultQueryTimeoutMs: 0,
+    keepAliveIntervalMs: 60000,
+    retryRequestDelayMs: 10000,
+    generateHighQualityLinkPreview: true,
+    logger,
+    patchMessageBeforeSending: (message) => {
+        const requiresPatch = !!(message?.interactiveMessage);
+        if (requiresPatch) {
+            message = {
+                viewOnceMessage: {
+                    message: {
+                        messageContextInfo: {
+                            deviceListMetadataVersion: 2,
+                            deviceListMetadata: {},
+                        },
+                        ...message,
+                    },
+                },
+            };
+        }
+        return message;
+    },
+    getMessage,
+    shouldSyncHistoryMessage: () => true,
+    browser: ['Ubuntu', 'Edge', '110.0.1587.56']
+});
  
  if (process.argv.includes('--code') && !nazu.authState.creds.registered) {
   try {
