@@ -8,7 +8,9 @@ async function menudown(prefix) {
 │  🔍 *Comandos de Pesquisas* 
 ├──────────────┤
 │ *${prefix}play*
+│ *${prefix}playvid*
 │ *${prefix}assistir*
+│ *${prefix}mcplugin*
 ╰──────────────╯
 
 ╭──────────────╮

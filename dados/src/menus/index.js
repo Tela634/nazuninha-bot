@@ -6,5 +6,6 @@ const menuDono = require(__dirname+'/menudono.js');
 const menuMembros = require(__dirname+'/menumemb.js');
 const menuFerramentas = require(__dirname+'/ferramentas.js');
 const menuSticker = require(__dirname+'/menufig.js');
+const menuIa = require(__dirname+'/menuia.js');
 
-module.exports = { menuadm, menudown, menu, menubn, menuDono, menuMembros, menuFerramentas, menuSticker };
+module.exports = { menuadm, menudown, menu, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa };

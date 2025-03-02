@@ -1,7 +1,7 @@
 // Created By Hiudy (não remova nem edite essa linha)
 
 const { Boom } = require('@hapi/boom');
-const { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, DisconnectReason } = require('baileys');
+const { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, DisconnectReason, proto, makeInMemoryStore } = require('baileys');
 
 const readline = require('readline');
 const { execSync } = require('child_process');
@@ -20,24 +20,19 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 return new Promise(resolve => rl.question(question, (answer) => { rl.close(); resolve(answer.trim());}));
 };
 
-async function startNazu(retryCount = 0) {
+const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' })});
+
+async function startNazu() {
  const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
  const { version } = await fetchLatestBaileysVersion();
  
  async function getMessage(key) {
-  if (store) {
-    try {
-      const msg = await store.loadMessage(key.remoteJid, key.id);
-      return msg?.message || undefined;
-    } catch (error) {
-      console.error("Erro ao carregar a mensagem:", error);
-      return undefined;
-    };
-  };
-  return Promise.resolve({});
+  if (!store) return proto.Message.fromObject({});
+  const msg = await store.loadMessage(key.remoteJid, key.id);
+  return msg ? msg.message : undefined;
  };
  
- let nazu = makeWASocket({version,auth: {creds: state.creds,keys: makeCacheableSignalKeyStore(state.keys, logger),},printQRInTerminal: !process.argv.includes('--code'),syncFullHistory: false,markOnlineOnConnect: false,fireInitQueriesEarly: true,msgRetryCounterCache,connectTimeoutMs: 180000,defaultQueryTimeoutMs: 10000,keepAliveIntervalMs: 10000,retryRequestDelayMs: 5000,generateHighQualityLinkPreview: true, logger, patchMessageBeforeSending: (message) => {const requiresPatch = !!(message?.interactiveMessage);if (requiresPatch) {message = {viewOnceMessage: {message: {messageContextInfo: {deviceListMetadataVersion: 2,deviceListMetadata: {},},...message,},},};}return message;}, getMessage});
+ let nazu = makeWASocket({version,auth: {creds: state.creds,keys: makeCacheableSignalKeyStore(state.keys, logger),},printQRInTerminal: !process.argv.includes('--code'),syncFullHistory: true,markOnlineOnConnect: false,fireInitQueriesEarly: true,msgRetryCounterCache,connectTimeoutMs: 180000,defaultQueryTimeoutMs: 0,keepAliveIntervalMs: 60000,retryRequestDelayMs: 10000,generateHighQualityLinkPreview: true, logger, patchMessageBeforeSending: (message) => {const requiresPatch = !!(message?.interactiveMessage);if (requiresPatch) {message = {viewOnceMessage: {message: {messageContextInfo: {deviceListMetadataVersion: 2,deviceListMetadata: {},},...message,},},};}return message;},getMessage,shouldSyncHistoryMessage: () => true},browser: ['Ubuntu', 'Edge', '110.0.1587.56']);
  
  if (process.argv.includes('--code') && !nazu.authState.creds.registered) {
   try {
@@ -52,6 +47,8 @@ async function startNazu(retryCount = 0) {
     console.error('📌 Resposta completa do erro:', err);
   };
  };
+ 
+ store.bind(nazu.ev);
  
  nazu.ev.on('creds.update', saveCreds);
 
@@ -75,28 +72,6 @@ async function startNazu(retryCount = 0) {
    };
  });
  
- nazu.ev.on('connection.update', async (update) => {
-   const { connection, lastDisconnect, qr } = update;
-   if (connection === 'close') {
-     const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
-     console.log(`⚠️ Conexão fechada, motivo: ${reason}`);
-     if (reason === DisconnectReason.loggedOut || reason === 401) {
-       console.log('🗑️ Sessão inválida, excluindo autenticação...');
-       execSync(`rm -rf ${AUTH_DIR}`);
-     };
-     if (retryCount < 999) {
-       console.log(`🔄 Tentando reconectar em 5 segundos... (${retryCount + 1}/3)`);
-       setTimeout(() => startNazu(retryCount + 1), 5000);
-     } else {
-       console.log('❌ Muitas falhas na conexão. Verifique seu número ou tente mais tarde.');
-     }
-     }
-   if (connection === 'open') {
-     console.log(`============================================\nBot: ${nomebot}\nPrefix: ${prefixo}\nDono: ${nomedono}\nCriador: Hiudy\n============================================\n    ✅ BOT INICIADO COM SUCESSO\n============================================`);
-     if(aviso) await nazu.sendMessage(numerodono+'@s.whatsapp.net', {text: 'Bot conectado ✅'});
-   }
- });
-
  nazu.ev.on('messages.upsert', async (m) => {
   try {
     if (!m.messages || !Array.isArray(m.messages)) return;
@@ -116,7 +91,43 @@ async function startNazu(retryCount = 0) {
     console.error('Erro ao processar mensagens:', err);
   }
  });
+ 
+ nazu.ev.on('connection.update', async (update) => {
+   const { connection, lastDisconnect, qr } = update;
+   if (connection === 'open') {
+     console.log(`============================================\nBot: ${nomebot}\nPrefix: ${prefixo}\nDono: ${nomedono}\nCriador: Hiudy\n============================================\n    ✅ BOT INICIADO COM SUCESSO\n============================================`);
+     if(aviso) await nazu.sendMessage(numerodono+'@s.whatsapp.net', {text: 'Bot conectado ✅'});
+   };
+   if (connection === 'close') {
+     const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
+     console.log(`⚠️ Conexão fechada, motivo: ${reason}`);
+     if (reason === DisconnectReason.loggedOut || reason === 401) {
+       console.log('🗑️ Sessão inválida, excluindo autenticação...');
+       execSync(`rm -rf ${AUTH_DIR}`);
+      } else if(reason == 408) {
+       console.log('A sessão sofreu um timeout, recarregando...');
+      } else if(reason == 411) {
+       console.log('O arquivo de sessão parece incorreto, estou tentando recarregar...');
+      } else if(reason == 428) {
+       console.log('Não foi possível manter a conexão com o WhatsApp, tentando de novo...');
+      } else if(reason == 440) {
+       console.log('Existem muitas sessões do WhatsApp conectadas no meu número, feche-as...');
+      } else if(reason == 500) {
+       console.log('A sessão parece mal configurada, estarei tentando reconectar...');
+      } else if(reason == 503) {
+       console.log('Erro desconhecido...');
+      } else if(reason == 515) {
+       console.log('Meu código será reinicializado para estabilizar a conexão...');
+      };
+      await nazu.end();
+      console.log(`🔄 Tentando reconectar...`);
+      startNazu();
+     };
+   if(connection == 'connecting') {
+     console.log('Atualizando a sessão para garantir o funcionamento correto do sistema.');
+   };
+ });
 };
 
 // Inicia o bot
-startNazu();
+startNazu().catch(async(e) => console.error(e));

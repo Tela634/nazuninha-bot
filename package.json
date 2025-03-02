@@ -20,7 +20,7 @@
   "author": "Hiudy",
   "license": "ISC",
   "dependencies": {
-    "baileys": "npm:@itsukichan/baileys@latest",
+    "baileys": "npm:@neoxr/baileys@latest",
     "qrcode-terminal": "latest",
     "cheerio": "latest",
     "yt-search": "latest",

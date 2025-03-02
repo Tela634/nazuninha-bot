@@ -4,8 +4,8 @@
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { exec, spawn, execSync } = require('child_process');
-const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload }  = require(__dirname+'/.funcs/.exports.js');
-const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker } = require(__dirname+'/menus/index.js');
+const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin }  = require(__dirname+'/.funcs/.exports.js');
+const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa } = require(__dirname+'/menus/index.js');
 const FormData = require("form-data");
 const axios = require('axios');
 const pathz = require('path');
@@ -45,16 +45,30 @@ try {
  var isCmd = body.trim().startsWith(prefix);
  const command = isCmd ? budy2.trim().slice(1).split(/ +/).shift().toLocaleLowerCase().trim().replaceAll(' ', '') : null;
  
+ //CRIAR PASTAS
+  if (!fs.existsSync(__dirname + `/../database/grupos`)) fs.mkdirSync(__dirname + `/../database/grupos`, { recursive: true });
+  if (!fs.existsSync(__dirname + `/../database/users`)) fs.mkdirSync(__dirname + `/../database/users`, { recursive: true });
+  if (!fs.existsSync(__dirname + `/../database/dono`)) fs.mkdirSync(__dirname + `/../database/dono`, { recursive: true });
+  
+ //SISTEMA DE PREMIUM
+ if (!fs.existsSync(__dirname + `/../database/dono/premium.json`)) fs.writeFileSync(__dirname + `/../database/dono/premium.json`, JSON.stringify({}, null, 2));
+ const premiumListaZinha = JSON.parse(fs.readFileSync(__dirname + `/../database/dono/premium.json`, 'utf-8'));
+ const isPremium = !!premiumListaZinha[sender] || isOwner;
+ 
+ //BAN GPS
+ if (!fs.existsSync(__dirname + `/../database/dono/bangp.json`)) fs.writeFileSync(__dirname + `/../database/dono/bangp.json`, JSON.stringify({}, null, 2));
+ const banGpIds = JSON.parse(fs.readFileSync(__dirname + `/../database/dono/bangp.json`, 'utf-8'));
+ if(!!banGpIds[from] && !isOwner && !isPremium) return;
+ 
  //INFOS DE GRUPO
   const groupMetadata = !isGroup ? {} : await nazu.groupMetadata(from);
+  const groupName = isGroup ? groupMetadata.subject : '';
   const AllgroupMembers = !isGroup ? [] : groupMetadata.participants.map(p => p.id);
   const groupAdmins = !isGroup ? [] : groupMetadata.participants.filter(p => p.admin).map(p => p.id);
   const botNumber = nazu.user.id.split(':')[0] + '@s.whatsapp.net';
   const isGroupAdmin = !isGroup ? null : groupAdmins.includes(sender) || isOwner;
   const isBotAdmin = !isGroup ? null : groupAdmins.includes(botNumber);
   if(isGroup) {
-  if (!fs.existsSync(__dirname + `/../database/grupos`)) fs.mkdirSync(__dirname + `/../database/grupos`, { recursive: true });
-  if (!fs.existsSync(__dirname + `/../database/users`)) fs.mkdirSync(__dirname + `/../database/users`, { recursive: true });
   if (!fs.existsSync(__dirname + `/../database/grupos/${from}.json`)) fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify({ mark: {} }, null, 2));
   };
   let groupData = {};
@@ -99,7 +113,7 @@ try {
  //FIM FUNÇÕES BASICAS
 
  //SISTEMA ANTI PORNOGRAFIA 🤫
- if (isGroup && isAntiPorn && (isImage || isVisuU || isVisuU2)) { const midiaz = info.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || info.message?.videoMessage || info.message?.stickerMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage; if (midiaz) { try { const stream = await getFileBuffer(midiaz, "image"); const mediaURL = await upload(stream, true); if (mediaURL) { const apiResponse = await axios.get(`https://nsfw-demo.sashido.io/api/image/classify?url=${mediaURL}`); const { Porn, Hentai } = apiResponse.data.reduce((acc, item) => ({...acc,[item.className]: item.probability}), {}); let userMessage = ''; let actionTaken = false; if (Porn > 0.60 || Hentai > 0.60) { if(!isGroupAdmin) { await nazu.sendMessage(from, { delete: info.key }); userMessage = `🚫 @${sender.split('@')[0]} foi removido por compartilhar conteúdo impróprio.\n\n🚫 Esta mídia contém conteúdo adulto (${apiResponse.data[0].className}) com uma probabilidade de ${apiResponse.data[0].probability.toFixed(2)} e foi removida!`; await nazu.groupParticipantsUpdate(from, [sender], "remove"); actionTaken = true; } else { await nazu.sendMessage(from, { delete: info.key }); await reply('Conteudo adulto detectado, porem como você é um administrador não irei banir.'); } } if (actionTaken) { await nazu.sendMessage(from, { text: userMessage, mentions: [sender] }, { quoted: info }); }; } } catch (error) { } } };
+ if (isGroup && isAntiPorn && (isImage || isVisuU || isVisuU2)) { const midiaz = info.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || info.message?.videoMessage || info.message?.stickerMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage; if (midiaz) { try { const stream = await getFileBuffer(midiaz, "image"); const mediaURL = await upload(stream, true); if (mediaURL) { const apiResponse = await axios.get(`https://nsfw-demo.sashido.io/api/image/classify?url=${mediaURL}`); const { Porn, Hentai } = apiResponse.data.reduce((acc, item) => ({...acc,[item.className]: item.probability}), {}); let userMessage = ''; let actionTaken = false; if (Porn > 0.80 || Hentai > 0.80) { if(!isGroupAdmin) { await nazu.sendMessage(from, { delete: info.key }); userMessage = `🚫 @${sender.split('@')[0]} foi removido por compartilhar conteúdo impróprio.\n\n🚫 Esta mídia contém conteúdo adulto (${apiResponse.data[0].className}) com uma probabilidade de ${apiResponse.data[0].probability.toFixed(2)} e foi removida!`; await nazu.groupParticipantsUpdate(from, [sender], "remove"); actionTaken = true; } else { await nazu.sendMessage(from, { delete: info.key }); await reply('Conteudo adulto detectado, porem como você é um administrador não irei banir.'); } } if (actionTaken) { await nazu.sendMessage(from, { text: userMessage, mentions: [sender] }, { quoted: info }); }; } } catch (error) { } } };
  //FIM 🤫
  
  //DEFINIÇÕES DE ISQUOTED
@@ -135,14 +149,103 @@ try {
  };
  //FIM :)
  
+ //LOGS AQUI BBZIN <3
+ console.log(`=========================================`);
+ console.log(`${isCmd ? '⚒️ Comando' : '🗨️ Mensagem'} ${isGroup ? 'em grupo 👥' : 'no privado 👤'}`);
+ console.log(`${isCmd ? '⚒️ Comando' : '🗨️ Mensagem'}: "${isCmd ? prefix+command : budy2.substring(0, 12)+'...'}"`);
+ console.log(`${isGroup ? '👥 Grupo' : '👤 Usuario'}: "${isGroup ? groupName : pushname}"`);
+ console.log(`${isGroup ? '👤 Usuario' : '📲 Numero'}: "${isGroup ? pushname : sender.split('@')[0]}"`);
+ console.log(`=========================================`);
+ //FIM DOS LOGS
+ 
+ //PEGAR IMAGEM DO PERFIL
+ let ppimg = "";
+ try {
+ ppimg = await nazu.profilePictureUrl(sender, 'image');
+ } catch {
+ ppimg = 'https://telegra.ph/file/b5427ea4b8701bc47e751.jpg'
+ };
+ 
  switch(command) {
+ //FUNÇÕES PREMIUM
+  case 'nome':case 'nome2':case 'nome3':case 'nome4':case 'telefone2':case 'telefonefixo':case 'cpf':case 'cpf2':case 'cpf3':case 'cpf4':case 'cpf5':case 'placa':case 'bin':case 'site':case 'cep':case 'vizinhos':case 'cnpj':case 'score':case 'titulo':case 'email':case 'vacina':case 'parentes':case 'rg':case 'rg2':case 'senha':case 'mae':case 'pai':case 'chassi':case 'motor':case 'beneficios':case 'impostos':case 'nascimento':case 'pfix':case 'cns':case 'cns2':case 'correios':case 'radar':case 'dominio':case 'internet':case 'compras':case 'cnh':case 'funcionarios': try {
+  if (!isPremium) return reply('❌ Apenas usuários premium.');
+  if (!q) return reply(`❌ Tá faltando os dados.`);
+  nazu.react('🔎');
+  const dados = (await axios.get(`https://blacksystemofc.com.br/vip/consultas?type=${command}&query=${q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replaceAll('-', '').replaceAll('+', '').replaceAll('.', '')}&apikey=827640_black_sim`)).data;
+  if (dados.file) return await nazu.sendMessage(from, { document: Buffer.from(dados.base64, 'base64'), fileName: `${q}.txt`, mimetype: 'text/plain' }, { quoted: info });
+  if (dados.resultado) return await reply(dados.resultado.replace(/\*\*|`/g, '').replace(/• USUÁRIO:.+\n/g, '').replace(/• BY:.+\n/g, '').replace(/• Grupo:.+\n/g, '').replace(/👤 USUÁRIO:.+\n/g, '').replace(/🤖 BY:.+\n/g, '').replace(/✅ Grupo:.+\n/g, '').replace(/👤\s*USUÁRIO:.+\n/g, '').replace(/🤖\s*BY:.+\n/g, '').replace(/✅\s*Grupo:.+\n/g, '').replace(/^[^\n]*✅ Grupo:[^\n]*\n?/gm, '').replace(/✅ Canal: @[\w\d]+/g, '') + `\n\n🤖 By: ${nomebot}\n📲 Dono: wa.me/${nmrdn.split('@')[0]}`);
+  await reply('❌ Nenhum dado encontrado.');
+  } catch (error) {
+  console.error(error);
+  reply('❌ Ocorreu um erro ao buscar os dados.');
+  };
+  break;
+ 
+  //INTELIGENCIA ARTIFICIAL
+  case 'simi': try {
+  if(!q) return reply('🤔 Cadê o texto?')
+  datasimi = await axios.post(`https://api.simsimi.vn/v1/simtalk`, "text="+q+"&lc=pt", {headers: {'content-type': "application/x-www-form-urlencoded"}});
+  await reply(datasimi.data.message);
+  } catch(e) {
+  console.error(e);
+  await reply(`Ocorreu um erro`);
+  };
+  break;
+  
+  
   //FERRAMENTAS
+  case 'encurtalink': case 'tinyurl': try {
+  if(!q) return reply(`❌️ *Forma incorreta, use está como exemplo:* ${prefix + command} https://instagram.com/hiudyyy_`);
+  anu = await axios.get(`https://tinyurl.com/api-create.php?url=${link}`);
+  reply(`${anu.data}`);
+  } catch(e) {
+  console.error(e);
+  await reply(`Ocorreu um erro`);
+  };
+  break
+
   case 'nick': case 'gerarnick': {
   if(!q) return reply('Digite o nick após o comando.');
   datzn = await styleText(q);
   await reply(datzn.join('\n'));
   };
   break
+  
+  case 'printsite': case 'ssweb': try{
+  if(!q) return reply(`Cade o link?`)
+  await nazu.react('✅');
+  await nazu.sendMessage(from, {image: {url: `https://image.thum.io/get/fullpage/${q}`}}, {quoted: info})
+  } catch(e) {
+  console.error(e);
+  await reply(`Ocorreu um erro`);
+  };
+  break
+  
+  case 'upload':case 'imgpralink':case 'videopralink':case 'gerarlink': try {
+  if(!isQuotedImage && !isQuotedVideo && !isQuotedDocument && !isQuotedAudio) return reply(`Marque um video, uma foto, um audio ou um documento`);
+  var foto1 = isQuotedImage ? info.message.extendedTextMessage.contextInfo.quotedMessage.imageMessage : {};
+  var video1 = isQuotedVideo ? info.message.extendedTextMessage.contextInfo.quotedMessage.videoMessage : {};
+  var docc1 = isQuotedDocument ? info.message.extendedTextMessage.contextInfo.quotedMessage.documentMessage: {};
+  var audio1 = isQuotedAudio ? info.message.extendedTextMessage.contextInfo.quotedMessage.audioMessage : "";
+  let media = {};
+  if(isQuotedDocument) {
+  media = await getFileBuffer(docc1, "document");
+  } else if(isQuotedVideo) {
+  media = await getFileBuffer(video1, "video");
+  } else if(isQuotedImage) {
+  media = await getFileBuffer(foto1, "image");
+  } else if(isQuotedAudio) {
+  media = await getFileBuffer(audio1, "audio");
+  };
+  let linkz = await upload(media);
+  reply(`💞 Link gerado:\n${linkz}`);
+  } catch(e) {
+  console.error(e);
+  await reply(`Ocorreu um erro`);
+  }
+  break
+
   
   //DOWNLOADS
   case 'assistir': {
@@ -155,6 +258,15 @@ try {
   await nazu.sendMessage(from, {image: { url: datyz.img },caption: `Aqui está o que encontrei! 🎬\n\n*Nome*: ${datyz.name}\n\nSe tudo estiver certo, você pode assistir no link abaixo:\n${linkEncurtado}\n\nFique tranquilo, não é vírus! O link foi encurtado por ser muito longo.\n\n> Você pode apoiar o projeto de outra forma! 💖 Que tal dar uma estrela no repositório do GitHub? Isso ajuda a motivar e melhorar o bot!\n> ⭐ https://github.com/hiudyy/nazuninha-bot 🌟`}, { quoted: info });
   };
   break;
+  
+  case 'mcplugin':case 'mcplugins': {
+  if(!q) return reply('Cadê o nome do plugin para eu pesquisar? 🤔');
+  await nazu.react('🔍');
+  datz = await mcPlugin(q);
+  if(!datz.ok) return reply(datz.msg);
+  await nazu.sendMessage(from, {image: {url: datz.image}, caption: `🔍 Encontrei esse plugin aqui:\n\n*Nome*: _${datz.name}_\n*Publicado por*: _${datz.creator}_\n*Descrição*: _${datz.desc}_\n*Link para download*: _${datz.url}_\n\n> 💖 `}, {quoted: info});
+  };
+  break
   
   case 'play':
   case 'ytmp3':
@@ -240,6 +352,9 @@ try {
   case 'menu': case 'help':
   nazu.sendMessage(from, {[fs.existsSync(__dirname + '/../midias/menu.mp4') ? 'video' : 'image']: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menu(prefix), gifPlayback: fs.existsSync(__dirname+'/../midias/menu.mp4'), mimetype: fs.existsSync(__dirname+'/../midias/menu.mp4')?'video/mp4':'image/jpeg'}, {quoted: info});
   break;
+  case 'menuia': case 'aimenu': case 'menuias':
+  nazu.sendMessage(from, {[fs.existsSync(__dirname + '/../midias/menu.mp4') ? 'video' : 'image']: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menuIa(prefix), gifPlayback: fs.existsSync(__dirname+'/../midias/menu.mp4'), mimetype: fs.existsSync(__dirname+'/../midias/menu.mp4')?'video/mp4':'image/jpeg'}, {quoted: info});
+  break;
   case 'menubn': case 'menubrincadeira': case 'menubrincadeiras':
   nazu.sendMessage(from, {[fs.existsSync(__dirname + '/../midias/menu.mp4') ? 'video' : 'image']: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menubn(prefix), gifPlayback: fs.existsSync(__dirname+'/../midias/menu.mp4'), mimetype: fs.existsSync(__dirname+'/../midias/menu.mp4')?'video/mp4':'image/jpeg'}, {quoted: info});
   break;
@@ -265,7 +380,27 @@ try {
   break;
    
    
-   //COMANDOS DE DONO BB
+  //COMANDOS DE DONO BB
+  case 'seradm': try {
+  if(!isOwner) return reply("Apenas meu dono.")
+  await nazu.groupParticipantsUpdate(from, [sender], "promote");
+  await nazu.react('✅');
+  } catch(e) {
+  console.error(e);
+  await reply(`Ocorreu um erro`);
+  };
+  break
+
+  case 'sermembro': try {
+  if(!isOwner) return reply("Apenas meu dono.");
+  await nazu.groupParticipantsUpdate(from, [sender], "demote");
+  await nazu.react('✅');
+  } catch(e) {
+  console.error(e);
+  await reply(`Ocorreu um erro`);
+  };
+  break
+
    case 'prefixo':case 'numerodono':case 'nomedono':case 'nomebot': try {
     if(!isOwner) return reply('Apenas meu dono.');
     if (!q) return reply(`Uso correto: ${prefix}${command} <valor>`);
@@ -296,6 +431,47 @@ try {
    reply('❌ Ocorreu um erro ao salvar a mídia');
   }
   break
+  
+  case 'bangp':case 'unbangp':case 'desbangp': {
+  if(!isGroup) return reply('❌ Apenas em grupos.');
+  if(!isOwner) return reply('❌ Apenas meu dono.');
+  banGpIds[from] = !banGpIds[from];
+  if(banGpIds[from]) {
+  await reply('🚫 Grupo banido, apenas usuarios premium ou meu dono podem utilizar o bot aqui agora.');
+  } else {
+  await reply('✅ Grupo desbanido, todos podem utilizar o bot novamente.');
+  };
+  fs.writeFileSync(__dirname + `/../database/dono/bangp.json`, JSON.stringify(banGpIds));
+  };
+  break
+  
+  case 'addpremium':case 'addvip':
+  try {
+    if (!isOwner) return reply('❌ Apenas meu dono.');
+    if (!menc_os2) return reply('❌ Marque o usuário que deseja mutar.');
+    if(!!premiumListaZinha[menc_os2]) return reply('O usuário ja esta na lista premium.');
+    premiumListaZinha[menc_os2] = true;
+    await nazu.sendMessage(from, {text: `✅ @${menc_os2.split('@')[0]} foi adicionado(a) a lista premium.`, mentions: [menc_os2] }, { quoted: info });
+    fs.writeFileSync(__dirname + `/../database/dono/premium.json`, JSON.stringify(premiumListaZinha));
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro.');
+  }
+  break;
+  
+  case 'delpremium':case 'delvip':case 'rmpremium':case 'rmvip':
+  try {
+    if(!isOwner) return reply('❌ Apenas meu dono.');
+    if(!menc_os2) return reply('❌ Marque o usuário que deseja mutar.');
+    if(!premiumListaZinha[menc_os2]) return reply('O usuário não esta na lista premium.');
+    delete premiumListaZinha[menc_os2];
+    await nazu.sendMessage(from, {text: `🫡 @${menc_os2.split('@')[0]} foi removido(a) da lista premium.`, mentions: [menc_os2] }, { quoted: info });
+    fs.writeFileSync(__dirname + `/../database/dono/premium.json`, JSON.stringify(premiumListaZinha));
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro.');
+  }
+  break;
   
   
   //COMANDOS GERAIS
@@ -359,7 +535,7 @@ try {
     fs.readFile(__dirname + '/index.js', 'utf8', async (err, data) => {
       if (err) throw err;
       const comandos = [...data.matchAll(/case [`'"](\w+)[`'"]/g)].map(m => m[1]);
-      const categorias = [{ name: 'Sub Menus', files: ['/menus/menu.js'] },{ name: 'Downloads', files: ['/menus/menudown.js'] },{ name: 'Funções de adm', files: ['/menus/menuadm.js'] },{ name: 'Brincadeiras', files: ['/menus/menubn.js'] },{ name: 'Funções de dono', files: ['/menus/menudono.js'] },{ name: 'Funções Gerais', files: ['/menus/menumemb.js'] },{ name: 'Ferramentas', files: ['/menus/ferramentas.js'] },{ name: 'Comandos de figurinhas', files: ['/menus/menufig.js'] }];
+      const categorias = [{ name: 'Sub Menus', files: ['/menus/menu.js'] },{ name: 'Downloads', files: ['/menus/menudown.js'] },{ name: 'Funções de adm', files: ['/menus/menuadm.js'] },{ name: 'Brincadeiras', files: ['/menus/menubn.js'] },{ name: 'Funções de dono', files: ['/menus/menudono.js'] },{ name: 'Funções Gerais', files: ['/menus/menumemb.js'] },{ name: 'Ferramentas', files: ['/menus/ferramentas.js'] },{ name: 'Figurinhas', files: ['/menus/menufig.js'] },{ name: 'Inteligencia artificial', files: ['/menus/menuia.js'] }];
       let comandosPorCategoria = {};
       let totalComandosCategoria = 0;
       const countComandos = (filePath) => new Promise((resolve, reject) => {
@@ -402,6 +578,24 @@ try {
   
   
   //COMANDOS DE FIGURINHAS
+  case 'toimg':
+  if(!isQuotedSticker) return reply('Por favor, *mencione um sticker* para executar o comando.');
+  try {
+  buff = await getFileBuffer(info.message.extendedTextMessage.contextInfo.quotedMessage.stickerMessage, 'sticker');
+  await nazu.sendMessage(from, {image: buff}, {quoted: info});
+  } catch(error) {
+  await reply('Ocorreu um erro.');
+  };
+  break
+
+  case 'qc': {
+  if(!q) return reply('Falta o texto.');
+  const json = {"type": "quote","format": "png","backgroundColor": "#FFFFFF","width": 512,"height": 768,"scale": 2,"messages": [{"entities": [],"avatar": true,"from": {"id": 1,"name": pushname,"photo": {"url": ppimg}},"text": q,"replyMessage": {}}]};
+  res = axios.post('https://bot.lyo.su/quote/generate', json, {headers: {'Content-Type': 'application/json'}});
+  await sendSticker(nazu, from, { sticker: Buffer.from(res.data.result.image, 'base64'), author: 'Hiudy', packname: 'By:', type: 'image' }, {quoted: info });
+  };
+  break;
+  
   case 'emojimix': {
   emoji1 = q.split(`/`)[0];emoji2 = q.split(`/`)[1];
   if(!q || !emoji1 || !emoji2) return reply(`Formato errado, utilize:\n${prefix}${command} emoji1/emoji2\nEx: ${prefix}${command} 🤓/🙄`);
@@ -491,21 +685,13 @@ try {
   }
   break;
   
-  case 'help':case 'ajuda': {
-  if (!q) {
-    await reply(`Oiii, me chamo Nazuninha Bot! Essa é minha central de ajuda.\n\nCaso nunca tenha utilizado um bot antes, é bem simples. Basta você digitar o prefixo (no meu caso é ${prefix}) mais o comando.\n\nPor exemplo:\nSe quiser usar o comando *menu*, você vai digitar: ${prefix}menu.\nBem simples, né? 😊\n\n👉 *Dicas extras:*\n- Caso precise de ajuda ou queira saber como funciona um comando específico, digite: ${prefix}${command} NomeDoComando\n- Exemplo: ${prefix}${command} menu`);
-  } else {
-    const helpData = JSON.parse(fs.readFileSync(__dirname+'/.funcs/.json/.help.json', 'utf-8'));
-    const commandInfo = helpData.find(item => item.cmds.includes(q.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase()));
-    if (commandInfo) {
-      const responseText = commandInfo.text.replace(/#comando#/g, q.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase()).replace(/#prefix#/g, prefix);
-      await reply(responseText);
-    } else {
-      await reply(`❌ Ops! O comando *${q}* não foi encontrado na minha lista de ajuda. 😞`);
-    }}};
-  break;
-  
   //COMANDOS DE ADM
+  case 'deletar': case 'delete': case 'del':  case 'd':
+  if(!isGroupAdmins && !isPremium) return reply('❌ Apenas admins.');
+  if(!menc_prt) return reply("Marque a mensagem do usuário que deseja apagar, do bot ou de alguém...")
+  await nazu.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.message.extendedTextMessage.contextInfo.stanzaId, participant: menc_prt}});
+  break
+
   case 'banir':
   case 'ban':
   case 'b':
@@ -532,7 +718,7 @@ try {
     await reply('https://chat.whatsapp.com/'+linkgc)
     break
 
-case 'promover':
+  case 'promover':
   try {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
@@ -546,7 +732,7 @@ case 'promover':
   }
   break;
 
-case 'rebaixar':
+  case 'rebaixar':
   try {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
@@ -560,7 +746,7 @@ case 'rebaixar':
   }
   break;
 
-case 'setname':
+  case 'setname':
   try {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
@@ -575,7 +761,7 @@ case 'setname':
   }
   break;
 
-case 'setdesc':
+  case 'setdesc':
   try {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');

@@ -5,8 +5,9 @@ async function menuadm(prefix) {
 ╰━━━━━━━━━━━━━━╯
 
 ╭──────────────╮
-│ 🔧 *Comandos de Administração*
+│🔧 *Comandos de Administração*
 ├──────────────┤
+│ *${prefix}del* ou *${prefix}d*
 │ *${prefix}hidetag*
 │ *${prefix}marcar*
 │ *${prefix}ban* ou *${prefix}b*

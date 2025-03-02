@@ -1,22 +1,19 @@
 async function menuMembros(prefix) {
   return `
 ╭━━━━━━━━━━━━━━╮
-┃⚒️ *MENU DE FERRAMENTAS*
+┃🤖 *INTELIGÊNCIA ARTIFICIAL*
 ╰━━━━━━━━━━━━━━╯
 
 ╭──────────────╮
-│  📚 *Comandos Disponíveis*
+│  📚 *Ias de texto*
 ├──────────────┤
-│ *${prefix}gerarnick* ou *${prefix}nick*
-│ *${prefix}ssweb*
-│ *${prefix}upload*
-│ *${prefix}encurtalink*
+│ *${prefix}simi*
 ╰──────────────╯
 
 ╭━━━━━━━━━━━━━━╮
 ┃ 🌟 *Divirta-se e Explore!* 🌟
 ╰━━━━━━━━━━━━━━╯
 `;
-}
+};
 
 module.exports = menuMembros;

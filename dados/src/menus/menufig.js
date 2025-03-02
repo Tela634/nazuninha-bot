@@ -10,6 +10,7 @@ async function menuMembros(prefix) {
 │ *${prefix}emojimix*
 │ *${prefix}ttp*
 │ *${prefix}sticker* ou *${prefix}s*
+│ *${prefix}qc*
 ╰──────────────╯
 
 ╭──────────────╮
@@ -19,6 +20,7 @@ async function menuMembros(prefix) {
 │ *${prefix}rename*
 │ *${prefix}rgtake*
 │ *${prefix}take*
+│ *${prefix}toimg*
 ╰──────────────╯
 
 ╭━━━━━━━━━━━━━━╮
