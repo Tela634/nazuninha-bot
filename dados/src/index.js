@@ -831,22 +831,22 @@ try {
 
     if (pink4 && !aud_d4 && !purple4) {
         var DFC4 = pink4;
-        pink4.caption = q.length > 1 ? q : pink4.caption.replace(new RegExp(prefix + command, "gi"), `${pushname}\n\n`);
+        pink4.caption = q.length > 1 ? q : pink4.caption.replace(new RegExp(prefix + command, "gi"), ` `);
         pink4.image = { url: pink4.url };
         pink4.mentions = MRC_TD4;
     } else if (blue4 && !aud_d4 && !purple4) {
         var DFC4 = blue4;
-        blue4.caption = q.length > 1 ? q.trim() : blue4.caption.replace(new RegExp(prefix + command, "gi"), `${pushname}\n\n`).trim();
+        blue4.caption = q.length > 1 ? q.trim() : blue4.caption.replace(new RegExp(prefix + command, "gi"), ` `).trim();
         blue4.video = { url: blue4.url };
         blue4.mentions = MRC_TD4;
     } else if (red4 && !aud_d4 && !purple4) {
         var black4 = {};
-        black4.text = red4.replace(new RegExp(prefix + command, "gi"), `${pushname}\n\n`).trim();
+        black4.text = red4.replace(new RegExp(prefix + command, "gi"), ` `).trim();
         black4.mentions = MRC_TD4;
         var DFC4 = black4;
     } else if (!aud_d4 && !figu_d4 && green4 && !purple4) {
         var brown4 = {};
-        brown4.text = green4.replace(new RegExp(prefix + command, "gi"), `${pushname}\n\n`).trim();
+        brown4.text = green4.replace(new RegExp(prefix + command, "gi"), ` `).trim();
         brown4.mentions = MRC_TD4;
         var DFC4 = brown4;
     } else if (purple4) {
