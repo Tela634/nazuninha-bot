@@ -17,7 +17,7 @@ const { numerodono, nomedono, nomebot, prefixo, prefixo: prefix, debug, enablePa
 
 // Update panel stats for received message
 if (enablePanel) {
-    const statsPath = __dirname + '/database/panel/stats.json';
+    const statsPath = __dirname + '/../database/panel/stats.json';
     if (fs.existsSync(statsPath)) {
         const stats = JSON.parse(fs.readFileSync(statsPath));
         stats.messagesReceived++;
@@ -58,7 +58,7 @@ try {
  
  // Update panel stats for commands
  if (enablePanel && isCmd) {
-    const statsPath = __dirname + '/database/panel/stats.json';
+    const statsPath = __dirname + '/../database/panel/stats.json';
     if (fs.existsSync(statsPath)) {
         const stats = JSON.parse(fs.readFileSync(statsPath));
         stats.commandsExecuted++;
