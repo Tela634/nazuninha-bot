@@ -163,6 +163,7 @@ async function startNazu() {
 
        // Save group details
        for (const [id, group] of Object.entries(groups)) {
+         if(!group.isCommunity) {
          const groupPath = __dirname + '/../database/grupos/' + id + '.json';
          let groupData = {};
          
@@ -182,7 +183,7 @@ async function startNazu() {
          }
 
          fs.writeFileSync(groupPath, JSON.stringify(groupData));
-       }
+       }};
 
        // Save updated stats
        fs.writeFileSync(statsPath, JSON.stringify(stats));
