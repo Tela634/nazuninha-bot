@@ -139,7 +139,7 @@ async function startNazu() {
      // Initialize panel when bot connects
      if (enablePanel) {
        // Create panel database directory if it doesn't exist
-       const dbPath = __dirname + '/database/panel';
+       const dbPath = __dirname + '/../database/panel';
        if (!fs.existsSync(dbPath)) {
          fs.mkdirSync(dbPath, { recursive: true });
        }
