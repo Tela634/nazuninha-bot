@@ -41,7 +41,7 @@ function formatUptime(ms) {
 
 // Get premium users with enhanced error handling
 function getPremiumUsers() {
-    const premiumPath = path.join(__dirname, '../../..', 'database', 'premium');
+    const premiumPath = path.join(__dirname, '../..', 'database', 'premium');
     let premiumUsers = [];
     
     try {
@@ -55,7 +55,7 @@ function getPremiumUsers() {
                 const userId = file.replace('.json', '');
                 // Try to get pushname from group data
                 let pushname = 'Unknown User';
-                const groupsPath = path.join(__dirname, '../../..', 'database', 'grupos');
+                const groupsPath = path.join(__dirname, '../..', 'database', 'grupos');
                 if (fs.existsSync(groupsPath)) {
                     const groupFiles = fs.readdirSync(groupsPath);
                     for (const groupFile of groupFiles) {
@@ -96,7 +96,7 @@ function getPremiumUsers() {
 // Enhanced group details function with additional information
 function getGroupDetails(groupId, detailed = false) {
     try {
-        const groupPath = path.join(__dirname, '../../..', 'database', 'grupos', `${groupId}.json`);
+        const groupPath = path.join(__dirname, '../..', 'database', 'grupos', `${groupId}.json`);
         if (!fs.existsSync(groupPath)) return null;
 
         const data = JSON.parse(fs.readFileSync(groupPath, 'utf8'));
@@ -147,7 +147,7 @@ function getGroupDetails(groupId, detailed = false) {
 function initBotStats() {
     try {
         botStats.startTime = Date.now();
-        const dbPath = path.join(__dirname, '../../..', 'database', 'panel');
+        const dbPath = path.join(__dirname, '../..', 'database', 'panel');
         if (!fs.existsSync(dbPath)) {
             fs.mkdirSync(dbPath, { recursive: true });
         }
@@ -167,7 +167,7 @@ function initBotStats() {
 // Update bot stats with error handling
 function updateStats() {
     try {
-        const statsPath = path.join(__dirname, '../../..', 'database', 'panel', 'stats.json');
+        const statsPath = path.join(__dirname, '../..', 'database', 'panel', 'stats.json');
         fs.writeFileSync(statsPath, JSON.stringify(botStats, null, 2), 'utf8');
     } catch (err) {
         console.error('Error updating stats:', err);
@@ -177,7 +177,7 @@ function updateStats() {
 // Update user's pushname in group ranking
 function updateUserPushname(groupId, userId, pushname) {
     try {
-        const groupPath = path.join(__dirname, '../../..', 'database', 'grupos', `${groupId}.json`);
+        const groupPath = path.join(__dirname, '../..', 'database', 'grupos', `${groupId}.json`);
         if (!fs.existsSync(groupPath)) return;
 
         const data = JSON.parse(fs.readFileSync(groupPath, 'utf8'));
@@ -205,7 +205,7 @@ app.get('/', (req, res) => {
 
 app.get('/groups', (req, res) => {
     try {
-        const groupsPath = path.join(__dirname, '../../..', 'database', 'grupos');
+        const groupsPath = path.join(__dirname, '../..', 'database', 'grupos');
         let groups = [];
         
         if (fs.existsSync(groupsPath)) {
