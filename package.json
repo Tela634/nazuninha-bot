@@ -21,12 +21,14 @@
   "license": "ISC",
   "dependencies": {
     "baileys": "npm:@neoxr/baileys@latest",
-    "qrcode-terminal": "latest",
     "cheerio": "latest",
-    "yt-search": "latest",
-    "node-webpmux": "latest",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
     "fluent-ffmpeg": "latest",
     "form-data": "latest",
-    "node-cache": "latest"
+    "node-cache": "latest",
+    "node-webpmux": "latest",
+    "qrcode-terminal": "latest",
+    "yt-search": "latest"
   }
 }
