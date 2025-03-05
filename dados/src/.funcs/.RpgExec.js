@@ -39,14 +39,18 @@ const rpgCommands = async (type, nazu, from, sender, info, reply, command, q, pr
     // Verifica se RPG está ativo
     if (!isModoRpg) return reply('❌ O modo RPG está desativado!');
 
-    // Processa eventos aleatórios
-    const events = randomEventsSystem.checkForEvents();
-    if (Object.keys(events).length > 0) {
-        reply(randomEventsSystem.formatEventList());
-    }
-
     switch(command) {
         // Comandos Básicos
+        case 'eventos': {
+        const events = randomEventsSystem.checkForEvents();
+        if (Object.keys(events).length > 0) {
+         reply(randomEventsSystem.formatEventList());
+        }else {
+        reply('Nenhum evento ativo');
+        }
+        }
+        break
+        
         case 'registrar': {
             if (playerExists(sender)) return reply('❌ Você já está registrado!');
             if (!q) return reply(`❌ Digite seu nome. Exemplo: ${prefix}registrar Aventureiro`);
