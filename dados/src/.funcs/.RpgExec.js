@@ -32,7 +32,7 @@ const careerSystem = require('./.rpg/careerSystem.js');
 const randomEventsSystem = require('./.rpg/randomEventsSystem.js');
 
 // Helper Functions
-const { playerExists, getPlayer, savePlayer, formatProfile } = require('./.rpg/rpgFunctions.js');
+const { playerExists, getPlayer, savePlayer, formatProfile, createPlayer } = require('./.rpg/rpgFunctions.js');
 
 // Main RPG command handler
 const rpgCommands = async (type, nazu, from, sender, info, reply, command, q, prefix, isModoRpg) => {
@@ -54,6 +54,7 @@ const rpgCommands = async (type, nazu, from, sender, info, reply, command, q, pr
         case 'registrar': {
             if (playerExists(sender)) return reply('❌ Você já está registrado!');
             if (!q) return reply(`❌ Digite seu nome. Exemplo: ${prefix}registrar Aventureiro`);
+            try {
                 createPlayer(sender, q);
                 reply(`✅ Bem-vindo ao RPG, ${q}!`);
             } catch (e) {
