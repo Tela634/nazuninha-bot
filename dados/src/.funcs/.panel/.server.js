@@ -6,102 +6,89 @@ const app = express();
 const config = JSON.parse(fs.readFileSync(path.join(__dirname, '../../config.json')));
 const port = config.panelPort || 2012;
 
-// Set EJS as templating engine with new paths
+// Set EJS as templating engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '.views'));
 
-// Serve static files from new path
+// Serve static files
 app.use(express.static(path.join(__dirname, '.public')));
 
-// Store bot statistics with enhanced tracking
+// Bot stats object
 let botStats = {
+    startTime: Date.now(),
     groups: 0,
     commandsExecuted: 0,
     messagesReceived: 0,
     messagesSent: 0,
-    startTime: null,
     premiumUsers: []
 };
 
-// Format uptime duration
-function formatUptime(ms) {
-    const seconds = Math.floor((ms / 1000) % 60);
-    const minutes = Math.floor((ms / (1000 * 60)) % 60);
-    const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
-    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
-
-    const parts = [];
-    if (days > 0) parts.push(`${days}d`);
-    if (hours > 0) parts.push(`${hours}h`);
-    if (minutes > 0) parts.push(`${minutes}m`);
-    if (seconds > 0) parts.push(`${seconds}s`);
-    
-    return parts.join(' ');
-}
-
 // Get premium users with enhanced error handling
 function getPremiumUsers() {
-    const premiumPath = path.join(__dirname, '../..', 'database', 'premium');
+    const premiumPath = path.join(__dirname, '../../..', 'database', 'dono', 'premium.json');
     let premiumUsers = [];
     
     try {
         if (fs.existsSync(premiumPath)) {
-            const files = fs.readdirSync(premiumPath);
-    premiumUsers = files
-        .filter(file => file.endsWith('.json'))
-        .map(file => {
-            try {
-                const data = JSON.parse(fs.readFileSync(path.join(premiumPath, file), 'utf8'));
-                const userId = file.replace('.json', '');
-                // Try to get pushname from group data
-                let pushname = 'Unknown User';
-                const groupsPath = path.join(__dirname, '../..', 'database', 'grupos');
-                if (fs.existsSync(groupsPath)) {
-                    const groupFiles = fs.readdirSync(groupsPath);
-                    for (const groupFile of groupFiles) {
-                        try {
-                            const groupData = JSON.parse(fs.readFileSync(path.join(groupsPath, groupFile), 'utf8'));
-                            if (groupData.contador) {
-                                const userEntry = groupData.contador.find(entry => entry.id === userId);
-                                if (userEntry && userEntry.pushname) {
-                                    pushname = userEntry.pushname;
-                                    break;
+            const premiumData = JSON.parse(fs.readFileSync(premiumPath, 'utf8'));
+            premiumUsers = Object.entries(premiumData)
+                .filter(([_, isActive]) => isActive)
+                .map(([userId, _]) => {
+                    // Get user's pushname from group data
+                    let pushname = 'Unknown User';
+                    const groupsPath = path.join(__dirname, '../../..', 'database', 'grupos');
+                    if (fs.existsSync(groupsPath)) {
+                        const groupFiles = fs.readdirSync(groupsPath);
+                        for (const groupFile of groupFiles) {
+                            try {
+                                const groupData = JSON.parse(fs.readFileSync(path.join(groupsPath, groupFile), 'utf8'));
+                                if (groupData.contador) {
+                                    const userEntry = groupData.contador.find(entry => entry.id === userId);
+                                    if (userEntry && userEntry.pushname) {
+                                        pushname = userEntry.pushname;
+                                        break;
+                                    }
                                 }
+                            } catch (e) {
+                                console.error(`Error reading group file ${groupFile}:`, e);
                             }
-                        } catch (e) {
-                            console.error(`Error reading group file ${groupFile}:`, e);
                         }
                     }
-                }
-                return {
-                    id: userId,
-                    name: pushname,
-                    expiresAt: data.expiresAt || 'Never',
-                    avatar: data.avatar || '/img/default-avatar.png'
-                };
-            } catch (err) {
-                console.error(`Error reading premium user file ${file}:`, err);
-                return null;
-            }
-        })
-        .filter(user => user !== null);
+
+                    return {
+                        id: userId,
+                        name: pushname,
+                        expiresAt: 'Premium',
+                        avatar: '/img/default-avatar.png'
+                    };
+                });
         }
     } catch (err) {
-        console.error('Error accessing premium users directory:', err);
+        console.error('Error reading premium users file:', err);
     }
     
     return premiumUsers;
 }
 
-// Enhanced group details function with additional information
+// Enhanced group details function
 function getGroupDetails(groupId, detailed = false) {
     try {
-        const groupPath = path.join(__dirname, '../..', 'database', 'grupos', `${groupId}.json`);
+        const groupPath = path.join(__dirname, '../../..', 'database', 'grupos', `${groupId}.json`);
         if (!fs.existsSync(groupPath)) return null;
 
         const data = JSON.parse(fs.readFileSync(groupPath, 'utf8'));
         
-        // Basic group info for list view
+        // Calculate stats from contador
+        let totalMessages = 0;
+        let totalCommands = 0;
+        if (data.contador) {
+            for (const user of data.contador) {
+                totalMessages += user.msg || 0;
+                totalCommands += user.cmd || 0;
+            }
+        }
+
+        // Basic group info
         const basicInfo = {
             id: groupId,
             name: data.name || 'Unknown Group',
@@ -109,8 +96,18 @@ function getGroupDetails(groupId, detailed = false) {
             image: data.image || '/img/default-group.png'
         };
 
-        // Return basic info if detailed view is not requested
         if (!detailed) return basicInfo;
+
+        // Get top 5 users from contador
+        const topUsers = data.contador ? 
+            data.contador
+                .map(user => ({
+                    pushname: user.pushname || 'Unknown User',
+                    number: user.id.replace(/(\d{4})\d+/, '$1********'),
+                    messages: user.msg || 0
+                }))
+                .sort((a, b) => b.messages - a.messages)
+                .slice(0, 5) : [];
 
         // Enhanced information for detailed view
         return {
@@ -118,24 +115,16 @@ function getGroupDetails(groupId, detailed = false) {
             description: data.desc || 'No description available',
             adminCount: Array.isArray(data.admins) ? data.admins.length : 0,
             stats: {
-                messagesReceived: data.totalMessages || 0,
-                commandsExecuted: data.totalCommands || 0,
-                messagesSent: data.totalSent || 0
+                messagesReceived: totalMessages,
+                commandsExecuted: totalCommands,
+                messagesSent: totalMessages
             },
             systems: {
-                antilink: data.antilink || false,
-                welcome: data.welcome || false,
+                antilink: data.antilinkgp || false,
+                welcome: data.bemvindo || false,
                 antiflood: data.antiflood || false
             },
-            topUsers: data.ranking ? 
-                Object.entries(data.ranking)
-                    .map(([id, info]) => ({
-                        pushname: info.pushname || 'Unknown User',
-                        number: id.replace(/(\d{4})\d+/, '$1********'),
-                        messages: info.messages || 0
-                    }))
-                    .sort((a, b) => b.messages - a.messages)
-                    .slice(0, 5) : []
+            topUsers
         };
     } catch (err) {
         console.error(`Error getting group details for ${groupId}:`, err);
@@ -143,76 +132,115 @@ function getGroupDetails(groupId, detailed = false) {
     }
 }
 
-// Initialize bot stats from database
+// Initialize bot stats from database and group counters
 function initBotStats() {
     try {
         botStats.startTime = Date.now();
-        const dbPath = path.join(__dirname, '../..', 'database', 'panel');
-        if (!fs.existsSync(dbPath)) {
-            fs.mkdirSync(dbPath, { recursive: true });
-        }
-        const statsPath = path.join(dbPath, 'stats.json');
-        if (fs.existsSync(statsPath)) {
-            const savedStats = JSON.parse(fs.readFileSync(statsPath, 'utf8'));
-            botStats = { ...botStats, ...savedStats };
-        }
         
-        // Update premium users
+        // Calculate totals from group data
+        let totalMessages = 0;
+        let totalCommands = 0;
+        const groupsPath = path.join(__dirname, '../../..', 'database', 'grupos');
+        if (fs.existsSync(groupsPath)) {
+            const groupFiles = fs.readdirSync(groupsPath);
+            botStats.groups = groupFiles.length;
+            
+            for (const groupFile of groupFiles) {
+                try {
+                    const groupData = JSON.parse(fs.readFileSync(path.join(groupsPath, groupFile), 'utf8'));
+                    if (groupData.contador) {
+                        for (const user of groupData.contador) {
+                            totalMessages += user.msg || 0;
+                            totalCommands += user.cmd || 0;
+                        }
+                    }
+                } catch (e) {
+                    console.error(`Error reading group file ${groupFile}:`, e);
+                }
+            }
+        }
+
+        // Update stats
+        botStats.messagesReceived = totalMessages;
+        botStats.commandsExecuted = totalCommands;
+        botStats.messagesSent = totalMessages;
         botStats.premiumUsers = getPremiumUsers();
     } catch (err) {
         console.error('Error initializing bot stats:', err);
     }
 }
 
-// Update bot stats with error handling
+// Update bot stats
 function updateStats() {
     try {
-        const statsPath = path.join(__dirname, '../..', 'database', 'panel', 'stats.json');
+        // Calculate totals from group data
+        let totalMessages = 0;
+        let totalCommands = 0;
+        const groupsPath = path.join(__dirname, '../../..', 'database', 'grupos');
+        if (fs.existsSync(groupsPath)) {
+            const groupFiles = fs.readdirSync(groupsPath);
+            botStats.groups = groupFiles.length;
+            
+            for (const groupFile of groupFiles) {
+                try {
+                    const groupData = JSON.parse(fs.readFileSync(path.join(groupsPath, groupFile), 'utf8'));
+                    if (groupData.contador) {
+                        for (const user of groupData.contador) {
+                            totalMessages += user.msg || 0;
+                            totalCommands += user.cmd || 0;
+                        }
+                    }
+                } catch (e) {
+                    console.error(`Error reading group file ${groupFile}:`, e);
+                }
+            }
+        }
+
+        // Update stats
+        botStats.messagesReceived = totalMessages;
+        botStats.commandsExecuted = totalCommands;
+        botStats.messagesSent = totalMessages;
+        botStats.premiumUsers = getPremiumUsers();
+
+        // Save stats
+        const statsPath = path.join(__dirname, '../../..', 'database', 'panel', 'stats.json');
         fs.writeFileSync(statsPath, JSON.stringify(botStats, null, 2), 'utf8');
     } catch (err) {
         console.error('Error updating stats:', err);
     }
 }
 
-// Update user's pushname in group ranking
-function updateUserPushname(groupId, userId, pushname) {
-    try {
-        const groupPath = path.join(__dirname, '../..', 'database', 'grupos', `${groupId}.json`);
-        if (!fs.existsSync(groupPath)) return;
-
-        const data = JSON.parse(fs.readFileSync(groupPath, 'utf8'));
-        if (!data.ranking) data.ranking = {};
-        if (!data.ranking[userId]) {
-            data.ranking[userId] = { messages: 0, pushname };
-        } else {
-            data.ranking[userId].pushname = pushname;
-        }
-
-        fs.writeFileSync(groupPath, JSON.stringify(data, null, 2), 'utf8');
-    } catch (err) {
-        console.error(`Error updating pushname for user ${userId} in group ${groupId}:`, err);
-    }
-}
-
 // Routes
 app.get('/', (req, res) => {
-    const uptime = botStats.startTime ? formatUptime(Date.now() - botStats.startTime) : '0s';
-    res.render('.dashboard', { 
-        stats: botStats,
-        uptime: uptime
-    });
+    updateStats();
+    res.render('.dashboard', { stats: botStats });
 });
 
 app.get('/groups', (req, res) => {
     try {
-        const groupsPath = path.join(__dirname, '../..', 'database', 'grupos');
+        const groupsPath = path.join(__dirname, '../../..', 'database', 'grupos');
         let groups = [];
         
         if (fs.existsSync(groupsPath)) {
             const files = fs.readdirSync(groupsPath);
             groups = files
                 .filter(file => file.endsWith('.json'))
-                .map(file => getGroupDetails(file.replace('.json', '')))
+                .map(file => {
+                    try {
+                        const groupId = file.replace('.json', '');
+                        const data = JSON.parse(fs.readFileSync(path.join(groupsPath, file), 'utf8'));
+                        return {
+                            id: groupId,
+                            name: data.name || groupId,
+                            members: data.members || 0,
+                            image: data.image || '/img/default-group.png',
+                            active: true
+                        };
+                    } catch (e) {
+                        console.error(`Error reading group file ${file}:`, e);
+                        return null;
+                    }
+                })
                 .filter(group => group !== null);
         }
         
@@ -223,46 +251,33 @@ app.get('/groups', (req, res) => {
     }
 });
 
-// New route for detailed group view
 app.get('/group/:id', (req, res) => {
     try {
-        const groupDetails = getGroupDetails(req.params.id, true);
-        if (!groupDetails) {
-            return res.status(404).send('Group not found');
+        const group = getGroupDetails(req.params.id, true);
+        if (!group) {
+            res.status(404).send('Group not found');
+            return;
         }
-        res.render('.group-details', { group: groupDetails });
+        res.render('.group-details', { group });
     } catch (err) {
         console.error('Error fetching group details:', err);
         res.status(500).send('Error fetching group details');
     }
 });
 
-// New API endpoint for real-time stats
 app.get('/api/stats', (req, res) => {
-    const uptime = botStats.startTime ? formatUptime(Date.now() - botStats.startTime) : '0s';
-    res.json({ 
-        ...botStats,
-        uptime 
-    });
+    updateStats();
+    res.json(botStats);
 });
 
-// Export functions to update stats from bot
+// Initialize stats when server starts
+initBotStats();
+
+// Export server functions
 module.exports = {
     startServer: () => {
-        initBotStats();
         app.listen(port, () => {
-            console.log(`Panel running at http://localhost:${port}`);
+            console.log(`Panel running on port ${port}`);
         });
-    },
-    updateStats: (newStats) => {
-        botStats = { ...botStats, ...newStats };
-        updateStats();
-    },
-    incrementStat: (stat) => {
-        if (stat in botStats) {
-            botStats[stat]++;
-            updateStats();
-        }
-    },
-    updateUserPushname: updateUserPushname
+    }
 };
