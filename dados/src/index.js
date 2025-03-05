@@ -3,27 +3,18 @@
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
-const panel = require('./.funcs/.panel/.server');
 const { exec, spawn, execSync } = require('child_process');
 const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin }  = require(__dirname+'/.funcs/.exports.js');
 const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa } = require(__dirname+'/menus/index.js');
+const rpgCommands = require('./.funcs/.RpgExec.js');
 const FormData = require("form-data");
 const axios = require('axios');
 const pathz = require('path');
 const fs = require('fs');
 
 async function NazuninhaBotExec(nazu, info) {
-const { numerodono, nomedono, nomebot, prefixo, prefixo: prefix, debug, enablePanel } = JSON.parse(fs.readFileSync(__dirname+'/config.json'));
+const { numerodono, nomedono, nomebot, prefixo, prefixo: prefix, debug } = JSON.parse(fs.readFileSync(__dirname+'/config.json'));
 
-// Update panel stats for received message
-if (enablePanel) {
-    const statsPath = __dirname + '/../database/panel/stats.json';
-    if (fs.existsSync(statsPath)) {
-        const stats = JSON.parse(fs.readFileSync(statsPath));
-        stats.messagesReceived++;
-        fs.writeFileSync(statsPath, JSON.stringify(stats));
-    }
-}
 try {
  const from = info.key.remoteJid;
  const isGroup = from.endsWith('@g.us');
@@ -55,16 +46,6 @@ try {
 
  var isCmd = body.trim().startsWith(prefix);
  const command = isCmd ? budy2.trim().slice(1).split(/ +/).shift().toLocaleLowerCase().trim().replaceAll(' ', '') : null;
- 
- // Update panel stats for commands
- if (enablePanel && isCmd) {
-    const statsPath = __dirname + '/../database/panel/stats.json';
-    if (fs.existsSync(statsPath)) {
-        const stats = JSON.parse(fs.readFileSync(statsPath));
-        stats.commandsExecuted++;
-        fs.writeFileSync(statsPath, JSON.stringify(stats));
-    }
- }
  
  //CRIAR PASTAS
   if (!fs.existsSync(__dirname + `/../database/grupos`)) fs.mkdirSync(__dirname + `/../database/grupos`, { recursive: true });
@@ -137,21 +118,7 @@ try {
  
  //FUNÇÕES BASICAS
  async function reply(text) { 
-    const result = await nazu.sendMessage(from, {text: text.trim()}, {sendEphemeral: true, contextInfo: { forwardingScore: 50, isForwarded: true, externalAdReply: { showAdAttribution: true }}, quoted: info});
-    
-    // Update panel stats for sent message
-    if (enablePanel) {
-        const statsPath = path.join(__dirname, '..', 'database', 'panel', 'stats.json');
-        if (fs.existsSync(statsPath)) {
-            const stats = JSON.parse(fs.readFileSync(statsPath));
-            stats.messagesSent++;
-            fs.writeFileSync(statsPath, JSON.stringify(stats));
-        }
-    }
-    
-    return result;
- };
- nazu.reply=reply;
+    const result = await nazu.sendMessage(from, {text: text.trim()}, {sendEphemeral: true, contextInfo: { forwardingScore: 50, isForwarded: true, externalAdReply: { showAdAttribution: true }}, quoted: info}); nazu.reply=reply;
  
  const reagir = async (emj) => { if (typeof emj === 'string') { await nazu.sendMessage(from, { react: { text: emj, key: info.key } }); } else if (Array.isArray(emj)) { for (const emjzin of emj) { await nazu.sendMessage(from, { react: { text: emjzin, key: info.key } }); await new Promise(res => setTimeout(res, 500)); } } }; nazu.react = reagir;
  
@@ -212,6 +179,9 @@ try {
  ppimg = 'https://telegra.ph/file/b5427ea4b8701bc47e751.jpg'
  };
  
+ //AQUI FICA OS COMANDO DE RPG
+ rpgCommands(type, nazu, from, sender, info, reply, command, q, prefix, true);
+
  switch(command) {
  //FUNÇÕES PREMIUM
   case 'nome':case 'nome2':case 'nome3':case 'nome4':case 'telefone2':case 'telefonefixo':case 'cpf':case 'cpf2':case 'cpf3':case 'cpf4':case 'cpf5':case 'placa':case 'bin':case 'site':case 'cep':case 'vizinhos':case 'cnpj':case 'score':case 'titulo':case 'email':case 'vacina':case 'parentes':case 'rg':case 'rg2':case 'senha':case 'mae':case 'pai':case 'chassi':case 'motor':case 'beneficios':case 'impostos':case 'nascimento':case 'pfix':case 'cns':case 'cns2':case 'correios':case 'radar':case 'dominio':case 'internet':case 'compras':case 'cnh':case 'funcionarios': try {

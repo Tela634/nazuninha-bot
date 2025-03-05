@@ -1,7 +1,6 @@
 // Created By Hiudy (não remova nem edite essa linha)
 
 const { Boom } = require('@hapi/boom');
-const panel = require('./.funcs/.panel/.server');
 const { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, DisconnectReason, proto, makeInMemoryStore } = require('baileys');
 
 const readline = require('readline');
@@ -14,7 +13,7 @@ const logger = pino({ level: 'silent' });
 const AUTH_DIR = 'dados/database/qr-code';
 const msgRetryCounterCache = new NodeCache();
 
-const { prefixo, nomebot, nomedono, numerodono, aviso, enablePanel } = require('./config.json');
+const { prefixo, nomebot, nomedono, numerodono, aviso } = require('./config.json');
 
 const ask = (question) => {
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -135,63 +134,8 @@ async function startNazu() {
    if (connection === 'open') {
      console.log(`============================================\nBot: ${nomebot}\nPrefix: ${prefixo}\nDono: ${nomedono}\nCriador: Hiudy\n============================================\n    ✅ BOT INICIADO COM SUCESSO\n============================================`);
      if(aviso) await nazu.sendMessage(numerodono+'@s.whatsapp.net', {text: 'Bot conectado ✅'});
-     
-     // Initialize panel when bot connects
-     if (enablePanel) {
-       // Create panel database directory if it doesn't exist
-       const dbPath = __dirname + '/../database/panel';
-       if (!fs.existsSync(dbPath)) {
-         fs.mkdirSync(dbPath, { recursive: true });
-       }
-
-       // Initialize stats file if it doesn't exist
-       const statsPath = dbPath + '/stats.json';
-       if (!fs.existsSync(statsPath)) {
-         const initialStats = {
-           groups: 0,
-           commandsExecuted: 0,
-           messagesReceived: 0,
-           messagesSent: 0
-         };
-         fs.writeFileSync(statsPath, JSON.stringify(initialStats));
-       }
-
-       // Update group information
-       const groups = await nazu.groupFetchAllParticipating();
-       const stats = JSON.parse(fs.readFileSync(statsPath));
-       stats.groups = Object.keys(groups).length;
-
-       // Save group details
-       for (const [id, group] of Object.entries(groups)) {
-         if(!group.isCommunity) {
-         const groupPath = __dirname + '/../database/grupos/' + id + '.json';
-         let groupData = {};
-         
-         if (fs.existsSync(groupPath)) {
-           groupData = JSON.parse(fs.readFileSync(groupPath));
-         }
-
-         groupData.name = group.subject;
-         groupData.members = group.participants.length;
-
-         // Try to get group profile picture
-         try {
-           const ppUrl = await nazu.profilePictureUrl(id, 'image');
-           groupData.image = ppUrl;
-         } catch (err) {
-           groupData.image = '/img/default-group.png';
-         }
-
-         fs.writeFileSync(groupPath, JSON.stringify(groupData));
-       }};
-
-       // Save updated stats
-       fs.writeFileSync(statsPath, JSON.stringify(stats));
-
-       // Start the panel server
-       panel.startServer();
-     }
    };
+   
    if (connection === 'close') {
      const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
      console.log(`⚠️ Conexão fechada, motivo: ${reason}`);
