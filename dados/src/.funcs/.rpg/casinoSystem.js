@@ -220,7 +220,7 @@ class CasinoSystem {
     }
 
     playRoulette(player, betType, betValue, amount) {
-        const game = this.games.roulette;
+        game = this.games.roulette;
         const bet = game.bets[betType];
 
         if (!bet) throw new Error('❌ Tipo de aposta inválido!');
@@ -294,7 +294,7 @@ class CasinoSystem {
     }
 
     playBlackjack(player, action, amount) {
-        const game = this.games.blackjack;
+        let game = this.games.blackjack;
 
         // Inicia novo jogo
         if (action === 'start') {
@@ -323,7 +323,7 @@ class CasinoSystem {
         }
 
         // Continua jogo existente
-        const game = player.casino?.currentGame;
+        game = player.casino?.currentGame;
         if (!game || game.status !== 'playing') {
             throw new Error('❌ Nenhum jogo em andamento!');
         }
@@ -403,7 +403,7 @@ class CasinoSystem {
     }
 
     playSlots(player, amount) {
-        const game = this.games.slots;
+        game = this.games.slots;
 
         // Verifica limites
         if (amount < game.minBet || amount > this.getMaxBet(player, game)) {
@@ -469,7 +469,7 @@ class CasinoSystem {
     }
 
     playDice(player, betType, betValue, amount) {
-        const game = this.games.dice;
+        game = this.games.dice;
         const bet = game.bets[betType];
 
         if (!bet) throw new Error('❌ Tipo de aposta inválido!');
