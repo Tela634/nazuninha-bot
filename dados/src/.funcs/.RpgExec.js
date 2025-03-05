@@ -54,32 +54,8 @@ const rpgCommands = async (type, nazu, from, sender, info, reply, command, q, pr
         case 'registrar': {
             if (playerExists(sender)) return reply('❌ Você já está registrado!');
             if (!q) return reply(`❌ Digite seu nome. Exemplo: ${prefix}registrar Aventureiro`);
-            
-            try {
-                const player = {
-                    id: sender,
-                    name: q,
-                    level: 1,
-                    xp: 0,
-                    money: {
-                        wallet: 1000,
-                        bank: 0
-                    },
-                    stats: {
-                        health: 100,
-                        maxHealth: 100,
-                        energy: 100,
-                        maxEnergy: 100,
-                        attack: 10,
-                        defense: 5,
-                        speed: 10
-                    },
-                    inventory: [],
-                    createdAt: Date.now()
-                };
-                
-                savePlayer(sender, player);
-                reply(`✅ Bem-vindo ao RPG, ${q}!\n\nUse ${prefix}rpgmenu para ver os comandos.`);
+                createPlayer(sender, q);
+                reply(`✅ Bem-vindo ao RPG, ${q}!`);
             } catch (e) {
                 reply('❌ ' + e.message);
             }
