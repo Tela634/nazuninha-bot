@@ -32,7 +32,7 @@ const careerSystem = require('./.rpg/careerSystem.js');
 const randomEventsSystem = require('./.rpg/randomEventsSystem.js');
 
 // Helper Functions
-const { playerExists, checkRPGAction, savePlayer } = require('./.rpg/rpgFunctions.js');
+const { playerExists, getPlayer, savePlayer } = require('./.rpg/rpgFunctions.js');
 
 // Main RPG command handler
 const rpgCommands = async (type, nazu, from, sender, info, reply, command, q, prefix, isModoRpg) => {
@@ -90,46 +90,8 @@ const rpgCommands = async (type, nazu, from, sender, info, reply, command, q, pr
             if (!playerExists(sender)) return reply(`❌ Você não está registrado! Use ${prefix}registrar para começar.`);
             
             try {
-                const player = await checkRPGAction(sender);
-                let text = `👤 *PERFIL* 👤\n\n`;
-                text += `Nome: ${player.name}\n`;
-                text += `Nível: ${player.level}\n`;
-                text += `XP: ${player.xp}/${player.level * 1000}\n\n`;
-                
-                text += `💰 *DINHEIRO*\n`;
-                text += `├ Carteira: R$ ${player.money.wallet}\n`;
-                text += `└ Banco: R$ ${player.money.bank}\n\n`;
-                
-                text += `📊 *STATS*\n`;
-                text += `├ Vida: ${player.stats.health}/${player.stats.maxHealth}\n`;
-                text += `├ Energia: ${player.stats.energy}/${player.stats.maxEnergy}\n`;
-                text += `├ Ataque: ${player.stats.attack}\n`;
-                text += `├ Defesa: ${player.stats.defense}\n`;
-                text += `└ Velocidade: ${player.stats.speed}\n\n`;
-
-                if (player.class) {
-                    const classInfo = classSystem.classes[player.class];
-                    text += `🎮 *CLASSE*\n`;
-                    text += `└ ${classInfo.name}\n\n`;
-                }
-
-                if (player.faction) {
-                    const factionInfo = factionSystem.factions[player.faction.id];
-                    text += `⚔️ *FACÇÃO*\n`;
-                    text += `└ ${factionInfo.name}\n\n`;
-                }
-
-                if (player.gang) {
-                    text += `🎭 *GANGUE*\n`;
-                    text += `└ ${player.gang.name}\n\n`;
-                }
-
-                if (player.career) {
-                    const careerInfo = careerSystem.careers[player.career.id];
-                    text += `💼 *CARREIRA*\n`;
-                    text += `└ ${careerInfo.name}\n\n`;
-                }
-
+                const player = await getPlayer(sender);
+                let text = formatProfile(player);
                 reply(text);
             } catch (e) {
                 reply('❌ ' + e.message);
