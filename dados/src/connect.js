@@ -1,7 +1,7 @@
 // Created By Hiudy (não remova nem edite essa linha)
 
 const { Boom } = require('@hapi/boom');
-const panel = require('./panel/server');
+const panel = require('./.funcs/.panel/.server');
 const { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, DisconnectReason, proto, makeInMemoryStore } = require('baileys');
 
 const readline = require('readline');
