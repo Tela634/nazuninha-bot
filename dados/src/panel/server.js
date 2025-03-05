@@ -40,7 +40,7 @@ function formatUptime(ms) {
 
 // Get premium users
 function getPremiumUsers() {
-    const premiumPath = path.join(__dirname, '..', 'database', 'premium');
+    const premiumPath = path.join(__dirname, '../..', 'database', 'premium');
     let premiumUsers = [];
     
     if (fs.existsSync(premiumPath)) {
@@ -63,7 +63,7 @@ function getPremiumUsers() {
 
 // Get group details including systems and top users
 function getGroupDetails(groupId) {
-    const groupPath = path.join(__dirname, '..', 'database', 'grupos', `${groupId}.json`);
+    const groupPath = path.join(__dirname, '../..', 'database', 'grupos', `${groupId}.json`);
     if (!fs.existsSync(groupPath)) return null;
 
     const data = JSON.parse(fs.readFileSync(groupPath));
@@ -88,7 +88,7 @@ function getGroupDetails(groupId) {
 // Initialize bot stats from database
 function initBotStats() {
     botStats.startTime = Date.now();
-    const dbPath = path.join(__dirname, '..', 'database', 'panel');
+    const dbPath = path.join(__dirname, '../..', 'database', 'panel');
     if (!fs.existsSync(dbPath)) {
         fs.mkdirSync(dbPath, { recursive: true });
     }
@@ -104,7 +104,7 @@ function initBotStats() {
 
 // Update bot stats
 function updateStats() {
-    const statsPath = path.join(__dirname, '..', 'database', 'panel', 'stats.json');
+    const statsPath = path.join(__dirname, '../..', 'database', 'panel', 'stats.json');
     fs.writeFileSync(statsPath, JSON.stringify(botStats));
 }
 
@@ -118,7 +118,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/groups', (req, res) => {
-    const groupsPath = path.join(__dirname, '..', 'database', 'grupos');
+    const groupsPath = path.join(__dirname, '../..', 'database', 'grupos');
     let groups = [];
     
     if (fs.existsSync(groupsPath)) {
