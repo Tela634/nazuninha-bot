@@ -103,7 +103,7 @@ function getGroupDetails(groupId, detailed = false) {
             data.contador
                 .map(user => ({
                     pushname: user.pushname || 'Unknown User',
-                    number: user.id.replace(/(\d{4})\d+/, '$1********'),
+                    number: user.id.replace(/(\d{4})\d+/, '$1********').split('@')[0],
                     messages: user.msg || 0
                 }))
                 .sort((a, b) => b.messages - a.messages)
