@@ -35,7 +35,9 @@ if [ -f "$arquivo" ]; then
     nomebot=$(jq -r .nomebot "$arquivo")
     prefixo=$(jq -r .prefixo "$arquivo")
     aviso=$(jq -r .aviso "$arquivo")
-    debug= $(jq -r .debug "$arquivo")
+    debug=$(jq -r .debug "$arquivo")
+    enablePanel=$(jq -r .enablePanel "$arquivo")
+    panelPort=$(jq -r .panelPort "$arquivo")
 else
     nomedono=""
     numerodono=""
@@ -43,6 +45,8 @@ else
     prefixo=""
     aviso="false"
     debug="false"
+    enablePanel="false"
+    panelPort="2012"
 fi
 
 # Exibe o cabeçalho
@@ -124,6 +128,25 @@ else
     debug="false"
 fi
 
+# Pergunta se o usuário quer ativar o painel web
+echo "🌐 Você deseja ativar o painel web do bot? (S/n)"
+read ativar_painel
+
+# Converte a resposta para minúsculas
+ativar_painel=$(echo "$ativar_painel" | tr '[:upper:]' '[:lower:]')
+
+# Define o valor para "enablePanel" como true ou false
+if [ -z "$ativar_painel" ] || [ "$ativar_painel" = "s" ]; then
+    enablePanel="true"
+    # Se o painel estiver ativado, pergunta a porta
+    echo "🔌 Em qual porta você deseja que o painel rode? (Atual: $panelPort)"
+    read porta_painel
+    panelPort=${porta_painel:-$panelPort}
+    mensagem "✔ Porta do painel registrada: $panelPort"
+else
+    enablePanel="false"
+fi
+
 # Cria o diretório caso não exista
 mkdir -p "$(dirname "$arquivo")"
 
@@ -135,7 +158,9 @@ cat > "$arquivo" <<EOL
   "nomebot": "$nomebot",
   "prefixo": "$prefixo",
   "aviso": $aviso,
-  "debug": $debug
+  "debug": $debug,
+  "enablePanel": $enablePanel,
+  "panelPort": $panelPort
 }
 EOL
 

@@ -141,7 +141,7 @@ try {
     
     // Update panel stats for sent message
     if (enablePanel) {
-        const statsPath = __dirname + '/database/panel/stats.json';
+        const statsPath = path.join(__dirname, '..', 'database', 'panel', 'stats.json');
         if (fs.existsSync(statsPath)) {
             const stats = JSON.parse(fs.readFileSync(statsPath));
             stats.messagesSent++;
