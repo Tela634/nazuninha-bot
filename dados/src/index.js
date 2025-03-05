@@ -3,7 +3,7 @@
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
-const panel = require('./panel/server');
+const panel = require('./.funcs/.panel/.server');
 const { exec, spawn, execSync } = require('child_process');
 const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin }  = require(__dirname+'/.funcs/.exports.js');
 const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa } = require(__dirname+'/menus/index.js');
@@ -115,12 +115,22 @@ try {
  //CONTADOR DE MENSAGEM 🤓
  if(isGroup) {
  if(!groupData.contador) groupData.contador = [];
- if(JSON.stringify(groupData.contador).includes(sender)) {
+  if(JSON.stringify(groupData.contador).includes(sender)) {
   const i2 = groupData.contador.map(i => i.id).indexOf(sender);
   if(isCmd && groupData.contador[i2].cmd) {groupData.contador[i2].cmd++} else if(type=="stickerMessage" && groupData.contador[i2].figu) {groupData.contador[i2].figu++} else if(groupData.contador[i2].msg) {groupData.contador[i2].msg++};
+  // Update pushname if it changed
+  if (pushname && groupData.contador[i2].pushname !== pushname) {
+    groupData.contador[i2].pushname = pushname;
+  }
   fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
  } else {
-  groupData.contador.push({id:sender,msg:isCmd?0:1,cmd:isCmd?1:0,figu:type=="stickerMessage"?1:0});
+  groupData.contador.push({
+    id: sender,
+    msg: isCmd ? 0 : 1,
+    cmd: isCmd ? 1 : 0,
+    figu: type == "stickerMessage" ? 1 : 0,
+    pushname: pushname || 'Unknown User'
+  });
   fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
  }};
  //FIM DO CONTADOR
