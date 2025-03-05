@@ -32,7 +32,7 @@ const careerSystem = require('./.rpg/careerSystem.js');
 const randomEventsSystem = require('./.rpg/randomEventsSystem.js');
 
 // Helper Functions
-const { playerExists, getPlayer, savePlayer } = require('./.rpg/rpgFunctions.js');
+const { playerExists, getPlayer, savePlayer, formatProfile } = require('./.rpg/rpgFunctions.js');
 
 // Main RPG command handler
 const rpgCommands = async (type, nazu, from, sender, info, reply, command, q, prefix, isModoRpg) => {
