@@ -331,7 +331,7 @@ class CasinoSystem {
         switch(action) {
             case 'hit':
                 game.playerHand.push(this.drawCard());
-                const playerTotal = this.calculateHand(game.playerHand);
+                playerTotal = this.calculateHand(game.playerHand);
                 
                 if (playerTotal > 21) {
                     player.money.wallet -= game.bet;
@@ -364,7 +364,7 @@ class CasinoSystem {
                     game.dealerHand.push(this.drawCard());
                 }
 
-                const playerTotal = this.calculateHand(game.playerHand);
+                playerTotal = this.calculateHand(game.playerHand);
                 const dealerTotal = this.calculateHand(game.dealerHand);
 
                 let result;
