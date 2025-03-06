@@ -20,6 +20,15 @@
   "author": "Hiudy",
   "license": "ISC",
   "dependencies": {
-    "@hiudyy/import": "latest"
+    "baileys": "npm:@neoxr/baileys@latest",
+    "cheerio": "latest",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "fluent-ffmpeg": "latest",
+    "form-data": "latest",
+    "node-cache": "latest",
+    "node-webpmux": "latest",
+    "qrcode-terminal": "latest",
+    "yt-search": "latest"
   }
 }

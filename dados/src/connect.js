@@ -1,10 +1,5 @@
 // Created By Hiudy (não remova nem edite essa linha)
 
-const hiu = require("@hiudyy/import");
-
-async function startNazu() { 
-await hiu.import(["npm:baileys@latest", "npm:cheerio@latest", "npm:fluent-ffmpeg@latest", "npm:form-data@latest", "npm:node-cache@latest", "npm:node-webpmux@latest", "npm:qrcode-terminal@latest", "npm:yt-search@latest"]);
-  
 const { Boom } = require('@hapi/boom');
 const { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, DisconnectReason, proto, makeInMemoryStore } = require('baileys');
 
@@ -27,6 +22,7 @@ return new Promise(resolve => rl.question(question, (answer) => { rl.close(); re
 
 const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' })});
 
+async function startNazu() {
  const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
  const { version } = await fetchLatestBaileysVersion();
  
