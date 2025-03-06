@@ -1,10 +1,10 @@
 class QuestSystem {
     constructor() {
-        this.mainQuests = {
-            // Capítulo 1: O Início
-            'inicio_jornada': {
-                name: 'O Início da Jornada',
-                description: 'Comece sua aventura registrando-se como aventureiro',
+        this.quests = {
+            // Missões Diárias
+            'daily': {
+                // Missões de Combate
+                'derrotar_monstros': {
                     name: 'Caçador de Monstros',
                     description: 'Derrote {amount} monstros',
                     type: 'combat',
