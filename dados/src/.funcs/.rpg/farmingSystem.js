@@ -1,391 +1,497 @@
 class FarmingSystem {
     constructor() {
-        // Mantém as plantações anteriores, mas adiciona:
+        this.crops = {
+            // Cultivos Básicos
+            'cenoura': {
+                name: 'Cenoura',
+                growthTime: 300000, // 5 minutos
+                waterNeeded: 2,
+                minLevel: 1,
+                xp: 10,
+                value: 5,
+                yield: { min: 1, max: 3 }
+            },
+            'batata': {
+                name: 'Batata',
+                growthTime: 600000, // 10 minutos
+                waterNeeded: 3,
+                minLevel: 1,
+                xp: 15,
+                value: 8,
+                yield: { min: 2, max: 4 }
+            },
+            'tomate': {
+                name: 'Tomate',
+                growthTime: 900000, // 15 minutos
+                waterNeeded: 4,
+                minLevel: 5,
+                xp: 20,
+                value: 12,
+                yield: { min: 2, max: 5 }
+            },
 
-        // Sistema de Clima
-        this.weather = {
-            'ensolarado': {
-                name: 'Ensolarado',
-                effect: {
-                    type: 'growth_speed',
-                    value: 1.2 // 20% mais rápido
-                },
-                chance: 0.4
+            // Cultivos Intermediários
+            'trigo': {
+                name: 'Trigo',
+                growthTime: 1800000, // 30 minutos
+                waterNeeded: 5,
+                minLevel: 10,
+                xp: 30,
+                value: 20,
+                yield: { min: 3, max: 6 }
             },
-            'chuvoso': {
-                name: 'Chuvoso',
-                effect: {
-                    type: 'water_save',
-                    value: 1 // Não precisa regar
-                },
-                chance: 0.3
+            'milho': {
+                name: 'Milho',
+                growthTime: 2700000, // 45 minutos
+                waterNeeded: 6,
+                minLevel: 15,
+                xp: 40,
+                value: 25,
+                yield: { min: 3, max: 7 }
             },
-            'seca': {
-                name: 'Seca',
-                effect: {
-                    type: 'water_need',
-                    value: 2 // Precisa 2x mais água
-                },
-                chance: 0.15
+            'arroz': {
+                name: 'Arroz',
+                growthTime: 3600000, // 1 hora
+                waterNeeded: 8,
+                minLevel: 20,
+                xp: 50,
+                value: 30,
+                yield: { min: 4, max: 8 }
             },
-            'tempestade': {
-                name: 'Tempestade',
-                effect: {
-                    type: 'damage',
-                    value: 0.3 // 30% chance de perder plantação
-                },
-                chance: 0.1
+
+            // Cultivos Avançados
+            'cafe': {
+                name: 'Café',
+                growthTime: 7200000, // 2 horas
+                waterNeeded: 10,
+                minLevel: 25,
+                xp: 100,
+                value: 100,
+                yield: { min: 5, max: 10 }
             },
-            'geada': {
-                name: 'Geada',
-                effect: {
-                    type: 'freeze',
-                    value: 0.5 // Crescimento 50% mais lento
-                },
-                chance: 0.05
+            'cacau': {
+                name: 'Cacau',
+                growthTime: 14400000, // 4 horas
+                waterNeeded: 12,
+                minLevel: 30,
+                xp: 200,
+                value: 200,
+                yield: { min: 6, max: 12 }
+            },
+            'uva_dourada': {
+                name: 'Uva Dourada',
+                growthTime: 28800000, // 8 horas
+                waterNeeded: 15,
+                minLevel: 40,
+                xp: 500,
+                value: 1000,
+                yield: { min: 1, max: 3 }
             }
         };
 
-        // Ferramentas necessárias
         this.tools = {
             'regador': {
                 name: 'Regador',
-                description: 'Para regar as plantas',
-                price: 500,
                 durability: 50,
-                efficiency: 1
+                efficiency: 1.0,
+                cost: 100
             },
-            'regador_pro': {
-                name: 'Regador Profissional',
-                description: 'Rega múltiplas plantas',
-                price: 2000,
+            'regador_bronze': {
+                name: 'Regador de Bronze',
                 durability: 100,
-                efficiency: 2
+                efficiency: 1.2,
+                cost: 500
             },
-            'pa': {
-                name: 'Pá',
-                description: 'Para preparar a terra',
-                price: 800,
-                durability: 50,
-                efficiency: 1
+            'regador_ferro': {
+                name: 'Regador de Ferro',
+                durability: 200,
+                efficiency: 1.5,
+                cost: 2000
             },
-            'pa_ferro': {
-                name: 'Pá de Ferro',
-                description: 'Prepara terra mais rápido',
-                price: 3000,
-                durability: 100,
-                efficiency: 2
+            'regador_prata': {
+                name: 'Regador de Prata',
+                durability: 500,
+                efficiency: 2.0,
+                cost: 5000
             },
-            'fertilizante': {
-                name: 'Fertilizante',
-                description: 'Acelera crescimento',
-                price: 1000,
-                uses: 5,
-                boost: 1.5
+            'regador_ouro': {
+                name: 'Regador de Ouro',
+                durability: 1000,
+                efficiency: 2.5,
+                cost: 20000
             }
         };
 
-        // Pragas e Doenças
         this.diseases = {
-            'fungos': {
-                name: 'Fungos',
-                effect: {
-                    type: 'quality_reduction',
-                    value: 0.3 // -30% qualidade
-                },
-                chance: 0.2,
+            'fungo': {
+                name: 'Fungo',
+                chance: 0.1,
+                damage: 0.5,
                 cure: 'fungicida'
             },
-            'insetos': {
-                name: 'Insetos',
-                effect: {
-                    type: 'growth_reduction',
-                    value: 0.4 // -40% velocidade
-                },
+            'praga': {
+                name: 'Praga',
                 chance: 0.15,
-                cure: 'inseticida'
+                damage: 0.3,
+                cure: 'pesticida'
             },
-            'virus': {
-                name: 'Vírus Vegetal',
-                effect: {
-                    type: 'death',
-                    value: 0.5 // 50% chance de morte
-                },
-                chance: 0.1,
-                cure: 'antiviral'
+            'murcha': {
+                name: 'Murcha',
+                chance: 0.2,
+                damage: 0.2,
+                cure: 'fertilizante'
             }
         };
 
-        // Tratamentos
         this.treatments = {
             'fungicida': {
                 name: 'Fungicida',
-                price: 1500,
-                uses: 3
+                cost: 100,
+                effectiveness: 1.0
             },
-            'inseticida': {
-                name: 'Inseticida',
-                price: 2000,
-                uses: 3
+            'pesticida': {
+                name: 'Pesticida',
+                cost: 150,
+                effectiveness: 1.0
             },
-            'antiviral': {
-                name: 'Antiviral',
-                price: 3000,
-                uses: 3
+            'fertilizante': {
+                name: 'Fertilizante',
+                cost: 200,
+                effectiveness: 1.0
             }
         };
 
-        // Sistema de Qualidade
-        this.quality = {
-            'perfeito': {
-                name: 'Perfeito',
-                multiplier: 2.0,
-                chance: 0.1
-            },
-            'excelente': {
-                name: 'Excelente',
-                multiplier: 1.5,
-                chance: 0.2
-            },
-            'bom': {
-                name: 'Bom',
-                multiplier: 1.2,
-                chance: 0.3
-            },
-            'normal': {
-                name: 'Normal',
-                multiplier: 1.0,
-                chance: 0.3
-            },
-            'ruim': {
-                name: 'Ruim',
-                multiplier: 0.5,
-                chance: 0.1
-            }
-        };
-
-        // Habilidades de Fazendeiro
         this.skills = {
-            'mao_verde': {
-                name: 'Mão Verde',
-                description: 'Aumenta chance de qualidade alta',
-                maxLevel: 5,
-                costPerLevel: 2000,
-                effect: {
-                    type: 'quality_chance',
-                    valuePerLevel: 0.05 // +5% por nível
-                }
-            },
-            'agronomia': {
-                name: 'Agronomia',
-                description: 'Reduz chance de doenças',
-                maxLevel: 5,
-                costPerLevel: 2500,
-                effect: {
-                    type: 'disease_resistance',
-                    valuePerLevel: 0.1 // -10% por nível
-                }
-            },
             'irrigacao': {
                 name: 'Irrigação',
-                description: 'Reduz consumo de água',
+                description: 'Reduz água necessária',
                 maxLevel: 5,
-                costPerLevel: 1500,
-                effect: {
-                    type: 'water_save',
-                    valuePerLevel: 0.1 // -10% por nível
-                }
+                cost: level => level * 1000,
+                effect: level => ({ water_reduction: 0.1 * level })
             },
-            'colheita': {
-                name: 'Colheita Eficiente',
-                description: 'Chance de colheita dupla',
+            'cultivo': {
+                name: 'Cultivo',
+                description: 'Aumenta produção',
                 maxLevel: 5,
-                costPerLevel: 3000,
-                effect: {
-                    type: 'double_harvest',
-                    valuePerLevel: 0.05 // +5% por nível
-                }
+                cost: level => level * 1000,
+                effect: level => ({ yield_boost: 0.1 * level })
+            },
+            'resistencia': {
+                name: 'Resistência',
+                description: 'Reduz chance de doenças',
+                maxLevel: 5,
+                cost: level => level * 1000,
+                effect: level => ({ disease_resistance: 0.1 * level })
+            },
+            'crescimento': {
+                name: 'Crescimento',
+                description: 'Acelera crescimento',
+                maxLevel: 5,
+                cost: level => level * 1000,
+                effect: level => ({ growth_speed: 0.1 * level })
             }
         };
     }
 
-    plant(player, cropId, quantity = 1) {
+    plant(player, cropId, plotId) {
         const crop = this.crops[cropId];
-        if (!crop) throw new Error('❌ Plantação não encontrada!');
+        if (!crop) throw new Error('❌ Cultivo não encontrado!');
 
         // Verifica nível
-        if (player.level < crop.level) {
-            throw new Error(`❌ Você precisa ser nível ${crop.level} para plantar ${crop.name}!`);
+        if (player.level < crop.minLevel) {
+            throw new Error(`❌ Você precisa ser nível ${crop.minLevel} para plantar ${crop.name}!`);
         }
 
-        // Verifica ferramentas
-        if (!player.farming?.tools?.includes('pa') && !player.farming?.tools?.includes('pa_ferro')) {
-            throw new Error('❌ Você precisa de uma pá para preparar a terra!');
+        // Verifica se tem sementes
+        if (!player.inventory[`semente_${cropId}`]) {
+            throw new Error(`❌ Você não tem sementes de ${crop.name}!`);
         }
 
-        if (!player.farming?.tools?.includes('regador') && !player.farming?.tools?.includes('regador_pro')) {
-            throw new Error('❌ Você precisa de um regador para cuidar das plantas!');
+        // Verifica terreno
+        if (!player.farm) player.farm = {};
+        if (player.farm[plotId]) {
+            throw new Error('❌ Este terreno já está ocupado!');
         }
-
-        // Verifica espaço
-        if (!player.farm) {
-            player.farm = {
-                plots: [],
-                level: 1,
-                xp: 0,
-                tools: [],
-                weather: this.generateWeather()
-            };
-        }
-
-        const maxPlots = player.farm.level * 5;
-        if (player.farm.plots.length + quantity > maxPlots) {
-            throw new Error(`❌ Sua fazenda só tem espaço para ${maxPlots} plantações!`);
-        }
-
-        // Verifica dinheiro
-        const totalCost = crop.price * quantity;
-        if (player.money.wallet < totalCost) {
-            throw new Error(`❌ Você precisa de R$ ${totalCost} para plantar ${quantity}x ${crop.name}!`);
-        }
-
-        // Reduz durabilidade das ferramentas
-        this.reduceDurability(player, 'pa');
-        this.reduceDurability(player, 'regador');
 
         // Planta
-        for (let i = 0; i < quantity; i++) {
-            const plot = {
-                crop: cropId,
-                plantedAt: Date.now(),
-                quality: this.calculateQuality(player),
-                health: 100,
-                watered: true,
-                disease: this.checkDisease(player),
-                readyAt: this.calculateGrowthTime(crop, player)
-            };
-
-            player.farm.plots.push(plot);
+        player.inventory[`semente_${cropId}`]--;
+        if (player.inventory[`semente_${cropId}`] <= 0) {
+            delete player.inventory[`semente_${cropId}`];
         }
 
-        // Remove dinheiro
-        player.money.wallet -= totalCost;
+        // Calcula tempo de crescimento
+        let growthTime = crop.growthTime;
+        if (player.skills?.farming?.crescimento) {
+            const reduction = this.skills.crescimento.effect(
+                player.skills.farming.crescimento
+            ).growth_speed;
+            growthTime *= (1 - reduction);
+        }
+
+        player.farm[plotId] = {
+            crop: cropId,
+            plantedAt: Date.now(),
+            harvestAt: Date.now() + growthTime,
+            watered: 0,
+            health: 100
+        };
 
         return {
             success: true,
             message: `🌱 *PLANTAÇÃO*\n\n` +
-                    `${crop.emoji} Plantou ${quantity}x ${crop.name}\n` +
-                    `⏰ Tempo estimado: ${Math.ceil((plot.readyAt - Date.now()) / (60 * 1000))} minutos\n` +
-                    `💰 Custo: R$ ${totalCost}\n\n` +
-                    `🌤️ Clima: ${player.farm.weather.name}\n` +
-                    (plot.disease ? `⚠️ Doença detectada: ${plot.disease.name}!` : '')
+                    `Plantou: ${crop.name}\n` +
+                    `Terreno: ${plotId}\n` +
+                    `Tempo: ${Math.ceil(growthTime / 60000)} minutos`
         };
     }
 
-    generateWeather() {
-        const roll = Math.random();
-        let cumulative = 0;
-        for (const [id, weather] of Object.entries(this.weather)) {
-            cumulative += weather.chance;
-            if (roll <= cumulative) {
-                return {
-                    id: id,
-                    name: weather.name,
-                    effect: weather.effect
-                };
-            }
+    water(player, plotId) {
+        if (!player.farm?.[plotId]) {
+            throw new Error('❌ Nenhum cultivo neste terreno!');
         }
+
+        const plot = player.farm[plotId];
+        const crop = this.crops[plot.crop];
+
+        // Verifica regador
+        if (!player.tools?.regador) {
+            throw new Error('❌ Você precisa de um regador!');
+        }
+
+        const tool = this.tools[player.tools.regador.id];
+        if (player.tools.regador.durability <= 0) {
+            throw new Error('❌ Seu regador está quebrado!');
+        }
+
+        // Calcula água necessária
+        let waterNeeded = crop.waterNeeded;
+        if (player.skills?.farming?.irrigacao) {
+            const reduction = this.skills.irrigacao.effect(
+                player.skills.farming.irrigacao
+            ).water_reduction;
+            waterNeeded *= (1 - reduction);
+        }
+
+        if (plot.watered >= waterNeeded) {
+            throw new Error('❌ Este cultivo já está bem regado!');
+        }
+
+        // Rega
+        plot.watered++;
+        player.tools.regador.durability--;
+
+        // Chance de doença
+        this.checkDisease(player, plotId);
+
         return {
-            id: 'ensolarado',
-            name: this.weather.ensolarado.name,
-            effect: this.weather.ensolarado.effect
+            success: true,
+            message: `💧 Regou ${crop.name}\n` +
+                    `Água: ${plot.watered}/${waterNeeded}\n` +
+                    `Saúde: ${plot.health}%\n` +
+                    `Regador: ${player.tools.regador.durability}/${tool.durability}`
         };
     }
 
-    calculateQuality(player) {
-        let chances = { ...this.quality };
+    checkDisease(player, plotId) {
+        const plot = player.farm[plotId];
 
-        // Aplica bônus de habilidade
-        if (player.farming?.skills?.mao_verde) {
-            const level = player.farming.skills.mao_verde;
-            const bonus = this.skills.mao_verde.effect.valuePerLevel * level;
-            
-            chances.perfeito.chance += bonus * 0.5;
-            chances.excelente.chance += bonus * 0.3;
-            chances.bom.chance += bonus * 0.2;
+        // Calcula resistência
+        let resistance = 0;
+        if (player.skills?.farming?.resistencia) {
+            resistance = this.skills.resistencia.effect(
+                player.skills.farming.resistencia
+            ).disease_resistance;
         }
 
-        const roll = Math.random();
-        let cumulative = 0;
-        for (const [id, quality] of Object.entries(chances)) {
-            cumulative += quality.chance;
-            if (roll <= cumulative) {
-                return {
-                    id: id,
-                    name: quality.name,
-                    multiplier: quality.multiplier
-                };
+        // Verifica cada doença
+        Object.entries(this.diseases).forEach(([id, disease]) => {
+            if (Math.random() < disease.chance * (1 - resistance)) {
+                plot.disease = id;
+                plot.health -= disease.damage * 100;
             }
+        });
+
+        if (plot.health <= 0) {
+            delete player.farm[plotId];
+            return false;
         }
+
+        return true;
+    }
+
+    treat(player, plotId, treatmentId) {
+        if (!player.farm?.[plotId]) {
+            throw new Error('❌ Nenhum cultivo neste terreno!');
+        }
+
+        const plot = player.farm[plotId];
+        if (!plot.disease) {
+            throw new Error('❌ Este cultivo está saudável!');
+        }
+
+        const treatment = this.treatments[treatmentId];
+        if (!treatment) throw new Error('❌ Tratamento não encontrado!');
+
+        const disease = this.diseases[plot.disease];
+        if (disease.cure !== treatmentId) {
+            throw new Error('❌ Este tratamento não é eficaz contra esta doença!');
+        }
+
+        // Aplica tratamento
+        delete plot.disease;
+        plot.health = Math.min(100, plot.health + 50);
+
         return {
-            id: 'normal',
-            name: this.quality.normal.name,
-            multiplier: this.quality.normal.multiplier
+            success: true,
+            message: `💊 Tratou ${this.crops[plot.crop].name}\n` +
+                    `Saúde: ${plot.health}%`
         };
     }
 
-    checkDisease(player) {
-        for (const [id, disease] of Object.entries(this.diseases)) {
-            let chance = disease.chance;
+    harvest(player, plotId) {
+        if (!player.farm?.[plotId]) {
+            throw new Error('❌ Nenhum cultivo neste terreno!');
+        }
 
-            // Reduz chance com habilidade
-            if (player.farming?.skills?.agronomia) {
-                const level = player.farming.skills.agronomia;
-                chance *= (1 - (this.skills.agronomia.effect.valuePerLevel * level));
+        const plot = player.farm[plotId];
+        const crop = this.crops[plot.crop];
+
+        // Verifica se está pronto
+        if (Date.now() < plot.harvestAt) {
+            const timeLeft = Math.ceil((plot.harvestAt - Date.now()) / 60000);
+            throw new Error(`❌ Ainda faltam ${timeLeft} minutos para colher!`);
+        }
+
+        // Verifica água
+        let waterNeeded = crop.waterNeeded;
+        if (player.skills?.farming?.irrigacao) {
+            const reduction = this.skills.irrigacao.effect(
+                player.skills.farming.irrigacao
+            ).water_reduction;
+            waterNeeded *= (1 - reduction);
+        }
+
+        if (plot.watered < waterNeeded) {
+            throw new Error('❌ Este cultivo precisa de mais água!');
+        }
+
+        // Calcula produção
+        let amount = Math.floor(
+            Math.random() * (crop.yield.max - crop.yield.min + 1) + crop.yield.min
+        );
+
+        // Aplica bônus de cultivo
+        if (player.skills?.farming?.cultivo) {
+            const boost = this.skills.cultivo.effect(
+                player.skills.farming.cultivo
+            ).yield_boost;
+            amount = Math.floor(amount * (1 + boost));
+        }
+
+        // Aplica penalidade de saúde
+        amount = Math.floor(amount * (plot.health / 100));
+
+        // Adiciona ao inventário
+        if (!player.inventory[plot.crop]) player.inventory[plot.crop] = 0;
+        player.inventory[plot.crop] += amount;
+
+        // Calcula XP
+        const xp = Math.floor(crop.xp * (plot.health / 100));
+
+        // Limpa terreno
+        delete player.farm[plotId];
+
+        return {
+            success: true,
+            amount: amount,
+            xp: xp,
+            message: `🌾 *COLHEITA*\n\n` +
+                    `Colheu: ${amount}x ${crop.name}\n` +
+                    `XP: +${xp}\n` +
+                    `Qualidade: ${plot.health}%`
+        };
+    }
+
+    formatFarmStatus(player) {
+        if (!player.farm || Object.keys(player.farm).length === 0) {
+            return `🌱 *FAZENDA* 🌱\n\n` +
+                   `_Nenhum cultivo ativo_\n` +
+                   `Use /plantar para começar!`;
+        }
+
+        let text = `🌱 *FAZENDA* 🌱\n\n`;
+
+        Object.entries(player.farm).forEach(([plotId, plot]) => {
+            const crop = this.crops[plot.crop];
+            const waterNeeded = Math.floor(crop.waterNeeded * (
+                1 - (player.skills?.farming?.irrigacao ? 
+                    this.skills.irrigacao.effect(
+                        player.skills.farming.irrigacao
+                    ).water_reduction : 0)
+            ));
+
+            text += `*Terreno ${plotId}*\n`;
+            text += `├ Cultivo: ${crop.name}\n`;
+            text += `├ Água: ${plot.watered}/${waterNeeded}\n`;
+            text += `├ Saúde: ${plot.health}%\n`;
+            if (plot.disease) {
+                text += `├ Doença: ${this.diseases[plot.disease].name}\n`;
             }
+            const timeLeft = Math.ceil((plot.harvestAt - Date.now()) / 60000);
+            text += `└ Tempo: ${timeLeft} minutos\n\n`;
+        });
 
-            if (Math.random() < chance) {
-                return {
-                    id: id,
-                    name: disease.name,
-                    effect: disease.effect,
-                    cure: disease.cure
-                };
+        return text;
+    }
+
+    formatCropList() {
+        let text = `🌱 *CULTIVOS* 🌱\n\n`;
+
+        Object.entries(this.crops).forEach(([id, crop]) => {
+            text += `*${crop.name}*\n`;
+            text += `├ Nível: ${crop.minLevel}\n`;
+            text += `├ Tempo: ${crop.growthTime / 60000} minutos\n`;
+            text += `├ Água: ${crop.waterNeeded}\n`;
+            text += `├ Produção: ${crop.yield.min}-${crop.yield.max}\n`;
+            text += `└ Valor: R$ ${crop.value}\n\n`;
+        });
+
+        return text;
+    }
+
+    formatToolList() {
+        let text = `🔧 *FERRAMENTAS* 🔧\n\n`;
+
+        Object.entries(this.tools).forEach(([id, tool]) => {
+            text += `*${tool.name}*\n`;
+            text += `├ Durabilidade: ${tool.durability}\n`;
+            text += `├ Eficiência: ${(tool.efficiency * 100).toFixed(0)}%\n`;
+            text += `└ Preço: R$ ${tool.cost}\n\n`;
+        });
+
+        return text;
+    }
+
+    formatSkillList(player) {
+        let text = `⚡ *HABILIDADES DE AGRICULTURA* ⚡\n\n`;
+
+        Object.entries(this.skills).forEach(([id, skill]) => {
+            const currentLevel = player.skills?.farming?.[id] || 0;
+            text += `*${skill.name}* (${currentLevel}/${skill.maxLevel})\n`;
+            text += `├ ${skill.description}\n`;
+            if (currentLevel < skill.maxLevel) {
+                const nextCost = skill.cost(currentLevel + 1);
+                const nextEffect = skill.effect(currentLevel + 1);
+                text += `├ Próximo nível: R$ ${nextCost}\n`;
+                text += `└ Efeito: ${Object.entries(nextEffect)
+                    .map(([stat, value]) => `${stat} ${value > 0 ? '+' : ''}${value}`)
+                    .join(', ')}\n`;
             }
-        }
-        return null;
+            text += '\n';
+        });
+
+        return text;
     }
-
-    calculateGrowthTime(crop, player) {
-        let time = crop.growthTime * 60 * 1000; // Converte minutos para ms
-
-        // Aplica efeito do clima
-        if (player.farm.weather.effect.type === 'growth_speed') {
-            time /= player.farm.weather.effect.value;
-        } else if (player.farm.weather.effect.type === 'freeze') {
-            time *= (1 + player.farm.weather.effect.value);
-        }
-
-        // Aplica efeito de fertilizante
-        if (player.farming?.fertilizer) {
-            time /= this.tools.fertilizante.boost;
-        }
-
-        return Date.now() + time;
-    }
-
-    reduceDurability(player, toolType) {
-        const tool = player.farming.tools.find(t => t.startsWith(toolType));
-        if (!tool) return;
-
-        player.farming.durability[tool]--;
-        if (player.farming.durability[tool] <= 0) {
-            player.farming.tools = player.farming.tools.filter(t => t !== tool);
-            delete player.farming.durability[tool];
-        }
-    }
-
-    // ... outros métodos anteriores ...
 }
 
 module.exports = new FarmingSystem();

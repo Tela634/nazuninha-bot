@@ -1,166 +1,171 @@
 class CookingSystem {
     constructor() {
-        // Mantém as receitas anteriores, mas adiciona:
+        this.recipes = {
+            // Receitas Básicas
+            'sopa_legumes': {
+                name: 'Sopa de Legumes',
+                ingredients: {
+                    'cenoura': 2,
+                    'batata': 1,
+                    'agua': 1
+                },
+                difficulty: 'facil',
+                time: 60000, // 1 minuto
+                xp: 10,
+                value: 20,
+                restore: {
+                    health: 20,
+                    energy: 10
+                }
+            },
+            'peixe_assado': {
+                name: 'Peixe Assado',
+                ingredients: {
+                    'tilapia': 1,
+                    'sal': 1
+                },
+                difficulty: 'facil',
+                time: 120000, // 2 minutos
+                xp: 15,
+                value: 30,
+                restore: {
+                    health: 30,
+                    energy: 15
+                }
+            },
 
-        // Qualidade dos Ingredientes
-        this.ingredients = {
-            'fresco': {
-                name: 'Fresco',
-                multiplier: 1.5,
-                chance: 0.2,
-                price_multiplier: 2
+            // Receitas Intermediárias
+            'ensopado': {
+                name: 'Ensopado',
+                ingredients: {
+                    'carne': 2,
+                    'batata': 2,
+                    'cenoura': 1,
+                    'temperos': 1
+                },
+                difficulty: 'media',
+                time: 300000, // 5 minutos
+                xp: 50,
+                value: 100,
+                restore: {
+                    health: 50,
+                    energy: 25,
+                    strength: 5
+                }
             },
-            'normal': {
-                name: 'Normal',
-                multiplier: 1.0,
-                chance: 0.5,
-                price_multiplier: 1
+            'peixe_especial': {
+                name: 'Peixe Especial',
+                ingredients: {
+                    'salmao': 1,
+                    'temperos': 2,
+                    'ervas': 1
+                },
+                difficulty: 'media',
+                time: 240000, // 4 minutos
+                xp: 60,
+                value: 120,
+                restore: {
+                    health: 60,
+                    energy: 30,
+                    agility: 5
+                }
             },
-            'velho': {
-                name: 'Velho',
-                multiplier: 0.7,
-                chance: 0.2,
-                price_multiplier: 0.5
+
+            // Receitas Avançadas
+            'banquete_real': {
+                name: 'Banquete Real',
+                ingredients: {
+                    'carne_premium': 2,
+                    'peixe_dourado': 1,
+                    'vegetais_frescos': 3,
+                    'temperos_raros': 2
+                },
+                difficulty: 'dificil',
+                time: 600000, // 10 minutos
+                xp: 200,
+                value: 500,
+                restore: {
+                    health: 100,
+                    energy: 50,
+                    strength: 10,
+                    agility: 10,
+                    intelligence: 10
+                }
             },
-            'estragado': {
-                name: 'Estragado',
-                multiplier: 0,
-                chance: 0.1,
-                price_multiplier: 0.1
+            'elixir_vida': {
+                name: 'Elixir da Vida',
+                ingredients: {
+                    'ervas_raras': 3,
+                    'cogumelos_magicos': 2,
+                    'essencia_vital': 1
+                },
+                difficulty: 'dificil',
+                time: 900000, // 15 minutos
+                xp: 300,
+                value: 1000,
+                restore: {
+                    health: 200,
+                    energy: 100,
+                    mana: 50
+                }
             }
         };
 
-        // Equipamentos Necessários
         this.equipment = {
-            'faca': {
-                name: 'Faca',
-                description: 'Para cortar ingredientes',
-                price: 500,
-                durability: 50,
-                required: ['carne', 'peixe', 'legumes']
+            'fogao_basico': {
+                name: 'Fogão Básico',
+                efficiency: 1.0,
+                maxDifficulty: 'facil',
+                cost: 1000
             },
-            'panela': {
-                name: 'Panela',
-                description: 'Para cozinhar',
-                price: 1000,
-                durability: 100,
-                required: ['sopa', 'feijoada', 'ensopado']
+            'fogao_avancado': {
+                name: 'Fogão Avançado',
+                efficiency: 1.5,
+                maxDifficulty: 'media',
+                cost: 5000
             },
-            'frigideira': {
-                name: 'Frigideira',
-                description: 'Para fritar',
-                price: 800,
-                durability: 80,
-                required: ['bife', 'ovo', 'peixe_frito']
+            'cozinha_completa': {
+                name: 'Cozinha Completa',
+                efficiency: 2.0,
+                maxDifficulty: 'dificil',
+                cost: 20000
             },
-            'forno': {
-                name: 'Forno',
-                description: 'Para assar',
-                price: 2000,
-                durability: 200,
-                required: ['pao', 'bolo', 'torta']
+            'cozinha_magica': {
+                name: 'Cozinha Mágica',
+                efficiency: 3.0,
+                maxDifficulty: 'qualquer',
+                cost: 100000
             }
         };
 
-        // Eventos de Cozinha
-        this.events = {
-            'fogo_alto': {
-                name: 'Fogo Alto',
-                effect: {
-                    type: 'burn_chance',
-                    value: 0.3 // 30% chance de queimar
-                },
-                chance: 0.2
-            },
-            'tempero_especial': {
-                name: 'Tempero Especial',
-                effect: {
-                    type: 'quality_boost',
-                    value: 1.5 // +50% qualidade
-                },
-                chance: 0.1
-            },
-            'acidente': {
-                name: 'Acidente de Cozinha',
-                effect: {
-                    type: 'ingredient_loss',
-                    value: 0.5 // Perde 50% dos ingredientes
-                },
-                chance: 0.15
-            },
-            'inspiracao': {
-                name: 'Inspiração Culinária',
-                effect: {
-                    type: 'double_portion',
-                    value: 2 // Dobra a quantidade
-                },
-                chance: 0.05
-            }
-        };
-
-        // Habilidades de Cozinheiro
         this.skills = {
-            'controle_fogo': {
-                name: 'Controle do Fogo',
-                description: 'Reduz chance de queimar',
+            'eficiencia_culinaria': {
+                name: 'Eficiência Culinária',
+                description: 'Reduz tempo de preparo',
                 maxLevel: 5,
-                costPerLevel: 2000,
-                effect: {
-                    type: 'burn_reduction',
-                    valuePerLevel: 0.1 // -10% por nível
-                }
+                cost: level => level * 1000,
+                effect: level => ({ time_reduction: 0.1 * level })
             },
-            'tempero_perfeito': {
-                name: 'Tempero Perfeito',
-                description: 'Aumenta qualidade',
+            'economia': {
+                name: 'Economia',
+                description: 'Chance de não consumir ingredientes',
                 maxLevel: 5,
-                costPerLevel: 2500,
-                effect: {
-                    type: 'quality_boost',
-                    valuePerLevel: 0.1 // +10% por nível
-                }
+                cost: level => level * 1000,
+                effect: level => ({ ingredient_save: 0.1 * level })
             },
-            'economia_ingredientes': {
-                name: 'Economia de Ingredientes',
-                description: 'Chance de não gastar',
+            'qualidade': {
+                name: 'Qualidade',
+                description: 'Aumenta efeitos da comida',
                 maxLevel: 5,
-                costPerLevel: 1500,
-                effect: {
-                    type: 'ingredient_save',
-                    valuePerLevel: 0.05 // +5% por nível
-                }
+                cost: level => level * 1000,
+                effect: level => ({ effect_boost: 0.1 * level })
             },
-            'porcao_extra': {
-                name: 'Porção Extra',
-                description: 'Chance de porção extra',
+            'criatividade': {
+                name: 'Criatividade',
+                description: 'Chance de criar pratos especiais',
                 maxLevel: 5,
-                costPerLevel: 3000,
-                effect: {
-                    type: 'extra_portion',
-                    valuePerLevel: 0.05 // +5% por nível
-                }
-            }
-        };
-
-        // Sistema de Crítico
-        this.criticals = {
-            'perfeito': {
-                name: 'Perfeito',
-                multiplier: 2.0,
-                effects: ['double_duration', 'double_stats'],
-                chance: 0.05
-            },
-            'obra_prima': {
-                name: 'Obra-Prima',
-                multiplier: 1.5,
-                effects: ['bonus_stats'],
-                chance: 0.15
-            },
-            'desastre': {
-                name: 'Desastre',
-                multiplier: 0,
-                effects: ['food_poisoning'],
-                chance: 0.1
+                cost: level => level * 1000,
+                effect: level => ({ special_chance: 0.1 * level })
             }
         };
     }
@@ -169,249 +174,176 @@ class CookingSystem {
         const recipe = this.recipes[recipeId];
         if (!recipe) throw new Error('❌ Receita não encontrada!');
 
-        // Verifica nível
-        if (player.level < recipe.level) {
-            throw new Error(`❌ Você precisa ser nível ${recipe.level} para fazer esta receita!`);
+        // Verifica equipamento
+        if (!player.cooking?.equipment) {
+            throw new Error('❌ Você precisa de equipamento de cozinha!');
         }
 
-        // Verifica equipamentos necessários
-        for (const [equip, data] of Object.entries(this.equipment)) {
-            if (data.required.some(type => recipe.type.includes(type))) {
-                if (!player.cooking?.equipment?.[equip] || player.cooking.equipment[equip] <= 0) {
-                    throw new Error(`❌ Você precisa de ${data.name} para fazer esta receita!`);
+        const equipment = this.equipment[player.cooking.equipment];
+        if (recipe.difficulty !== 'facil' && equipment.maxDifficulty === 'facil') {
+            throw new Error('❌ Seu equipamento não é adequado para esta receita!');
+        }
+        if (recipe.difficulty === 'dificil' && equipment.maxDifficulty === 'media') {
+            throw new Error('❌ Seu equipamento não é adequado para esta receita!');
+        }
+
+        // Verifica ingredientes
+        Object.entries(recipe.ingredients).forEach(([item, amount]) => {
+            if (!player.inventory[item] || player.inventory[item] < amount) {
+                throw new Error(`❌ Você precisa de ${amount}x ${item}!`);
+            }
+        });
+
+        // Consome ingredientes (com chance de economia)
+        Object.entries(recipe.ingredients).forEach(([item, amount]) => {
+            let consumed = amount;
+            if (player.skills?.cooking?.economia) {
+                const saveChance = this.skills.economia.effect(
+                    player.skills.cooking.economia
+                ).ingredient_save;
+                if (Math.random() < saveChance) {
+                    consumed--;
                 }
             }
-        }
-
-        // Verifica e remove ingredientes
-        for (const [ingredient, amount] of Object.entries(recipe.ingredients)) {
-            const playerHas = player.inventory.filter(i => i.id === ingredient).length;
-            if (playerHas < amount) {
-                throw new Error(`❌ Você precisa de ${amount}x ${ingredient} (tem ${playerHas})`);
+            player.inventory[item] -= consumed;
+            if (player.inventory[item] <= 0) {
+                delete player.inventory[item];
             }
+        });
+
+        // Calcula tempo de preparo
+        let time = recipe.time;
+        if (player.skills?.cooking?.eficiencia_culinaria) {
+            const reduction = this.skills.eficiencia_culinaria.effect(
+                player.skills.cooking.eficiencia_culinaria
+            ).time_reduction;
+            time *= (1 - reduction);
         }
+        time /= equipment.efficiency;
 
-        // Processa eventos
-        const event = this.processEvent(player);
-        if (event?.effect.type === 'ingredient_loss') {
-            throw new Error('❌ Você perdeu alguns ingredientes em um acidente!');
-        }
-
-        // Remove ingredientes
-        if (!this.tryIngredientSave(player)) {
-            for (const [ingredient, amount] of Object.entries(recipe.ingredients)) {
-                for (let i = 0; i < amount; i++) {
-                    const index = player.inventory.findIndex(item => item.id === ingredient);
-                    player.inventory.splice(index, 1);
-                }
-            }
-        }
-
-        // Reduz durabilidade dos equipamentos
-        this.reduceEquipmentDurability(player, recipe);
-
-        // Calcula resultado
-        const result = this.calculateCookingResult(player, recipe, event);
-
-        // Cria o item
-        const cookedItem = {
-            id: recipeId,
-            name: recipe.name,
-            emoji: recipe.emoji,
-            type: recipe.result.type,
-            quality: result.quality,
-            effect: this.calculateFoodEffect(recipe.result, result),
-            madeBy: player.name
+        // Inicia preparo
+        player.cooking.preparing = {
+            recipe: recipeId,
+            startTime: Date.now(),
+            endTime: Date.now() + time
         };
-
-        // Aplica multiplicador de quantidade
-        let quantity = 1;
-        if (event?.effect.type === 'double_portion') quantity = 2;
-        if (result.critical?.effects?.includes('double_portion')) quantity = 2;
-
-        // Adiciona ao inventário
-        for (let i = 0; i < quantity; i++) {
-            player.inventory.push({...cookedItem});
-        }
-
-        // Adiciona XP de culinária
-        const xpGained = Math.floor(recipe.xp * (result.quality?.multiplier || 1));
-        player.cooking.xp = (player.cooking.xp || 0) + xpGained;
-
-        // Verifica level up
-        let levelUp = false;
-        if (!player.cooking.level) player.cooking.level = 1;
-        while (player.cooking.xp >= player.cooking.level * 100) {
-            player.cooking.xp -= player.cooking.level * 100;
-            player.cooking.level++;
-            levelUp = true;
-        }
 
         return {
             success: true,
-            item: cookedItem,
-            quantity: quantity,
-            quality: result.quality,
-            critical: result.critical,
-            event: event,
-            xpGained: xpGained,
-            levelUp: levelUp,
-            message: this.formatCookingResult(cookedItem, quantity, result, event, xpGained, levelUp)
+            time: time,
+            message: `👨‍🍳 *COZINHANDO*\n\n` +
+                    `${recipe.name}\n` +
+                    `Tempo: ${Math.ceil(time / 1000)} segundos`
         };
     }
 
-    processEvent(player) {
-        for (const [id, event] of Object.entries(this.events)) {
-            let chance = event.chance;
-
-            // Reduz chance de queimar
-            if (id === 'fogo_alto' && player.cooking?.skills?.controle_fogo) {
-                const level = player.cooking.skills.controle_fogo;
-                chance *= (1 - (this.skills.controle_fogo.effect.valuePerLevel * level));
-            }
-
-            if (Math.random() < chance) {
-                return {
-                    id: id,
-                    name: event.name,
-                    effect: event.effect
-                };
-            }
+    finishCooking(player) {
+        if (!player.cooking?.preparing) {
+            throw new Error('❌ Você não está cozinhando nada!');
         }
-        return null;
-    }
 
-    tryIngredientSave(player) {
-        if (player.cooking?.skills?.economia_ingredientes) {
-            const level = player.cooking.skills.economia_ingredientes;
-            const chance = this.skills.economia_ingredientes.effect.valuePerLevel * level;
-            return Math.random() < chance;
+        const preparing = player.cooking.preparing;
+        const recipe = this.recipes[preparing.recipe];
+
+        // Verifica tempo
+        if (Date.now() < preparing.endTime) {
+            const timeLeft = Math.ceil((preparing.endTime - Date.now()) / 1000);
+            throw new Error(`❌ Aguarde ${timeLeft} segundos!`);
         }
-        return false;
-    }
 
-    reduceEquipmentDurability(player, recipe) {
-        for (const [equip, data] of Object.entries(this.equipment)) {
-            if (data.required.some(type => recipe.type.includes(type))) {
-                player.cooking.equipment[equip]--;
-                if (player.cooking.equipment[equip] <= 0) {
-                    delete player.cooking.equipment[equip];
-                }
-            }
-        }
-    }
-
-    calculateCookingResult(player, recipe, event) {
         // Calcula qualidade
-        let quality = this.calculateQuality(player);
-        
-        // Aplica efeito de evento
-        if (event?.effect.type === 'quality_boost') {
-            quality.multiplier *= event.effect.value;
+        let quality = 1.0;
+        if (player.skills?.cooking?.qualidade) {
+            quality += this.skills.qualidade.effect(
+                player.skills.cooking.qualidade
+            ).effect_boost;
         }
 
-        // Tenta crítico
-        const critical = this.rollCritical(player);
-        if (critical) {
-            quality.multiplier *= critical.multiplier;
+        // Verifica prato especial
+        let isSpecial = false;
+        if (player.skills?.cooking?.criatividade) {
+            const chance = this.skills.criatividade.effect(
+                player.skills.cooking.criatividade
+            ).special_chance;
+            isSpecial = Math.random() < chance;
         }
+
+        // Cria item
+        const itemId = isSpecial ? `${preparing.recipe}_especial` : preparing.recipe;
+        if (!player.inventory[itemId]) player.inventory[itemId] = 0;
+        player.inventory[itemId]++;
+
+        // Calcula XP
+        const xp = Math.floor(recipe.xp * quality * (isSpecial ? 2 : 1));
+
+        // Limpa preparo
+        delete player.cooking.preparing;
 
         return {
-            quality: quality,
-            critical: critical
+            success: true,
+            xp: xp,
+            special: isSpecial,
+            message: `👨‍🍳 *PRATO PRONTO*\n\n` +
+                    `${recipe.name}${isSpecial ? ' Especial' : ''}\n` +
+                    `Qualidade: ${(quality * 100).toFixed(0)}%\n` +
+                    `XP: +${xp}`
         };
     }
 
-    calculateQuality(player) {
-        let baseMultiplier = 1;
+    formatRecipeList() {
+        let text = `📖 *RECEITAS* 📖\n\n`;
 
-        // Aplica bônus de habilidade
-        if (player.cooking?.skills?.tempero_perfeito) {
-            const level = player.cooking.skills.tempero_perfeito;
-            baseMultiplier += (this.skills.tempero_perfeito.effect.valuePerLevel * level);
-        }
-
-        const roll = Math.random();
-        let cumulative = 0;
-        for (const [id, quality] of Object.entries(this.ingredients)) {
-            cumulative += quality.chance;
-            if (roll <= cumulative) {
-                return {
-                    id: id,
-                    name: quality.name,
-                    multiplier: quality.multiplier * baseMultiplier
-                };
-            }
-        }
-
-        return {
-            id: 'normal',
-            name: this.ingredients.normal.name,
-            multiplier: this.ingredients.normal.multiplier * baseMultiplier
-        };
-    }
-
-    rollCritical(player) {
-        for (const [id, critical] of Object.entries(this.criticals)) {
-            if (Math.random() < critical.chance) {
-                return {
-                    id: id,
-                    name: critical.name,
-                    multiplier: critical.multiplier,
-                    effects: critical.effects
-                };
-            }
-        }
-        return null;
-    }
-
-    calculateFoodEffect(baseEffect, result) {
-        let effect = {...baseEffect};
-
-        // Aplica multiplicador de qualidade
-        if (typeof effect.value === 'number') {
-            effect.value *= (result.quality?.multiplier || 1);
-        }
-
-        // Aplica efeitos críticos
-        if (result.critical?.effects?.includes('double_stats')) {
-            effect.value *= 2;
-        }
-        if (result.critical?.effects?.includes('double_duration')) {
-            effect.duration *= 2;
-        }
-        if (result.critical?.effects?.includes('food_poisoning')) {
-            effect.type = 'poison';
-            effect.value = -effect.value;
-        }
-
-        return effect;
-    }
-
-    formatCookingResult(item, quantity, result, event, xp, levelUp) {
-        let text = `👨‍🍳 *COZINHA* 👨‍🍳\n\n`;
-        
-        text += `${item.emoji} Preparou: ${quantity}x ${item.name}\n`;
-        text += `📊 Qualidade: ${result.quality.name}\n`;
-        
-        if (result.critical) {
-            text += `✨ Crítico: ${result.critical.name}!\n`;
-        }
-
-        if (event) {
-            text += `\n📢 Evento: ${event.name}!\n`;
-        }
-
-        text += `\n✨ XP ganho: ${xp}`;
-        
-        if (levelUp) {
-            text += `\n🎊 Nível de culinária subiu para ${player.cooking.level}!`;
-        }
+        Object.entries(this.recipes).forEach(([id, recipe]) => {
+            text += `*${recipe.name}*\n`;
+            text += `├ Dificuldade: ${recipe.difficulty}\n`;
+            text += `├ Tempo: ${recipe.time / 1000} segundos\n`;
+            text += `├ Ingredientes:\n`;
+            Object.entries(recipe.ingredients).forEach(([item, amount]) => {
+                text += `│ └ ${amount}x ${item}\n`;
+            });
+            text += `├ Restaura:\n`;
+            Object.entries(recipe.restore).forEach(([stat, value]) => {
+                text += `│ └ ${stat}: +${value}\n`;
+            });
+            text += `└ Valor: R$ ${recipe.value}\n\n`;
+        });
 
         return text;
     }
 
-    // ... outros métodos anteriores ...
+    formatEquipmentList() {
+        let text = `🔧 *EQUIPAMENTOS* 🔧\n\n`;
+
+        Object.entries(this.equipment).forEach(([id, equip]) => {
+            text += `*${equip.name}*\n`;
+            text += `├ Eficiência: ${(equip.efficiency * 100).toFixed(0)}%\n`;
+            text += `├ Dificuldade máxima: ${equip.maxDifficulty}\n`;
+            text += `└ Preço: R$ ${equip.cost}\n\n`;
+        });
+
+        return text;
+    }
+
+    formatSkillList(player) {
+        let text = `⚡ *HABILIDADES DE CULINÁRIA* ⚡\n\n`;
+
+        Object.entries(this.skills).forEach(([id, skill]) => {
+            const currentLevel = player.skills?.cooking?.[id] || 0;
+            text += `*${skill.name}* (${currentLevel}/${skill.maxLevel})\n`;
+            text += `├ ${skill.description}\n`;
+            if (currentLevel < skill.maxLevel) {
+                const nextCost = skill.cost(currentLevel + 1);
+                const nextEffect = skill.effect(currentLevel + 1);
+                text += `├ Próximo nível: R$ ${nextCost}\n`;
+                text += `└ Efeito: ${Object.entries(nextEffect)
+                    .map(([stat, value]) => `${stat} ${value > 0 ? '+' : ''}${value}`)
+                    .join(', ')}\n`;
+            }
+            text += '\n';
+        });
+
+        return text;
+    }
 }
 
 module.exports = new CookingSystem();

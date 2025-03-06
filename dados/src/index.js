@@ -5,7 +5,7 @@
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { exec, spawn, execSync } = require('child_process');
 const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin }  = require(__dirname+'/.funcs/.exports.js');
-const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa } = require(__dirname+'/menus/index.js');
+const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa, menuRpg } = require(__dirname+'/menus/index.js');
 const rpgCommands = require('./.funcs/.RpgExec.js');
 const FormData = require("form-data");
 const axios = require('axios');
@@ -180,9 +180,26 @@ try {
  };
  
  //AQUI FICA OS COMANDO DE RPG
- rpgCommands(type, nazu, from, sender, info, reply, command, q, prefix, true);
+ const isModoRpg = isGroup && groupData.modorpg ? true : false;
+ rpgCommands(type, nazu, from, sender, info, reply, command, q, prefix, isModoRpg);
 
  switch(command) {
+   case 'modorpg': {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    
+    if (!groupData.modorpg) {
+      groupData.modorpg = true;
+      fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+      reply('✅ *Modo RPG ativado!* Agora os comandos de RPG estão disponíveis no grupo.');
+    } else {
+      groupData.modorpg = false;
+      fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+      reply('⚠️ *Modo RPG desativado!* Os comandos de RPG não estão mais disponíveis.');
+    }
+   }
+   break;
+
  //FUNÇÕES PREMIUM
   case 'nome':case 'nome2':case 'nome3':case 'nome4':case 'telefone2':case 'telefonefixo':case 'cpf':case 'cpf2':case 'cpf3':case 'cpf4':case 'cpf5':case 'placa':case 'bin':case 'site':case 'cep':case 'vizinhos':case 'cnpj':case 'score':case 'titulo':case 'email':case 'vacina':case 'parentes':case 'rg':case 'rg2':case 'senha':case 'mae':case 'pai':case 'chassi':case 'motor':case 'beneficios':case 'impostos':case 'nascimento':case 'pfix':case 'cns':case 'cns2':case 'correios':case 'radar':case 'dominio':case 'internet':case 'compras':case 'cnh':case 'funcionarios': try {
   if (!isPremium) return reply('❌ Apenas usuários premium.');
@@ -367,6 +384,10 @@ try {
    //MENUS AQUI BB
   case 'menu': case 'help':
   nazu.sendMessage(from, {[fs.existsSync(__dirname + '/../midias/menu.mp4') ? 'video' : 'image']: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menu(prefix), gifPlayback: fs.existsSync(__dirname+'/../midias/menu.mp4'), mimetype: fs.existsSync(__dirname+'/../midias/menu.mp4')?'video/mp4':'image/jpeg'}, {quoted: info});
+  break;
+
+  case 'rpg': case 'menurpg':
+  nazu.sendMessage(from, {[fs.existsSync(__dirname + '/../midias/menu.mp4') ? 'video' : 'image']: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menuRpg(prefix), gifPlayback: fs.existsSync(__dirname+'/../midias/menu.mp4'), mimetype: fs.existsSync(__dirname+'/../midias/menu.mp4')?'video/mp4':'image/jpeg'}, {quoted: info});
   break;
   case 'menuia': case 'aimenu': case 'menuias':
   nazu.sendMessage(from, {[fs.existsSync(__dirname + '/../midias/menu.mp4') ? 'video' : 'image']: fs.readFileSync(fs.existsSync(__dirname+'/../midias/menu.mp4')?__dirname+'/../midias/menu.mp4':__dirname+'/../midias/menu.jpg'), caption: await menuIa(prefix), gifPlayback: fs.existsSync(__dirname+'/../midias/menu.mp4'), mimetype: fs.existsSync(__dirname+'/../midias/menu.mp4')?'video/mp4':'image/jpeg'}, {quoted: info});

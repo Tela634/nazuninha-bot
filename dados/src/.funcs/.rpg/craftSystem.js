@@ -1,595 +1,447 @@
 class CraftSystem {
     constructor() {
-        // Categorias de Crafting
-        this.categories = {
-            'weapons': {
-                name: 'Armas',
-                skillRequired: 'blacksmith',
-                workstation: 'forge'
-            },
-            'armor': {
-                name: 'Armaduras',
-                skillRequired: 'blacksmith',
-                workstation: 'forge'
-            },
-            'potions': {
-                name: 'Poções',
-                skillRequired: 'alchemy',
-                workstation: 'alchemy_table'
-            },
-            'food': {
-                name: 'Comida',
-                skillRequired: 'cooking',
-                workstation: 'kitchen'
-            },
-            'tools': {
-                name: 'Ferramentas',
-                skillRequired: 'crafting',
-                workstation: 'workbench'
-            },
-            'magic': {
-                name: 'Itens Mágicos',
-                skillRequired: 'enchanting',
-                workstation: 'enchanting_table'
-            }
-        };
-
-        // Estações de Trabalho
-        this.workstations = {
-            'forge': {
-                name: 'Forja',
-                description: 'Para criar armas e armaduras',
-                price: 5000,
-                level: 1,
-                upgrades: [
-                    {
-                        name: 'Forja Aprimorada',
-                        price: 20000,
-                        level: 10,
-                        bonus: 0.2 // 20% mais qualidade
-                    },
-                    {
-                        name: 'Forja Mágica',
-                        price: 100000,
-                        level: 30,
-                        bonus: 0.5
-                    }
-                ]
-            },
-            'alchemy_table': {
-                name: 'Mesa de Alquimia',
-                description: 'Para criar poções',
-                price: 3000,
-                level: 1,
-                upgrades: [
-                    {
-                        name: 'Mesa de Alquimia Avançada',
-                        price: 15000,
-                        level: 10,
-                        bonus: 0.2
-                    },
-                    {
-                        name: 'Mesa de Alquimia Arcana',
-                        price: 80000,
-                        level: 30,
-                        bonus: 0.5
-                    }
-                ]
-            },
-            'kitchen': {
-                name: 'Cozinha',
-                description: 'Para preparar comidas',
-                price: 2000,
-                level: 1,
-                upgrades: [
-                    {
-                        name: 'Cozinha Profissional',
-                        price: 10000,
-                        level: 10,
-                        bonus: 0.2
-                    },
-                    {
-                        name: 'Cozinha Gourmet',
-                        price: 50000,
-                        level: 30,
-                        bonus: 0.5
-                    }
-                ]
-            },
-            'workbench': {
-                name: 'Bancada de Trabalho',
-                description: 'Para criar ferramentas',
-                price: 1000,
-                level: 1,
-                upgrades: [
-                    {
-                        name: 'Bancada Aprimorada',
-                        price: 8000,
-                        level: 10,
-                        bonus: 0.2
-                    },
-                    {
-                        name: 'Bancada de Mestre',
-                        price: 40000,
-                        level: 30,
-                        bonus: 0.5
-                    }
-                ]
-            },
-            'enchanting_table': {
-                name: 'Mesa de Encantamentos',
-                description: 'Para criar itens mágicos',
-                price: 10000,
-                level: 1,
-                upgrades: [
-                    {
-                        name: 'Mesa de Encantamentos Maior',
-                        price: 50000,
-                        level: 10,
-                        bonus: 0.2
-                    },
-                    {
-                        name: 'Mesa de Encantamentos Arcana',
-                        price: 200000,
-                        level: 30,
-                        bonus: 0.5
-                    }
-                ]
-            }
-        };
-
-        // Sistema de Qualidade
-        this.quality = {
-            'poor': {
-                name: 'Baixa',
-                multiplier: 0.8,
-                chance: 0.1
-            },
-            'normal': {
-                name: 'Normal',
-                multiplier: 1.0,
-                chance: 0.6
-            },
-            'good': {
-                name: 'Boa',
-                multiplier: 1.2,
-                chance: 0.2
-            },
-            'excellent': {
-                name: 'Excelente',
-                multiplier: 1.5,
-                chance: 0.08
-            },
-            'masterwork': {
-                name: 'Obra-Prima',
-                multiplier: 2.0,
-                chance: 0.02
-            }
-        };
-
-        // Habilidades de Crafting
-        this.skills = {
-            'blacksmith': {
-                name: 'Ferraria',
-                maxLevel: 100,
-                xpPerCraft: 10,
-                bonusPerLevel: 0.01 // 1% por nível
-            },
-            'alchemy': {
-                name: 'Alquimia',
-                maxLevel: 100,
-                xpPerCraft: 8,
-                bonusPerLevel: 0.01
-            },
-            'cooking': {
-                name: 'Culinária',
-                maxLevel: 100,
-                xpPerCraft: 5,
-                bonusPerLevel: 0.01
-            },
-            'crafting': {
-                name: 'Artesanato',
-                maxLevel: 100,
-                xpPerCraft: 7,
-                bonusPerLevel: 0.01
-            },
-            'enchanting': {
-                name: 'Encantamento',
-                maxLevel: 100,
-                xpPerCraft: 15,
-                bonusPerLevel: 0.01
-            }
-        };
-
-        // Receitas
         this.recipes = {
-            // Armas
-            'espada_ferro': {
-                name: 'Espada de Ferro',
-                category: 'weapons',
+            // Equipamentos de Mineração
+            'picareta_pedra': {
+                name: 'Picareta de Pedra',
+                type: 'tool',
                 materials: {
-                    'ferro': 5,
                     'madeira': 2,
-                    'couro': 1
+                    'pedra': 3
                 },
-                result: {
-                    type: 'weapon',
-                    damage: 20,
-                    durability: 100
-                },
-                level: 1
+                time: 30000, // 30 segundos
+                level: 1,
+                xp: 20
             },
-            'arco_composto': {
-                name: 'Arco Composto',
-                category: 'weapons',
+            'picareta_ferro': {
+                name: 'Picareta de Ferro',
+                type: 'tool',
                 materials: {
-                    'madeira': 5,
-                    'corda': 2,
-                    'couro': 1
+                    'madeira': 2,
+                    'ferro': 3
                 },
-                result: {
-                    type: 'weapon',
-                    damage: 15,
-                    durability: 80
+                time: 60000,
+                level: 5,
+                xp: 50
+            },
+
+            // Equipamentos de Pesca
+            'vara_madeira': {
+                name: 'Vara de Madeira',
+                type: 'tool',
+                materials: {
+                    'madeira': 3,
+                    'linha': 1
                 },
-                level: 5
+                time: 30000,
+                level: 1,
+                xp: 20
+            },
+            'vara_bambu': {
+                name: 'Vara de Bambu',
+                type: 'tool',
+                materials: {
+                    'bambu': 3,
+                    'linha': 2
+                },
+                time: 45000,
+                level: 3,
+                xp: 35
             },
 
             // Armaduras
+            'armadura_couro': {
+                name: 'Armadura de Couro',
+                type: 'armor',
+                materials: {
+                    'couro': 5,
+                    'linha': 2
+                },
+                time: 60000,
+                level: 5,
+                xp: 50,
+                stats: {
+                    defense: 10,
+                    agility: 5
+                }
+            },
             'armadura_ferro': {
                 name: 'Armadura de Ferro',
-                category: 'armor',
+                type: 'armor',
                 materials: {
-                    'ferro': 8,
-                    'couro': 4
+                    'ferro': 5,
+                    'couro': 2
                 },
-                result: {
-                    type: 'armor',
-                    defense: 30,
-                    durability: 150
+                time: 120000,
+                level: 10,
+                xp: 100,
+                stats: {
+                    defense: 20,
+                    agility: -5
+                }
+            },
+
+            // Armas
+            'espada_ferro': {
+                name: 'Espada de Ferro',
+                type: 'weapon',
+                materials: {
+                    'ferro': 3,
+                    'madeira': 1,
+                    'couro': 1
                 },
-                level: 10
+                time: 90000,
+                level: 8,
+                xp: 80,
+                stats: {
+                    attack: 15,
+                    speed: 0
+                }
+            },
+            'arco_curto': {
+                name: 'Arco Curto',
+                type: 'weapon',
+                materials: {
+                    'madeira': 3,
+                    'linha': 2,
+                    'couro': 1
+                },
+                time: 75000,
+                level: 6,
+                xp: 60,
+                stats: {
+                    attack: 10,
+                    range: 3
+                }
             },
 
             // Poções
-            'pocao_cura': {
-                name: 'Poção de Cura',
-                category: 'potions',
+            'pocao_vida': {
+                name: 'Poção de Vida',
+                type: 'consumable',
                 materials: {
-                    'erva_vermelha': 3,
-                    'agua': 1,
-                    'cristal': 1
+                    'ervas': 2,
+                    'cogumelo': 1,
+                    'agua': 1
                 },
-                result: {
-                    type: 'potion',
-                    effect: 'heal',
-                    power: 50
-                },
-                level: 1
+                time: 45000,
+                level: 3,
+                xp: 30,
+                effect: {
+                    type: 'heal',
+                    value: 50
+                }
             },
-
-            // Comidas
-            'pao_especial': {
-                name: 'Pão Especial',
-                category: 'food',
+            'pocao_energia': {
+                name: 'Poção de Energia',
+                type: 'consumable',
                 materials: {
-                    'trigo': 3,
-                    'leite': 1,
-                    'ovo': 1
+                    'frutas': 2,
+                    'mel': 1,
+                    'agua': 1
                 },
-                result: {
-                    type: 'food',
-                    heal: 20,
-                    energy: 30
-                },
-                level: 1
+                time: 45000,
+                level: 3,
+                xp: 30,
+                effect: {
+                    type: 'energy',
+                    value: 30
+                }
+            }
+        };
+
+        this.stations = {
+            'bancada': {
+                name: 'Bancada de Trabalho',
+                level: 1,
+                types: ['tool'],
+                efficiency: 1.0,
+                cost: 1000
             },
-
-            // Ferramentas
-            'picareta_ferro': {
-                name: 'Picareta de Ferro',
-                category: 'tools',
-                materials: {
-                    'ferro': 5,
-                    'madeira': 2
-                },
-                result: {
-                    type: 'tool',
-                    efficiency: 1.5,
-                    durability: 100
-                },
-                level: 1
+            'forja': {
+                name: 'Forja',
+                level: 5,
+                types: ['weapon', 'armor'],
+                efficiency: 1.0,
+                cost: 5000
             },
+            'alquimia': {
+                name: 'Mesa de Alquimia',
+                level: 3,
+                types: ['consumable'],
+                efficiency: 1.0,
+                cost: 3000
+            }
+        };
 
-            // Itens Mágicos
-            'varinha_magica': {
-                name: 'Varinha Mágica',
-                category: 'magic',
-                materials: {
-                    'madeira_magica': 3,
-                    'cristal_magico': 1,
-                    'essencia_magica': 2
-                },
-                result: {
-                    type: 'magic',
-                    power: 30,
-                    mana: 50
-                },
-                level: 10
+        this.skills = {
+            'artesao': {
+                name: 'Artesão',
+                description: 'Reduz materiais necessários',
+                maxLevel: 5,
+                cost: level => level * 1000,
+                effect: level => ({ material_reduction: 0.1 * level })
+            },
+            'eficiencia': {
+                name: 'Eficiência',
+                description: 'Reduz tempo de crafting',
+                maxLevel: 5,
+                cost: level => level * 1000,
+                effect: level => ({ time_reduction: 0.1 * level })
+            },
+            'qualidade': {
+                name: 'Qualidade',
+                description: 'Chance de item de qualidade superior',
+                maxLevel: 5,
+                cost: level => level * 1000,
+                effect: level => ({ quality_chance: 0.1 * level })
+            },
+            'inovacao': {
+                name: 'Inovação',
+                description: 'Chance de criar item com bônus aleatório',
+                maxLevel: 5,
+                cost: level => level * 1000,
+                effect: level => ({ bonus_chance: 0.1 * level })
+            }
+        };
+
+        this.qualities = {
+            'normal': {
+                name: 'Normal',
+                multiplier: 1.0
+            },
+            'superior': {
+                name: 'Superior',
+                multiplier: 1.5
+            },
+            'raro': {
+                name: 'Raro',
+                multiplier: 2.0
+            },
+            'epico': {
+                name: 'Épico',
+                multiplier: 3.0
             }
         };
     }
 
-    craft(player, recipeId, amount = 1) {
+    craft(player, recipeId, stationId) {
         const recipe = this.recipes[recipeId];
         if (!recipe) throw new Error('❌ Receita não encontrada!');
 
+        const station = this.stations[stationId];
+        if (!station) throw new Error('❌ Estação não encontrada!');
+
         // Verifica nível
         if (player.level < recipe.level) {
-            throw new Error(`❌ Requer nível ${recipe.level}!`);
+            throw new Error(`❌ Você precisa ser nível ${recipe.level} para criar isto!`);
         }
 
-        // Verifica estação de trabalho
-        const category = this.categories[recipe.category];
-        const workstation = player.crafting?.workstations?.[category.workstation];
-        if (!workstation) {
-            throw new Error(`❌ Você precisa de ${this.workstations[category.workstation].name}!`);
+        // Verifica estação
+        if (!station.types.includes(recipe.type)) {
+            throw new Error('❌ Esta estação não pode criar este item!');
         }
 
         // Verifica materiais
-        for (const [material, required] of Object.entries(recipe.materials)) {
-            const has = player.inventory.filter(i => i.id === material).length;
-            if (has < required * amount) {
-                throw new Error(`❌ Faltam ${required * amount - has}x ${material}!`);
+        Object.entries(recipe.materials).forEach(([item, amount]) => {
+            let required = amount;
+            
+            // Aplica redução de materiais
+            if (player.skills?.crafting?.artesao) {
+                const reduction = this.skills.artesao.effect(
+                    player.skills.crafting.artesao
+                ).material_reduction;
+                required = Math.ceil(required * (1 - reduction));
             }
-        }
 
-        // Remove materiais
-        for (const [material, required] of Object.entries(recipe.materials)) {
-            for (let i = 0; i < required * amount; i++) {
-                const index = player.inventory.findIndex(item => item.id === material);
-                player.inventory.splice(index, 1);
-            }
-        }
-
-        // Calcula qualidade base
-        const quality = this.calculateQuality(player, recipe.category);
-
-        // Cria itens
-        const items = [];
-        for (let i = 0; i < amount; i++) {
-            const item = this.createItem(recipe, quality);
-            player.inventory.push(item);
-            items.push(item);
-        }
-
-        // Adiciona XP
-        this.addCraftingXP(player, recipe.category);
-
-        return {
-            success: true,
-            items: items,
-            quality: quality,
-            message: `🛠️ *ITEM CRIADO*\n\n` +
-                    `${recipe.name} x${amount}\n` +
-                    `Qualidade: ${quality.name}\n\n` +
-                    `Stats:\n` +
-                    this.formatItemStats(items[0])
-        };
-    }
-
-    buyWorkstation(player, stationId) {
-        const station = this.workstations[stationId];
-        if (!station) throw new Error('❌ Estação não encontrada!');
-
-        // Verifica nível
-        if (player.level < station.level) {
-            throw new Error(`❌ Requer nível ${station.level}!`);
-        }
-
-        // Verifica dinheiro
-        if (player.money.wallet < station.price) {
-            throw new Error(`❌ Custa R$ ${station.price}!`);
-        }
-
-        // Compra estação
-        if (!player.crafting) player.crafting = {};
-        if (!player.crafting.workstations) player.crafting.workstations = {};
-
-        player.crafting.workstations[stationId] = {
-            level: 1,
-            bonus: 0
-        };
-
-        player.money.wallet -= station.price;
-
-        return {
-            success: true,
-            message: `🛠️ *ESTAÇÃO COMPRADA*\n\n` +
-                    `${station.name}\n` +
-                    `${station.description}\n\n` +
-                    `Custo: R$ ${station.price}`
-        };
-    }
-
-    upgradeWorkstation(player, stationId) {
-        const station = this.workstations[stationId];
-        if (!station) throw new Error('❌ Estação não encontrada!');
-
-        const currentStation = player.crafting?.workstations?.[stationId];
-        if (!currentStation) {
-            throw new Error('❌ Você não tem esta estação!');
-        }
-
-        const upgrade = station.upgrades[currentStation.level - 1];
-        if (!upgrade) {
-            throw new Error('❌ Nível máximo atingido!');
-        }
-
-        // Verifica nível
-        if (player.level < upgrade.level) {
-            throw new Error(`❌ Requer nível ${upgrade.level}!`);
-        }
-
-        // Verifica dinheiro
-        if (player.money.wallet < upgrade.price) {
-            throw new Error(`❌ Custa R$ ${upgrade.price}!`);
-        }
-
-        // Aplica upgrade
-        currentStation.level++;
-        currentStation.bonus = upgrade.bonus;
-        player.money.wallet -= upgrade.price;
-
-        return {
-            success: true,
-            message: `🛠️ *ESTAÇÃO MELHORADA*\n\n` +
-                    `${station.name} → ${upgrade.name}\n` +
-                    `Bônus: +${upgrade.bonus * 100}%\n\n` +
-                    `Custo: R$ ${upgrade.price}`
-        };
-    }
-
-    calculateQuality(player, category) {
-        const skill = this.categories[category].skillRequired;
-        const skillLevel = player.crafting?.skills?.[skill] || 0;
-        const skillBonus = skillLevel * this.skills[skill].bonusPerLevel;
-
-        // Rola qualidade base
-        const roll = Math.random();
-        let quality;
-        let cumulative = 0;
-
-        for (const [id, data] of Object.entries(this.quality)) {
-            cumulative += data.chance;
-            if (roll <= cumulative) {
-                quality = {
-                    id: id,
-                    ...data
-                };
-                break;
-            }
-        }
-
-        // Aplica bônus
-        quality.multiplier *= (1 + skillBonus);
-
-        return quality;
-    }
-
-    createItem(recipe, quality) {
-        const item = {
-            id: recipe.id,
-            name: recipe.name,
-            type: recipe.result.type,
-            quality: quality.id
-        };
-
-        // Aplica multiplicador de qualidade aos stats
-        Object.entries(recipe.result).forEach(([stat, value]) => {
-            if (typeof value === 'number') {
-                item[stat] = Math.floor(value * quality.multiplier);
-            } else {
-                item[stat] = value;
+            if (!player.inventory[item] || player.inventory[item] < required) {
+                throw new Error(`❌ Você precisa de ${required}x ${item}!`);
             }
         });
 
-        return item;
+        // Consome materiais
+        Object.entries(recipe.materials).forEach(([item, amount]) => {
+            let required = amount;
+            if (player.skills?.crafting?.artesao) {
+                const reduction = this.skills.artesao.effect(
+                    player.skills.crafting.artesao
+                ).material_reduction;
+                required = Math.ceil(required * (1 - reduction));
+            }
+            player.inventory[item] -= required;
+            if (player.inventory[item] <= 0) {
+                delete player.inventory[item];
+            }
+        });
+
+        // Calcula tempo
+        let time = recipe.time;
+        if (player.skills?.crafting?.eficiencia) {
+            const reduction = this.skills.eficiencia.effect(
+                player.skills.crafting.eficiencia
+            ).time_reduction;
+            time *= (1 - reduction);
+        }
+        time /= station.efficiency;
+
+        // Inicia crafting
+        player.crafting = {
+            recipe: recipeId,
+            station: stationId,
+            startTime: Date.now(),
+            endTime: Date.now() + time
+        };
+
+        return {
+            success: true,
+            time: time,
+            message: `🛠️ *CRAFTANDO*\n\n` +
+                    `${recipe.name}\n` +
+                    `Tempo: ${Math.ceil(time / 1000)} segundos`
+        };
     }
 
-    addCraftingXP(player, category) {
-        const skill = this.categories[category].skillRequired;
-        if (!player.crafting) player.crafting = {};
-        if (!player.crafting.skills) player.crafting.skills = {};
-        if (!player.crafting.skills[skill]) {
-            player.crafting.skills[skill] = {
-                level: 1,
-                xp: 0
+    finishCrafting(player) {
+        if (!player.crafting) {
+            throw new Error('❌ Você não está craftando nada!');
+        }
+
+        // Verifica tempo
+        if (Date.now() < player.crafting.endTime) {
+            const timeLeft = Math.ceil((player.crafting.endTime - Date.now()) / 1000);
+            throw new Error(`❌ Aguarde ${timeLeft} segundos!`);
+        }
+
+        const recipe = this.recipes[player.crafting.recipe];
+
+        // Determina qualidade
+        let quality = 'normal';
+        if (player.skills?.crafting?.qualidade) {
+            const chance = this.skills.qualidade.effect(
+                player.skills.crafting.qualidade
+            ).quality_chance;
+            if (Math.random() < chance) {
+                if (Math.random() < 0.1) quality = 'epico';
+                else if (Math.random() < 0.3) quality = 'raro';
+                else quality = 'superior';
+            }
+        }
+
+        // Cria item base
+        const item = {
+            id: player.crafting.recipe,
+            name: recipe.name,
+            type: recipe.type,
+            quality: quality
+        };
+
+        // Adiciona stats para equipamentos
+        if (recipe.stats) {
+            item.stats = {};
+            Object.entries(recipe.stats).forEach(([stat, value]) => {
+                item.stats[stat] = Math.floor(value * this.qualities[quality].multiplier);
+            });
+        }
+
+        // Adiciona efeitos para consumíveis
+        if (recipe.effect) {
+            item.effect = {
+                type: recipe.effect.type,
+                value: Math.floor(recipe.effect.value * this.qualities[quality].multiplier)
             };
         }
 
-        // Adiciona XP
-        const skillData = this.skills[skill];
-        player.crafting.skills[skill].xp += skillData.xpPerCraft;
-
-        // Verifica level up
-        while (player.crafting.skills[skill].xp >= 
-               player.crafting.skills[skill].level * 100 &&
-               player.crafting.skills[skill].level < skillData.maxLevel) {
-            player.crafting.skills[skill].xp -= player.crafting.skills[skill].level * 100;
-            player.crafting.skills[skill].level++;
+        // Chance de bônus aleatório
+        if (player.skills?.crafting?.inovacao) {
+            const chance = this.skills.inovacao.effect(
+                player.skills.crafting.inovacao
+            ).bonus_chance;
+            if (Math.random() < chance) {
+                if (!item.stats) item.stats = {};
+                const stats = ['attack', 'defense', 'agility', 'vitality'];
+                const stat = stats[Math.floor(Math.random() * stats.length)];
+                item.stats[stat] = (item.stats[stat] || 0) + Math.floor(Math.random() * 10) + 1;
+            }
         }
-    }
 
-    formatItemStats(item) {
-        let text = '';
-        Object.entries(item).forEach(([stat, value]) => {
-            if (['id', 'name', 'type', 'quality'].includes(stat)) return;
-            text += `└ ${stat}: ${value}\n`;
-        });
-        return text;
+        // Adiciona ao inventário
+        if (!player.inventory[item.id]) player.inventory[item.id] = [];
+        player.inventory[item.id].push(item);
+
+        // Limpa crafting
+        delete player.crafting;
+
+        return {
+            success: true,
+            item: item,
+            message: `🛠️ *ITEM CRIADO*\n\n` +
+                    `${item.name} (${this.qualities[quality].name})\n` +
+                    (item.stats ? `Stats:\n${Object.entries(item.stats)
+                        .map(([stat, value]) => `├ ${stat}: ${value}`)
+                        .join('\n')}\n` : '') +
+                    (item.effect ? `Efeito: ${item.effect.type} +${item.effect.value}\n` : '') +
+                    `XP: +${recipe.xp}`
+        };
     }
 
     formatRecipeList() {
-        let text = `🛠️ *RECEITAS* 🛠️\n\n`;
+        let text = `📖 *RECEITAS* 📖\n\n`;
 
-        Object.entries(this.categories).forEach(([id, category]) => {
-            text += `*${category.name}*\n`;
-            
-            const recipes = Object.entries(this.recipes)
-                .filter(([_, recipe]) => recipe.category === id);
-
-            recipes.forEach(([recipeId, recipe]) => {
-                text += `\n${recipe.name}\n`;
-                text += `├ Nível: ${recipe.level}\n`;
-                text += `├ Materiais:\n`;
-                Object.entries(recipe.materials).forEach(([material, amount]) => {
-                    text += `│ └ ${material} x${amount}\n`;
-                });
-                text += `└ Resultado:\n`;
-                Object.entries(recipe.result).forEach(([stat, value]) => {
-                    if (typeof value === 'number') {
-                        text += `  └ ${stat}: ${value}\n`;
-                    }
-                });
+        Object.entries(this.recipes).forEach(([id, recipe]) => {
+            text += `*${recipe.name}*\n`;
+            text += `├ Tipo: ${recipe.type}\n`;
+            text += `├ Nível: ${recipe.level}\n`;
+            text += `├ Tempo: ${recipe.time / 1000} segundos\n`;
+            text += `├ Materiais:\n`;
+            Object.entries(recipe.materials).forEach(([item, amount]) => {
+                text += `│ └ ${amount}x ${item}\n`;
             });
+            if (recipe.stats) {
+                text += `├ Stats:\n`;
+                Object.entries(recipe.stats).forEach(([stat, value]) => {
+                    text += `│ └ ${stat}: ${value}\n`;
+                });
+            }
+            if (recipe.effect) {
+                text += `└ Efeito: ${recipe.effect.type} +${recipe.effect.value}\n`;
+            }
             text += '\n';
         });
 
         return text;
     }
 
-    formatCraftingInfo(player) {
-        if (!player.crafting) {
-            return `🛠️ *CRAFTING* 🛠️\n\n` +
-                   `_Você não tem nenhuma estação de trabalho!_\n` +
-                   `Use /comprarestacao para começar.`;
-        }
+    formatStationList() {
+        let text = `🔧 *ESTAÇÕES DE CRAFT* 🔧\n\n`;
 
-        let text = `🛠️ *CRAFTING* 🛠️\n\n`;
+        Object.entries(this.stations).forEach(([id, station]) => {
+            text += `*${station.name}*\n`;
+            text += `├ Nível: ${station.level}\n`;
+            text += `├ Tipos: ${station.types.join(', ')}\n`;
+            text += `├ Eficiência: ${(station.efficiency * 100).toFixed(0)}%\n`;
+            text += `└ Preço: R$ ${station.cost}\n\n`;
+        });
 
-        // Estações
-        text += `*ESTAÇÕES DE TRABALHO*\n`;
-        if (player.crafting.workstations) {
-            Object.entries(player.crafting.workstations).forEach(([id, station]) => {
-                const stationData = this.workstations[id];
-                text += `├ ${stationData.name}\n`;
-                text += `│ ├ Nível: ${station.level}\n`;
-                text += `│ └ Bônus: +${station.bonus * 100}%\n`;
-            });
-        }
-        text += '\n';
+        return text;
+    }
 
-        // Habilidades
-        text += `*HABILIDADES*\n`;
-        if (player.crafting.skills) {
-            Object.entries(player.crafting.skills).forEach(([skill, data]) => {
-                const skillData = this.skills[skill];
-                text += `├ ${skillData.name}\n`;
-                text += `│ ├ Nível: ${data.level}/${skillData.maxLevel}\n`;
-                text += `│ └ XP: ${data.xp}/${data.level * 100}\n`;
-            });
-        }
+    formatSkillList(player) {
+        let text = `⚡ *HABILIDADES DE CRAFT* ⚡\n\n`;
+
+        Object.entries(this.skills).forEach(([id, skill]) => {
+            const currentLevel = player.skills?.crafting?.[id] || 0;
+            text += `*${skill.name}* (${currentLevel}/${skill.maxLevel})\n`;
+            text += `├ ${skill.description}\n`;
+            if (currentLevel < skill.maxLevel) {
+                const nextCost = skill.cost(currentLevel + 1);
+                const nextEffect = skill.effect(currentLevel + 1);
+                text += `├ Próximo nível: R$ ${nextCost}\n`;
+                text += `└ Efeito: ${Object.entries(nextEffect)
+                    .map(([stat, value]) => `${stat} ${value > 0 ? '+' : ''}${value}`)
+                    .join(', ')}\n`;
+            }
+            text += '\n';
+        });
 
         return text;
     }

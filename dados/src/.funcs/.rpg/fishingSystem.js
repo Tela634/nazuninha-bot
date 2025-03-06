@@ -1,455 +1,499 @@
 class FishingSystem {
     constructor() {
-        // Mantém os peixes e locais anteriores, mas adiciona:
+        this.fish = {
+            // Peixes Comuns
+            'sardinha': {
+                name: 'Sardinha',
+                rarity: 'comum',
+                minLevel: 1,
+                xp: 10,
+                value: 5,
+                weight: { min: 0.1, max: 0.3 },
+                time: { min: 10000, max: 30000 } // 10-30 segundos
+            },
+            'tilapia': {
+                name: 'Tilápia',
+                rarity: 'comum',
+                minLevel: 1,
+                xp: 15,
+                value: 8,
+                weight: { min: 0.3, max: 0.8 },
+                time: { min: 15000, max: 40000 }
+            },
+            'carpa': {
+                name: 'Carpa',
+                rarity: 'comum',
+                minLevel: 5,
+                xp: 20,
+                value: 12,
+                weight: { min: 1, max: 3 },
+                time: { min: 20000, max: 50000 }
+            },
 
-        // Sistema de Clima para Pesca
-        this.weather = {
-            'ensolarado': {
-                name: 'Ensolarado',
-                effect: {
-                    type: 'fish_activity',
-                    value: 0.8 // 20% menos ativo
-                },
-                chance: 0.4
+            // Peixes Incomuns
+            'robalo': {
+                name: 'Robalo',
+                rarity: 'incomum',
+                minLevel: 10,
+                xp: 30,
+                value: 25,
+                weight: { min: 2, max: 5 },
+                time: { min: 30000, max: 60000 }
             },
-            'nublado': {
-                name: 'Nublado',
-                effect: {
-                    type: 'fish_activity',
-                    value: 1.2 // 20% mais ativo
-                },
-                chance: 0.3
+            'dourado': {
+                name: 'Dourado',
+                rarity: 'incomum',
+                minLevel: 15,
+                xp: 40,
+                value: 35,
+                weight: { min: 3, max: 8 },
+                time: { min: 40000, max: 80000 }
             },
-            'chuvoso': {
-                name: 'Chuvoso',
-                effect: {
-                    type: 'rare_chance',
-                    value: 1.3 // 30% mais chance de raros
-                },
-                chance: 0.2
+            'salmao': {
+                name: 'Salmão',
+                rarity: 'incomum',
+                minLevel: 20,
+                xp: 50,
+                value: 50,
+                weight: { min: 4, max: 10 },
+                time: { min: 50000, max: 100000 }
             },
-            'tempestade': {
-                name: 'Tempestade',
-                effect: {
-                    type: 'danger',
-                    value: 0.3 // 30% chance de perder isca/equipamento
-                },
-                chance: 0.1
+
+            // Peixes Raros
+            'atum': {
+                name: 'Atum',
+                rarity: 'raro',
+                minLevel: 25,
+                xp: 100,
+                value: 100,
+                weight: { min: 20, max: 50 },
+                time: { min: 60000, max: 120000 }
+            },
+            'marlim': {
+                name: 'Marlim',
+                rarity: 'raro',
+                minLevel: 30,
+                xp: 150,
+                value: 200,
+                weight: { min: 40, max: 100 },
+                time: { min: 90000, max: 180000 }
+            },
+            'tubarao': {
+                name: 'Tubarão',
+                rarity: 'raro',
+                minLevel: 35,
+                xp: 200,
+                value: 500,
+                weight: { min: 100, max: 300 },
+                time: { min: 120000, max: 240000 }
+            },
+
+            // Peixes Lendários
+            'peixe_dourado': {
+                name: 'Peixe Dourado',
+                rarity: 'lendario',
+                minLevel: 40,
+                xp: 500,
+                value: 1000,
+                weight: { min: 5, max: 10 },
+                time: { min: 300000, max: 600000 }
+            },
+            'kraken': {
+                name: 'Kraken',
+                rarity: 'lendario',
+                minLevel: 50,
+                xp: 1000,
+                value: 5000,
+                weight: { min: 1000, max: 2000 },
+                time: { min: 600000, max: 1200000 }
             }
         };
 
-        // Iscas necessárias
+        this.locations = {
+            'lago': {
+                name: 'Lago',
+                minLevel: 1,
+                fish: ['sardinha', 'tilapia', 'carpa'],
+                weather: ['ensolarado', 'nublado'],
+                depth: 'raso'
+            },
+            'rio': {
+                name: 'Rio',
+                minLevel: 10,
+                fish: ['robalo', 'dourado', 'salmao'],
+                weather: ['ensolarado', 'nublado', 'chuvoso'],
+                depth: 'medio'
+            },
+            'mar': {
+                name: 'Mar',
+                minLevel: 25,
+                fish: ['atum', 'marlim', 'tubarao'],
+                weather: ['ensolarado', 'nublado', 'chuvoso', 'tempestade'],
+                depth: 'profundo'
+            },
+            'abismo': {
+                name: 'Abismo',
+                minLevel: 40,
+                fish: ['peixe_dourado', 'kraken'],
+                weather: ['tempestade'],
+                depth: 'abissal'
+            }
+        };
+
+        this.rods = {
+            'vara_bambu': {
+                name: 'Vara de Bambu',
+                durability: 50,
+                power: 1.0,
+                luck: 1.0,
+                cost: 100
+            },
+            'vara_madeira': {
+                name: 'Vara de Madeira',
+                durability: 100,
+                power: 1.2,
+                luck: 1.1,
+                cost: 500
+            },
+            'vara_fibra': {
+                name: 'Vara de Fibra',
+                durability: 200,
+                power: 1.5,
+                luck: 1.2,
+                cost: 2000
+            },
+            'vara_carbono': {
+                name: 'Vara de Carbono',
+                durability: 500,
+                power: 2.0,
+                luck: 1.5,
+                cost: 10000
+            },
+            'vara_titanio': {
+                name: 'Vara de Titânio',
+                durability: 1000,
+                power: 3.0,
+                luck: 2.0,
+                cost: 50000
+            }
+        };
+
         this.baits = {
             'minhoca': {
                 name: 'Minhoca',
-                description: 'Isca básica',
-                price: 50,
-                effectiveness: 1,
-                targetFish: ['sardinha', 'tilapia', 'carpa']
+                effect: {
+                    type: 'comum',
+                    multiplier: 1.2
+                },
+                cost: 5
             },
             'camarao': {
                 name: 'Camarão',
-                description: 'Isca intermediária',
-                price: 200,
-                effectiveness: 1.5,
-                targetFish: ['atum', 'robalo', 'salmao']
+                effect: {
+                    type: 'incomum',
+                    multiplier: 1.5
+                },
+                cost: 20
             },
             'peixe_pequeno': {
                 name: 'Peixe Pequeno',
-                description: 'Para peixes grandes',
-                price: 500,
-                effectiveness: 2,
-                targetFish: ['tubarao', 'peixe_espada']
+                effect: {
+                    type: 'raro',
+                    multiplier: 2.0
+                },
+                cost: 100
             },
             'isca_magica': {
                 name: 'Isca Mágica',
-                description: 'Para peixes lendários',
-                price: 2000,
-                effectiveness: 3,
-                targetFish: ['peixe_dourado', 'sereia']
+                effect: {
+                    type: 'lendario',
+                    multiplier: 3.0
+                },
+                cost: 500
             }
         };
 
-        // Equipamentos Adicionais
-        this.equipment = {
-            'linha': {
-                name: 'Linha de Pesca',
-                description: 'Necessária para pescar',
-                price: 100,
-                durability: 20
-            },
-            'anzol': {
-                name: 'Anzol',
-                description: 'Necessário para pescar',
-                price: 50,
-                durability: 10
-            },
-            'rede': {
-                name: 'Rede de Pesca',
-                description: 'Pesca múltiplos peixes',
-                price: 5000,
-                durability: 50,
-                multiCatch: true
-            },
-            'sonar': {
-                name: 'Sonar',
-                description: 'Localiza cardumes',
-                price: 10000,
-                durability: 100,
-                effect: {
-                    type: 'fish_finder',
-                    value: 1.5 // 50% mais chance
-                }
-            }
-        };
-
-        // Eventos de Pesca
-        this.events = {
-            'cardume': {
-                name: 'Cardume Encontrado',
-                effect: {
-                    type: 'multi_catch',
-                    value: { min: 2, max: 5 }
-                },
-                chance: 0.1
-            },
-            'peixe_grande': {
-                name: 'Peixe Grande',
-                effect: {
-                    type: 'size_boost',
-                    value: 2 // 2x tamanho normal
-                },
-                chance: 0.05
-            },
-            'linha_presa': {
-                name: 'Linha Presa',
-                effect: {
-                    type: 'line_break',
-                    value: 0.5 // 50% chance de perder linha
-                },
-                chance: 0.15
-            },
-            'tesouro': {
-                name: 'Tesouro Encontrado',
-                effect: {
-                    type: 'treasure',
-                    value: { min: 1000, max: 10000 }
-                },
-                chance: 0.02
-            }
-        };
-
-        // Habilidades de Pescador
         this.skills = {
             'paciencia': {
-                name: 'Paciência de Pescador',
-                description: 'Aumenta chance de peixes grandes',
+                name: 'Paciência',
+                description: 'Reduz tempo de pesca',
                 maxLevel: 5,
-                costPerLevel: 2000,
-                effect: {
-                    type: 'size_chance',
-                    valuePerLevel: 0.05 // +5% por nível
-                }
+                cost: level => level * 1000,
+                effect: level => ({ time_reduction: 0.1 * level })
             },
-            'conhecimento_maritimo': {
-                name: 'Conhecimento Marítimo',
+            'precisao': {
+                name: 'Precisão',
+                description: 'Aumenta chance de sucesso',
+                maxLevel: 5,
+                cost: level => level * 1000,
+                effect: level => ({ success_rate: 0.1 * level })
+            },
+            'sorte_pescador': {
+                name: 'Sorte do Pescador',
                 description: 'Aumenta chance de peixes raros',
                 maxLevel: 5,
-                costPerLevel: 2500,
-                effect: {
-                    type: 'rare_chance',
-                    valuePerLevel: 0.06 // +6% por nível
-                }
+                cost: level => level * 1000,
+                effect: level => ({ rare_chance: 0.1 * level })
             },
-            'pescador_sortudo': {
-                name: 'Pescador Sortudo',
-                description: 'Aumenta chance de eventos bons',
+            'forca': {
+                name: 'Força',
+                description: 'Aumenta peso máximo do peixe',
                 maxLevel: 5,
-                costPerLevel: 3000,
-                effect: {
-                    type: 'luck',
-                    valuePerLevel: 0.04 // +4% por nível
-                }
-            },
-            'mestre_pescador': {
-                name: 'Mestre Pescador',
-                description: 'Reduz tempo entre pescarias',
-                maxLevel: 5,
-                costPerLevel: 3500,
-                effect: {
-                    type: 'cooldown_reduction',
-                    valuePerLevel: 0.1 // -10% por nível
-                }
-            }
-        };
-
-        // Sistema de Tamanho dos Peixes
-        this.sizes = {
-            'minusculo': {
-                name: 'Minúsculo',
-                multiplier: 0.5,
-                chance: 0.1
-            },
-            'pequeno': {
-                name: 'Pequeno',
-                multiplier: 0.8,
-                chance: 0.2
-            },
-            'medio': {
-                name: 'Médio',
-                multiplier: 1.0,
-                chance: 0.4
-            },
-            'grande': {
-                name: 'Grande',
-                multiplier: 1.5,
-                chance: 0.2
-            },
-            'enorme': {
-                name: 'Enorme',
-                multiplier: 2.0,
-                chance: 0.1
+                cost: level => level * 1000,
+                effect: level => ({ weight_boost: 0.2 * level })
             }
         };
     }
 
-    fish(player, location) {
-        const loc = this.locations[location];
-        if (!loc) throw new Error('❌ Local de pesca não encontrado!');
+    startFishing(player, locationId, baitId) {
+        const location = this.locations[locationId];
+        if (!location) throw new Error('❌ Local não encontrado!');
 
         // Verifica nível
-        if (player.level < loc.level) {
-            throw new Error(`❌ Você precisa ser nível ${loc.level} para pescar aqui!`);
+        if (player.level < location.minLevel) {
+            throw new Error(`❌ Você precisa ser nível ${location.minLevel} para pescar aqui!`);
         }
 
-        // Verifica equipamento
+        // Verifica vara
         if (!player.fishing?.rod) {
-            throw new Error('❌ Você precisa de uma vara de pesca! Use /loja para comprar.');
+            throw new Error('❌ Você precisa de uma vara de pesca!');
         }
 
-        // Verifica linha e anzol
-        if (!this.hasEquipment(player, 'linha') || !this.hasEquipment(player, 'anzol')) {
-            throw new Error('❌ Você precisa de linha e anzol para pescar!');
+        const rod = this.rods[player.fishing.rod.id];
+        if (player.fishing.rod.durability <= 0) {
+            throw new Error('❌ Sua vara está quebrada!');
         }
 
         // Verifica isca
-        if (!player.fishing.bait) {
-            throw new Error('❌ Você precisa de uma isca! Use /loja para comprar.');
+        if (!player.inventory[baitId]) {
+            throw new Error('❌ Você não tem esta isca!');
         }
 
-        const rod = this.rods[player.fishing.rod];
-        const bait = this.baits[player.fishing.bait];
-
-        // Verifica durabilidade
-        if (player.fishing.durability <= 0) {
-            throw new Error('❌ Sua vara está quebrada! Compre uma nova na loja.');
+        // Inicia pescaria
+        const bait = this.baits[baitId];
+        player.inventory[baitId]--;
+        if (player.inventory[baitId] <= 0) {
+            delete player.inventory[baitId];
         }
 
-        // Gera clima se não existir
-        if (!player.fishing.weather || Date.now() - player.fishing.weatherTime > 3600000) {
-            player.fishing.weather = this.generateWeather();
-            player.fishing.weatherTime = Date.now();
-        }
-
-        // Processa eventos
-        const event = this.processEvent(player);
-
-        // Tenta pescar
-        const result = this.attemptFishing(player, loc, rod, bait, event);
-
-        // Reduz durabilidade
-        this.reduceEquipmentDurability(player, event);
-
-        // Aplica resultado
-        if (result.success) {
+        // Escolhe peixe
+        const fish = this.chooseFish(location, bait, player);
+        if (!fish) {
             return {
-                success: true,
-                fish: result.fish,
-                size: result.size,
-                event: event,
-                weather: player.fishing.weather,
-                durability: {
-                    rod: player.fishing.durability,
-                    line: player.fishing.equipment.linha,
-                    hook: player.fishing.equipment.anzol
-                },
-                message: this.formatFishingResult(result, event, player.fishing.weather)
+                success: false,
+                message: '❌ Nenhum peixe mordeu a isca...'
             };
         }
 
+        // Calcula tempo
+        let time = Math.floor(
+            Math.random() * (fish.time.max - fish.time.min + 1) + fish.time.min
+        );
+
+        // Aplica redução de tempo
+        if (player.skills?.fishing?.paciencia) {
+            const reduction = this.skills.paciencia.effect(
+                player.skills.fishing.paciencia
+            ).time_reduction;
+            time *= (1 - reduction);
+        }
+
+        // Inicia sessão de pesca
+        player.fishing.session = {
+            fish: fish.id,
+            startTime: Date.now(),
+            endTime: Date.now() + time,
+            location: locationId,
+            bait: baitId
+        };
+
         return {
-            success: false,
-            weather: player.fishing.weather,
-            durability: {
-                rod: player.fishing.durability,
-                line: player.fishing.equipment.linha,
-                hook: player.fishing.equipment.anzol
-            },
-            message: '🎣 O peixe escapou!'
+            success: true,
+            time: time,
+            message: `🎣 *PESCARIA INICIADA*\n\n` +
+                    `Local: ${location.name}\n` +
+                    `Isca: ${bait.name}\n` +
+                    `Tempo: ${Math.ceil(time / 1000)} segundos`
         };
     }
 
-    hasEquipment(player, type) {
-        return player.fishing?.equipment?.[type] > 0;
-    }
-
-    generateWeather() {
-        const roll = Math.random();
-        let cumulative = 0;
-        for (const [id, weather] of Object.entries(this.weather)) {
-            cumulative += weather.chance;
-            if (roll <= cumulative) {
-                return {
-                    id: id,
-                    name: weather.name,
-                    effect: weather.effect
-                };
-            }
-        }
-        return {
-            id: 'ensolarado',
-            name: this.weather.ensolarado.name,
-            effect: this.weather.ensolarado.effect
-        };
-    }
-
-    processEvent(player) {
-        for (const [id, event] of Object.entries(this.events)) {
-            let chance = event.chance;
-
-            // Aumenta chance de eventos bons com sorte
-            if (player.fishing?.skills?.pescador_sortudo && 
-                (id === 'cardume' || id === 'peixe_grande' || id === 'tesouro')) {
-                const level = player.fishing.skills.pescador_sortudo;
-                chance += (this.skills.pescador_sortudo.effect.valuePerLevel * level);
-            }
-
-            if (Math.random() < chance) {
-                return {
-                    id: id,
-                    name: event.name,
-                    effect: event.effect
-                };
-            }
-        }
-        return null;
-    }
-
-    attemptFishing(player, location, rod, bait, event) {
-        // Calcula chance base de sucesso
-        let chance = 0.5 * rod.multiplier * bait.effectiveness;
-
-        // Aplica modificadores do clima
-        if (player.fishing.weather.effect.type === 'fish_activity') {
-            chance *= player.fishing.weather.effect.value;
+    catchFish(player) {
+        if (!player.fishing?.session) {
+            throw new Error('❌ Você não está pescando!');
         }
 
-        // Aplica bônus do sonar
-        if (this.hasEquipment(player, 'sonar')) {
-            chance *= this.equipment.sonar.effect.value;
+        const session = player.fishing.session;
+        const fish = this.fish[session.fish];
+        const rod = this.rods[player.fishing.rod.id];
+
+        // Verifica tempo
+        if (Date.now() < session.endTime) {
+            const timeLeft = Math.ceil((session.endTime - Date.now()) / 1000);
+            throw new Error(`❌ Aguarde ${timeLeft} segundos!`);
         }
 
-        // Tenta pescar
-        if (Math.random() < chance) {
-            const fish = this.selectFish(location, bait, player);
-            const size = this.calculateSize(player, event);
+        // Calcula chance de sucesso
+        let chance = 0.5 * rod.power;
 
+        // Aplica bônus de precisão
+        if (player.skills?.fishing?.precisao) {
+            chance += this.skills.precisao.effect(
+                player.skills.fishing.precisao
+            ).success_rate;
+        }
+
+        // Tenta pegar o peixe
+        if (Math.random() > chance) {
+            delete player.fishing.session;
             return {
-                success: true,
-                fish: fish,
-                size: size
+                success: false,
+                message: '💨 O peixe escapou!'
             };
         }
 
-        return { success: false };
-    }
+        // Calcula peso
+        let weight = Math.random() * (fish.weight.max - fish.weight.min) + fish.weight.min;
 
-    calculateSize(player, event) {
-        let chances = { ...this.sizes };
-
-        // Aplica bônus de habilidade
-        if (player.fishing?.skills?.paciencia) {
-            const level = player.fishing.skills.paciencia;
-            const bonus = this.skills.paciencia.effect.valuePerLevel * level;
-            
-            chances.grande.chance += bonus * 0.6;
-            chances.enorme.chance += bonus * 0.4;
+        // Aplica bônus de força
+        if (player.skills?.fishing?.forca) {
+            const boost = this.skills.forca.effect(
+                player.skills.fishing.forca
+            ).weight_boost;
+            weight *= (1 + boost);
         }
 
-        // Aplica efeito de evento
-        if (event?.effect.type === 'size_boost') {
-            return {
-                id: 'enorme',
-                name: this.sizes.enorme.name,
-                multiplier: event.effect.value
-            };
-        }
+        weight = Math.round(weight * 100) / 100;
 
-        const roll = Math.random();
-        let cumulative = 0;
-        for (const [id, size] of Object.entries(chances)) {
-            cumulative += size.chance;
-            if (roll <= cumulative) {
-                return {
-                    id: id,
-                    name: size.name,
-                    multiplier: size.multiplier
-                };
-            }
-        }
-
-        return {
-            id: 'medio',
-            name: this.sizes.medio.name,
-            multiplier: this.sizes.medio.multiplier
-        };
-    }
-
-    reduceEquipmentDurability(player, event) {
         // Reduz durabilidade da vara
-        player.fishing.durability--;
+        player.fishing.rod.durability--;
 
-        // Reduz durabilidade da linha
-        if (event?.effect.type === 'line_break' && Math.random() < event.effect.value) {
-            player.fishing.equipment.linha = 0;
-        } else {
-            player.fishing.equipment.linha--;
+        // Adiciona ao inventário
+        if (!player.inventory[session.fish]) {
+            player.inventory[session.fish] = 0;
         }
+        player.inventory[session.fish]++;
 
-        // Reduz durabilidade do anzol
-        player.fishing.equipment.anzol--;
+        // Limpa sessão
+        delete player.fishing.session;
 
-        // Remove equipamentos quebrados
-        if (player.fishing.equipment.linha <= 0) delete player.fishing.equipment.linha;
-        if (player.fishing.equipment.anzol <= 0) delete player.fishing.equipment.anzol;
-        if (player.fishing.durability <= 0) delete player.fishing.rod;
+        return {
+            success: true,
+            fish: fish,
+            weight: weight,
+            message: `🎣 *PEIXE FISGADO*\n\n` +
+                    `${fish.name}\n` +
+                    `Peso: ${weight}kg\n` +
+                    `XP: +${fish.xp}\n` +
+                    `Vara: ${player.fishing.rod.durability}/${rod.durability}`
+        };
     }
 
-    formatFishingResult(result, event, weather) {
-        let text = `🎣 *PESCARIA*\n\n`;
-        
-        text += `🌤️ Clima: ${weather.name}\n\n`;
-        
-        if (result.success) {
-            text += `${result.fish.emoji} Pescou: ${result.fish.name}\n`;
-            text += `📏 Tamanho: ${result.size.name}\n`;
-            text += `💰 Valor: R$ ${Math.floor(result.fish.price * result.size.multiplier)}\n\n`;
+    chooseFish(location, bait, player) {
+        const possibleFish = location.fish
+            .map(id => this.fish[id])
+            .filter(fish => player.level >= fish.minLevel);
+
+        if (possibleFish.length === 0) return null;
+
+        const weights = possibleFish.map(fish => {
+            let weight = 1;
+            switch(fish.rarity) {
+                case 'comum': weight = 100; break;
+                case 'incomum': weight = 50; break;
+                case 'raro': weight = 10; break;
+                case 'lendario': weight = 1; break;
+            }
+
+            // Aplica bônus da isca
+            if (fish.rarity === bait.effect.type) {
+                weight *= bait.effect.multiplier;
+            }
+
+            // Aplica bônus de sorte
+            if (player.skills?.fishing?.sorte_pescador) {
+                const boost = this.skills.sorte_pescador.effect(
+                    player.skills.fishing.sorte_pescador
+                ).rare_chance;
+                if (fish.rarity !== 'comum') {
+                    weight *= (1 + boost);
+                }
+            }
+
+            return weight;
+        });
+
+        const total = weights.reduce((a, b) => a + b, 0);
+        let random = Math.random() * total;
+
+        for (let i = 0; i < weights.length; i++) {
+            random -= weights[i];
+            if (random <= 0) return possibleFish[i];
         }
 
-        if (event) {
-            text += `✨ *EVENTO*\n`;
-            text += `${event.name}\n\n`;
-        }
+        return possibleFish[0];
+    }
 
-        text += `⚙️ *DURABILIDADE*\n`;
-        text += `├ Vara: ${result.durability.rod}\n`;
-        text += `├ Linha: ${result.durability.line}\n`;
-        text += `└ Anzol: ${result.durability.hook}`;
+    formatLocationList() {
+        let text = `🎣 *LOCAIS DE PESCA* 🎣\n\n`;
+
+        Object.entries(this.locations).forEach(([id, loc]) => {
+            text += `*${loc.name}*\n`;
+            text += `├ Nível mínimo: ${loc.minLevel}\n`;
+            text += `├ Peixes: ${loc.fish.map(id => this.fish[id].name).join(', ')}\n`;
+            text += `├ Clima: ${loc.weather.join(', ')}\n`;
+            text += `└ Profundidade: ${loc.depth}\n\n`;
+        });
 
         return text;
     }
 
-    // ... outros métodos anteriores ...
+    formatRodList() {
+        let text = `🎣 *VARAS DE PESCA* 🎣\n\n`;
+
+        Object.entries(this.rods).forEach(([id, rod]) => {
+            text += `*${rod.name}*\n`;
+            text += `├ Durabilidade: ${rod.durability}\n`;
+            text += `├ Poder: ${(rod.power * 100).toFixed(0)}%\n`;
+            text += `├ Sorte: ${(rod.luck * 100).toFixed(0)}%\n`;
+            text += `└ Preço: R$ ${rod.cost}\n\n`;
+        });
+
+        return text;
+    }
+
+    formatBaitList() {
+        let text = `🪱 *ISCAS* 🪱\n\n`;
+
+        Object.entries(this.baits).forEach(([id, bait]) => {
+            text += `*${bait.name}*\n`;
+            text += `├ Tipo: ${bait.effect.type}\n`;
+            text += `├ Bônus: +${((bait.effect.multiplier - 1) * 100).toFixed(0)}%\n`;
+            text += `└ Preço: R$ ${bait.cost}\n\n`;
+        });
+
+        return text;
+    }
+
+    formatSkillList(player) {
+        let text = `⚡ *HABILIDADES DE PESCA* ⚡\n\n`;
+
+        Object.entries(this.skills).forEach(([id, skill]) => {
+            const currentLevel = player.skills?.fishing?.[id] || 0;
+            text += `*${skill.name}* (${currentLevel}/${skill.maxLevel})\n`;
+            text += `├ ${skill.description}\n`;
+            if (currentLevel < skill.maxLevel) {
+                const nextCost = skill.cost(currentLevel + 1);
+                const nextEffect = skill.effect(currentLevel + 1);
+                text += `├ Próximo nível: R$ ${nextCost}\n`;
+                text += `└ Efeito: ${Object.entries(nextEffect)
+                    .map(([stat, value]) => `${stat} ${value > 0 ? '+' : ''}${value}`)
+                    .join(', ')}\n`;
+            }
+            text += '\n';
+        });
+
+        return text;
+    }
 }
 
 module.exports = new FishingSystem();

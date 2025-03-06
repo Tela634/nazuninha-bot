@@ -1,306 +1,267 @@
-const fs = require('fs');
-const path = require('path');
-
 class EventSystem {
     constructor() {
-        this.eventsPath = path.join(__dirname, '..', '..', 'database', 'rpg', 'events.json');
-        this.ensureDirectoryExists();
         this.events = {
-            // Eventos Mundiais
-            'boss_mundial': {
-                name: 'Chefe Mundial',
-                description: 'Um poderoso chefe apareceu! Junte-se a outros jogadores para derrotá-lo!',
+            // Eventos Globais
+            'chuva_meteoros': {
+                name: 'Chuva de Meteoros',
+                description: 'Meteoros caem do céu trazendo recursos raros!',
                 duration: 3600000, // 1 hora
-                minPlayers: 5,
-                boss: {
-                    name: 'Dragão Ancião',
-                    health: 100000,
-                    attack: 500,
-                    defense: 300,
-                    rewards: {
-                        money: { min: 10000, max: 50000 },
-                        xp: { min: 5000, max: 10000 },
-                        items: ['escama_dragao', 'espada_dragao', 'amuleto_dragao']
+                effects: {
+                    mining: {
+                        type: 'bonus',
+                        value: 2.0,
+                        description: 'Dobro de recursos minerados'
+                    },
+                    rare_drop: {
+                        type: 'chance',
+                        value: 0.2,
+                        description: '20% de chance de recursos especiais'
                     }
-                }
+                },
+                chance: 0.1
             },
+            'eclipse': {
+                name: 'Eclipse',
+                description: 'A escuridão traz criaturas poderosas!',
+                duration: 1800000, // 30 minutos
+                effects: {
+                    combat: {
+                        type: 'bonus',
+                        value: 1.5,
+                        description: '50% mais XP em combate'
+                    },
+                    boss_spawn: {
+                        type: 'chance',
+                        value: 0.3,
+                        description: '30% de chance de boss'
+                    }
+                },
+                chance: 0.05
+            },
+
+            // Eventos de Área
+            'tempestade': {
+                name: 'Tempestade',
+                description: 'Uma tempestade afeta as atividades!',
+                duration: 7200000, // 2 horas
+                area: 'all',
+                effects: {
+                    fishing: {
+                        type: 'bonus',
+                        value: 1.5,
+                        description: '50% mais peixes'
+                    },
+                    farming: {
+                        type: 'malus',
+                        value: 0.5,
+                        description: '50% menos colheitas'
+                    }
+                },
+                chance: 0.15
+            },
+            'seca': {
+                name: 'Seca',
+                description: 'Um período de seca afeta as plantações!',
+                duration: 14400000, // 4 horas
+                area: 'farming',
+                effects: {
+                    farming: {
+                        type: 'malus',
+                        value: 0.3,
+                        description: '70% menos colheitas'
+                    },
+                    water_cost: {
+                        type: 'increase',
+                        value: 2.0,
+                        description: 'Dobro do custo de água'
+                    }
+                },
+                chance: 0.1
+            },
+
+            // Eventos de Facção
             'guerra_faccoes': {
                 name: 'Guerra de Facções',
-                description: 'As facções estão em guerra! Escolha seu lado e lute!',
-                duration: 7200000, // 2 horas
-                factions: ['Luz', 'Trevas'],
-                rewards: {
-                    winning: {
-                        money: 20000,
-                        xp: 8000,
-                        items: ['medalha_guerra', 'titulo_guerreiro']
+                description: 'As facções entram em conflito!',
+                duration: 86400000, // 24 horas
+                area: 'faction',
+                effects: {
+                    pvp: {
+                        type: 'bonus',
+                        value: 2.0,
+                        description: 'Dobro de pontos de facção'
                     },
-                    participation: {
-                        money: 5000,
-                        xp: 2000
+                    territory: {
+                        type: 'bonus',
+                        value: 1.5,
+                        description: '50% mais pontos por território'
                     }
-                }
-            },
-
-            // Eventos de Gangue
-            'invasao': {
-                name: 'Invasão Territorial',
-                description: 'Defenda seu território de invasores ou invada outros territórios!',
-                duration: 3600000, // 1 hora
-                rewards: {
-                    territory: 2,
-                    money: 15000,
-                    xp: 5000
                 },
-                penalty: {
-                    territory: -1
-                }
+                chance: 0.05
             },
 
-            // Eventos de Caça
-            'cacada_tesouro': {
-                name: 'Caçada ao Tesouro',
-                description: 'Um mapa do tesouro foi descoberto! Encontre as pistas e o tesouro!',
-                duration: 1800000, // 30 minutos
-                clues: 5,
-                rewards: {
-                    money: { min: 5000, max: 30000 },
-                    items: ['bau_tesouro', 'mapa_antigo', 'reliquia_antiga']
-                }
-            },
-
-            // Eventos PvP
-            'torneio_pvp': {
-                name: 'Torneio PvP',
-                description: 'Prove sua força no torneio de combate!',
-                duration: 5400000, // 1.5 horas
-                minPlayers: 8,
-                rewards: {
-                    first: {
-                        money: 50000,
-                        xp: 15000,
-                        items: ['trofeu_campeao', 'titulo_campeao']
-                    },
-                    second: {
-                        money: 25000,
-                        xp: 10000,
-                        items: ['medalha_prata']
-                    },
-                    third: {
-                        money: 10000,
-                        xp: 5000,
-                        items: ['medalha_bronze']
-                    }
-                }
-            },
-
-            // Eventos de Raid
-            'raid_dungeon': {
-                name: 'Raid na Dungeon',
-                description: 'Uma dungeon antiga foi descoberta! Reúna sua equipe para explorá-la!',
+            // Eventos de Dungeon
+            'invasao_boss': {
+                name: 'Invasão de Bosses',
+                description: 'Bosses invadem as dungeons!',
                 duration: 3600000, // 1 hora
-                minPlayers: 4,
-                maxPlayers: 8,
-                difficulty: 'Difícil',
-                bosses: [
-                    {
-                        name: 'Guardião Ancestral',
-                        health: 50000,
-                        attack: 300,
-                        defense: 200
+                area: 'dungeon',
+                effects: {
+                    boss_rate: {
+                        type: 'increase',
+                        value: 3.0,
+                        description: 'Triplo de chance de boss'
                     },
-                    {
-                        name: 'Lich Supremo',
-                        health: 75000,
-                        attack: 400,
-                        defense: 250
+                    loot: {
+                        type: 'bonus',
+                        value: 2.0,
+                        description: 'Dobro de loot'
                     }
-                ],
-                rewards: {
-                    money: { min: 20000, max: 100000 },
-                    xp: { min: 8000, max: 20000 },
-                    items: ['arma_lendaria', 'armadura_antiga', 'reliquia_poder']
-                }
+                },
+                chance: 0.08
+            },
+
+            // Eventos Especiais
+            'festival': {
+                name: 'Festival',
+                description: 'Um festival traz bônus para todos!',
+                duration: 259200000, // 3 dias
+                effects: {
+                    all: {
+                        type: 'bonus',
+                        value: 1.5,
+                        description: '50% mais recursos em tudo'
+                    },
+                    xp: {
+                        type: 'bonus',
+                        value: 2.0,
+                        description: 'Dobro de XP'
+                    },
+                    money: {
+                        type: 'bonus',
+                        value: 1.5,
+                        description: '50% mais dinheiro'
+                    }
+                },
+                chance: 0.02
             }
         };
 
-        // Eventos Ativos
-        this.activeEvents = {};
+        this.activeEvents = new Map();
     }
 
-    ensureDirectoryExists() {
-        const dir = path.dirname(this.eventsPath);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-        if (!fs.existsSync(this.eventsPath)) {
-            fs.writeFileSync(this.eventsPath, JSON.stringify({
-                activeEvents: {},
-                participants: {},
-                scores: {}
-            }));
-        }
-    }
+    checkForEvents() {
+        const events = {};
 
-    startEvent(eventId) {
-        const event = this.events[eventId];
-        if (!event) throw new Error('Evento não encontrado!');
-        if (this.activeEvents[eventId]) throw new Error('Este evento já está ativo!');
-
-        this.activeEvents[eventId] = {
-            ...event,
-            startTime: Date.now(),
-            endTime: Date.now() + event.duration,
-            participants: [],
-            scores: {},
-            status: 'active'
-        };
-
-        this.saveEvents();
-        return this.activeEvents[eventId];
-    }
-
-    joinEvent(eventId, playerId) {
-        const event = this.activeEvents[eventId];
-        if (!event) throw new Error('Evento não encontrado ou não está ativo!');
-        if (event.participants.includes(playerId)) throw new Error('Você já está participando deste evento!');
-        
-        // Verifica requisitos específicos do evento
-        if (event.minPlayers && event.participants.length >= event.maxPlayers) {
-            throw new Error('Este evento já está cheio!');
-        }
-
-        event.participants.push(playerId);
-        event.scores[playerId] = 0;
-        this.saveEvents();
-        return event;
-    }
-
-    updateScore(eventId, playerId, score) {
-        const event = this.activeEvents[eventId];
-        if (!event) throw new Error('Evento não encontrado ou não está ativo!');
-        if (!event.participants.includes(playerId)) throw new Error('Você não está participando deste evento!');
-
-        event.scores[playerId] = (event.scores[playerId] || 0) + score;
-        this.saveEvents();
-        return event.scores[playerId];
-    }
-
-    getEventRanking(eventId) {
-        const event = this.activeEvents[eventId];
-        if (!event) throw new Error('Evento não encontrado ou não está ativo!');
-
-        return Object.entries(event.scores)
-            .sort(([_, a], [__, b]) => b - a)
-            .map(([playerId, score], index) => ({
-                position: index + 1,
-                playerId,
-                score
-            }));
-    }
-
-    endEvent(eventId) {
-        const event = this.activeEvents[eventId];
-        if (!event) throw new Error('Evento não encontrado ou não está ativo!');
-
-        const ranking = this.getEventRanking(eventId);
-        const rewards = this.calculateRewards(event, ranking);
-
-        delete this.activeEvents[eventId];
-        this.saveEvents();
-
-        return {
-            ranking,
-            rewards
-        };
-    }
-
-    calculateRewards(event, ranking) {
-        const rewards = {};
-
-        switch (event.name) {
-            case 'Torneio PvP':
-                if (ranking.length >= 1) {
-                    rewards[ranking[0].playerId] = event.rewards.first;
-                }
-                if (ranking.length >= 2) {
-                    rewards[ranking[1].playerId] = event.rewards.second;
-                }
-                if (ranking.length >= 3) {
-                    rewards[ranking[2].playerId] = event.rewards.third;
-                }
-                break;
-
-            case 'Guerra de Facções':
-                const winningFaction = ranking[0].score > ranking[1].score ? 0 : 1;
-                ranking.forEach(({ playerId, score }, index) => {
-                    if (index % 2 === winningFaction) {
-                        rewards[playerId] = event.rewards.winning;
-                    } else {
-                        rewards[playerId] = event.rewards.participation;
-                    }
-                });
-                break;
-
-            default:
-                ranking.forEach(({ playerId, score }) => {
-                    rewards[playerId] = {
-                        money: Math.floor(event.rewards.money.min + (score / 100) * (event.rewards.money.max - event.rewards.money.min)),
-                        xp: Math.floor(event.rewards.xp.min + (score / 100) * (event.rewards.xp.max - event.rewards.xp.min)),
-                        items: event.rewards.items
+        // Verifica cada evento
+        Object.entries(this.events).forEach(([id, event]) => {
+            // Se já está ativo, verifica se terminou
+            if (this.activeEvents.has(id)) {
+                const activeEvent = this.activeEvents.get(id);
+                if (Date.now() >= activeEvent.endTime) {
+                    this.activeEvents.delete(id);
+                } else {
+                    events[id] = {
+                        ...event,
+                        timeLeft: activeEvent.endTime - Date.now()
                     };
-                });
-        }
+                }
+                return;
+            }
 
-        return rewards;
+            // Chance de iniciar novo evento
+            if (Math.random() < event.chance) {
+                const startTime = Date.now();
+                const endTime = startTime + event.duration;
+
+                this.activeEvents.set(id, {
+                    startTime,
+                    endTime
+                });
+
+                events[id] = {
+                    ...event,
+                    timeLeft: event.duration
+                };
+            }
+        });
+
+        return events;
     }
 
     getActiveEvents() {
-        return Object.entries(this.activeEvents).map(([id, event]) => ({
-            id,
-            name: event.name,
-            description: event.description,
-            timeLeft: event.endTime - Date.now(),
-            participants: event.participants.length,
-            status: event.status
-        }));
+        const events = {};
+
+        this.activeEvents.forEach((timing, id) => {
+            if (Date.now() < timing.endTime) {
+                events[id] = {
+                    ...this.events[id],
+                    timeLeft: timing.endTime - Date.now()
+                };
+            } else {
+                this.activeEvents.delete(id);
+            }
+        });
+
+        return events;
     }
 
-    saveEvents() {
-        fs.writeFileSync(this.eventsPath, JSON.stringify({
-            activeEvents: this.activeEvents
-        }, null, 2));
+    applyEventEffects(player, activity) {
+        const effects = {
+            bonus: 1.0,
+            malus: 1.0,
+            chances: {}
+        };
+
+        // Aplica efeitos de eventos ativos
+        this.activeEvents.forEach((timing, id) => {
+            if (Date.now() >= timing.endTime) {
+                this.activeEvents.delete(id);
+                return;
+            }
+
+            const event = this.events[id];
+            Object.entries(event.effects).forEach(([type, effect]) => {
+                if (type === activity || type === 'all') {
+                    switch(effect.type) {
+                        case 'bonus':
+                            effects.bonus *= effect.value;
+                            break;
+                        case 'malus':
+                            effects.malus *= effect.value;
+                            break;
+                        case 'chance':
+                            effects.chances[type] = effect.value;
+                            break;
+                    }
+                }
+            });
+        });
+
+        return effects;
     }
 
     formatEventList() {
         const activeEvents = this.getActiveEvents();
-        let text = `🎉 *EVENTOS ATIVOS* 🎉\n\n`;
-
-        if (activeEvents.length === 0) {
-            text += `_Nenhum evento ativo no momento..._\n`;
-            text += `_Use ${prefix}evento para iniciar um!_\n\n`;
-        } else {
-            activeEvents.forEach(event => {
-                text += `${event.name}\n`;
-                text += `├ ${event.description}\n`;
-                text += `├ Participantes: ${event.participants}\n`;
-                text += `└ Tempo restante: ${Math.floor(event.timeLeft / 60000)} minutos\n\n`;
-            });
+        
+        if (Object.keys(activeEvents).length === 0) {
+            return `🎉 *EVENTOS* 🎉\n\n` +
+                   `_Nenhum evento ativo no momento_\n\n` +
+                   `Fique atento a novos eventos!`;
         }
 
-        text += `\n📅 *PRÓXIMOS EVENTOS*\n\n`;
-        Object.entries(this.events).forEach(([id, event]) => {
-            if (!this.activeEvents[id]) {
-                text += `${event.name}\n`;
-                text += `├ ${event.description}\n`;
-                if (event.minPlayers) {
-                    text += `├ Mínimo de jogadores: ${event.minPlayers}\n`;
-                }
-                if (event.rewards) {
-                    text += `└ Recompensas disponíveis!\n`;
-                }
-                text += '\n';
-            }
+        let text = `🎉 *EVENTOS ATIVOS* 🎉\n\n`;
+
+        Object.entries(activeEvents).forEach(([id, event]) => {
+            const timeLeft = Math.ceil(event.timeLeft / 1000 / 60); // Converte para minutos
+            text += `*${event.name}*\n`;
+            text += `├ ${event.description}\n`;
+            text += `├ Tempo restante: ${timeLeft} minutos\n`;
+            text += `└ Efeitos:\n`;
+            Object.entries(event.effects).forEach(([type, effect]) => {
+                text += `   └ ${effect.description}\n`;
+            });
+            text += '\n';
         });
 
         return text;
