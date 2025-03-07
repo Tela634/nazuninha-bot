@@ -1,4 +1,8 @@
-// Created By Hiudy (não remova nem edite essa linha)
+// Conexão do bot
+// Sistema unico, diferente de qualquer outro bot
+// Criador: Hiudy
+// Caso for usar deixe o caralho dos créditos 
+// <3
 
 const { Boom } = require('@hapi/boom');
 const { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, DisconnectReason, proto, makeInMemoryStore } = require('baileys');
@@ -98,14 +102,27 @@ async function startNazu() {
    var jsonGp = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${from}.json`));
    try { var GroupMetadata = await nazu.groupMetadata(from) } catch (e) { return };
    if(inf.action === 'add') {
-   if(!jsonGp.bemvindo) return;
-   const sender = inf.participants[0];
-   if(jsonGp.imgbv) {
-   
-   } else {
-    const textBv = jsonGp.textbv && jsonGp.textbv.length > 1 ? jsonGp.textbv : 'Seja bem vindo(a) #numerodele# ao #nomedogp#!\nVocê é nosso membro número: *#membros#*!';
-    await nazu.sendMessage(from, {text: textBv.replaceAll('#numerodele#', `@${sender.split('@')[0]}`).replaceAll('#nomedogp#', GroupMetadata.subject).replaceAll('#desc#', await GroupMetadata.desc).replaceAll('#membros#', GroupMetadata.participants.length), mentions: [sender]});
-   };
+     if(!jsonGp.bemvindo) return;
+     const sender = inf.participants[0];
+     const textBv = jsonGp.textbv && jsonGp.textbv.length > 1 ? jsonGp.textbv : 'Seja bem vindo(a) #numerodele# ao #nomedogp#!\nVocê é nosso membro número: *#membros#*!';
+     const welcomeText = textBv.replaceAll('#numerodele#', `@${sender.split('@')[0]}`).replaceAll('#nomedogp#', GroupMetadata.subject).replaceAll('#desc#', GroupMetadata.desc || '').replaceAll('#membros#', GroupMetadata.participants.length);
+
+     if(jsonGp.welcome && jsonGp.welcome.image) {
+       await nazu.sendMessage(from, {image: { url: jsonGp.welcome.image },caption: welcomeText,mentions: [sender]});
+     } else {
+       await nazu.sendMessage(from, {text: welcomeText,mentions: [sender]});
+     };
+   } else if(inf.action === 'remove') {
+     if(!jsonGp.exit || !jsonGp.exit.enabled) return;
+     const sender = inf.participants[0];
+     const exitText = jsonGp.exit.text && jsonGp.exit.text.length > 1 ? jsonGp.exit.text : 'Adeus #numerodele#! 👋\nO grupo *#nomedogp#* agora tem *#membros#* membros.';
+     const formattedText = exitText.replaceAll('#numerodele#', `@${sender.split('@')[0]}`).replaceAll('#nomedogp#', GroupMetadata.subject).replaceAll('#desc#', GroupMetadata.desc || '').replaceAll('#membros#', GroupMetadata.participants.length);
+
+     if(jsonGp.exit && jsonGp.exit.image) {
+       await nazu.sendMessage(from, {image: { url: jsonGp.exit.image },caption: formattedText,mentions: [sender]});
+     } else {
+       await nazu.sendMessage(from, {text: formattedText,mentions: [sender]});
+     };
    };
  });
  

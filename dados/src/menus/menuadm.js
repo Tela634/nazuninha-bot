@@ -21,6 +21,7 @@ async function menuadm(prefix) {
 │ *${prefix}grupo* A/F
 │ *${prefix}setname*
 │ *${prefix}setdesc*
+│ *${prefix}tttend* ou *${prefix}rv*
 ╰──────────────╯
 
 ╭━━━━━━━━━━━━━━╮
@@ -31,7 +32,17 @@ async function menuadm(prefix) {
 │ *${prefix}antilinkgp*
 │ *${prefix}antiporn*
 │ *${prefix}bemvindo* ou *${prefix}bv
+│ *${prefix}saida*
 │ *${prefix}soadm*
+╰━━━━━━━━━━━━━━╯
+
+╭━━━━━━━━━━━━━━╮
+┃  ⚒️ *Configurações*
+├──────────────┤
+│ *${prefix}legendasaiu*
+│ *${prefix}legendabv*
+│ *${prefix}fotobv*
+│ *${prefix}fotosaiu*
 ╰━━━━━━━━━━━━━━╯
 `;
 }

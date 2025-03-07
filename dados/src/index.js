@@ -1,12 +1,13 @@
-//Criador: hiudy
-//Versão: 0.0.1
-//Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
+// Index principal do bot
+// Sistema unico, diferente de qualquer outro bot
+// Criador: Hiudy
+// Caso for usar deixe o caralho dos créditos 
+// <3
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { exec, spawn, execSync } = require('child_process');
-const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin }  = require(__dirname+'/.funcs/.exports.js');
+const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe }  = require(__dirname+'/funcs/exports.js');
 const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa, menuRpg } = require(__dirname+'/menus/index.js');
-const rpgCommands = require('./.funcs/.RpgExec.js');
 const FormData = require("form-data");
 const axios = require('axios');
 const pathz = require('path');
@@ -80,6 +81,7 @@ try {
   const isAntiPorn = groupData.antiporn ? true : false;
   const isMuted = (groupData.mutedUsers && groupData.mutedUsers[sender]) ? true : false;
   const isAntiLinkGp = groupData.antilinkgp ? true : false;
+  const isModoRpg = isGroup && groupData.modorpg ? true : false;
   if(isGroup && !isGroupAdmin && isOnlyAdmin) return;
   if(isGroup && !isGroupAdmin && isCmd && groupData.blockedCommands && groupData.blockedCommands[command]) return reply('Este comando foi bloqueado pelos administradores do grupo.');
   
@@ -99,7 +101,6 @@ try {
   if(JSON.stringify(groupData.contador).includes(sender)) {
   const i2 = groupData.contador.map(i => i.id).indexOf(sender);
   if(isCmd && groupData.contador[i2].cmd) {groupData.contador[i2].cmd++} else if(type=="stickerMessage" && groupData.contador[i2].figu) {groupData.contador[i2].figu++} else if(groupData.contador[i2].msg) {groupData.contador[i2].msg++};
-  // Update pushname if it changed
   if (pushname && groupData.contador[i2].pushname !== pushname) {
     groupData.contador[i2].pushname = pushname;
   }
@@ -179,42 +180,16 @@ try {
  ppimg = 'https://telegra.ph/file/b5427ea4b8701bc47e751.jpg'
  };
  
- //AQUI FICA OS COMANDO DE RPG
- const isModoRpg = isGroup && groupData.modorpg ? true : false;
- rpgCommands(type, nazu, from, sender, info, reply, command, q, prefix, isModoRpg);
-
- switch(command) {
-   case 'modorpg': {
-    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
-    
-    if (!groupData.modorpg) {
-      groupData.modorpg = true;
-      fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
-      reply('✅ *Modo RPG ativado!* Agora os comandos de RPG estão disponíveis no grupo.');
-    } else {
-      groupData.modorpg = false;
-      fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
-      reply('⚠️ *Modo RPG desativado!* Os comandos de RPG não estão mais disponíveis.');
-    }
-   }
-   break;
-
- //FUNÇÕES PREMIUM
-  case 'nome':case 'nome2':case 'nome3':case 'nome4':case 'telefone2':case 'telefonefixo':case 'cpf':case 'cpf2':case 'cpf3':case 'cpf4':case 'cpf5':case 'placa':case 'bin':case 'site':case 'cep':case 'vizinhos':case 'cnpj':case 'score':case 'titulo':case 'email':case 'vacina':case 'parentes':case 'rg':case 'rg2':case 'senha':case 'mae':case 'pai':case 'chassi':case 'motor':case 'beneficios':case 'impostos':case 'nascimento':case 'pfix':case 'cns':case 'cns2':case 'correios':case 'radar':case 'dominio':case 'internet':case 'compras':case 'cnh':case 'funcionarios': try {
-  if (!isPremium) return reply('❌ Apenas usuários premium.');
-  if (!q) return reply(`❌ Tá faltando os dados.`);
-  nazu.react('🔎');
-  const dados = (await axios.get(`https://blacksystemofc.com.br/vip/consultas?type=${command}&query=${q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replaceAll('-', '').replaceAll('+', '').replaceAll('.', '')}&apikey=827640_black_sim`)).data;
-  if (dados.file) return await nazu.sendMessage(from, { document: Buffer.from(dados.base64, 'base64'), fileName: `${q}.txt`, mimetype: 'text/plain' }, { quoted: info });
-  if (dados.resultado) return await reply(dados.resultado.replace(/\*\*|`/g, '').replace(/• USUÁRIO:.+\n/g, '').replace(/• BY:.+\n/g, '').replace(/• Grupo:.+\n/g, '').replace(/👤 USUÁRIO:.+\n/g, '').replace(/🤖 BY:.+\n/g, '').replace(/✅ Grupo:.+\n/g, '').replace(/👤\s*USUÁRIO:.+\n/g, '').replace(/🤖\s*BY:.+\n/g, '').replace(/✅\s*Grupo:.+\n/g, '').replace(/^[^\n]*✅ Grupo:[^\n]*\n?/gm, '').replace(/✅ Canal: @[\w\d]+/g, '') + `\n\n🤖 By: ${nomebot}\n📲 Dono: wa.me/${nmrdn.split('@')[0]}`);
-  await reply('❌ Nenhum dado encontrado.');
-  } catch (error) {
-  console.error(error);
-  reply('❌ Ocorreu um erro ao buscar os dados.');
-  };
-  break;
+ //JOGO DA VELHA
+ if(isGroup && tictactoe.hasActiveGame(from) && isModoBn && Number(budy2)) {
+   const position = parseInt(q);
+   const result = tictactoe.makeMove(from, sender, position);
+   if (result.success) {
+     await nazu.sendMessage(from, { text: result.message, mentions: [sender] });
+   };
+ };
  
+ switch(command) {
   //INTELIGENCIA ARTIFICIAL
   case 'simi': try {
   if(!q) return reply('🤔 Cadê o texto?')
@@ -723,6 +698,14 @@ try {
   break;
   
   //COMANDOS DE ADM
+  case 'tttend': case 'rv': case 'fimjogo': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isGroupAdmin && !isOwner) return reply('❌ Apenas administradores podem encerrar um jogo em andamento.');
+     const result = tictactoe.endGame(from);
+     await reply(result.message);
+   };
+ break;
+   
   case 'deletar': case 'delete': case 'del':  case 'd':
   if(!isGroupAdmins && !isPremium) return reply('❌ Apenas admins.');
   if(!menc_prt) return reply("Marque a mensagem do usuário que deseja apagar, do bot ou de alguém...")
@@ -943,6 +926,97 @@ try {
     }};
     break;
     
+   case 'fotobv': case 'welcomeimg': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isGroupAdmin) return reply('❌ Apenas administradores podem configurar a foto de boas-vindas.');
+     if (!isQuotedImage && !isImage) return reply('❌ Marque uma imagem ou envie uma imagem com o comando!');
+     try {
+       const media = await getFileBuffer(
+         isQuotedImage ? info.message.extendedTextMessage.contextInfo.quotedMessage.imageMessage : info.message.imageMessage,
+         'image'
+       );
+       const uploadResult = await upload(media);
+       if (!uploadResult) throw new Error('Falha ao fazer upload da imagem');
+       if (!groupData.welcome) groupData.welcome = {};
+       groupData.welcome.image = uploadResult;
+       fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+       await reply('✅ Foto de boas-vindas configurada com sucesso!');
+     } catch (error) {
+       console.error(error);
+       await reply('❌ Ocorreu um erro ao configurar a foto de boas-vindas.');
+     };
+   };
+   break;
+
+   case 'fotosaida': case 'fotosaiu': case 'imgsaiu': case 'exitimg': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isGroupAdmin) return reply('❌ Apenas administradores podem configurar a foto de saída.');
+     if (!isQuotedImage && !isImage) return reply('❌ Marque uma imagem ou envie uma imagem com o comando!');
+     try {
+       const media = await getFileBuffer(
+         isQuotedImage ? info.message.extendedTextMessage.contextInfo.quotedMessage.imageMessage : info.message.imageMessage,
+         'image'
+       );
+       const uploadResult = await upload(media);
+       if (!uploadResult) throw new Error('Falha ao fazer upload da imagem');
+       if (!groupData.exit) groupData.exit = {};
+       groupData.exit.image = uploadResult;
+       fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+       await reply('✅ Foto de saída configurada com sucesso!');
+     } catch (error) {
+       console.error(error);
+       await reply('❌ Ocorreu um erro ao configurar a foto de saída.');
+     };
+   };
+   break;
+
+   case 'configsaida': case 'textsaiu': case 'legendasaiu': case 'exitmsg': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isGroupAdmin) return reply('❌ Apenas administradores podem configurar a mensagem de saída.');
+     if (!q) return reply(`📝 Para configurar a mensagem de saída, use:\n${prefix}${command} <mensagem>\n\nVocê pode usar:\n#numerodele# - Menciona quem saiu\n#nomedogp# - Nome do grupo\n#membros# - Total de membros\n#desc# - Descrição do grupo`);
+     try {
+       if (!groupData.exit) groupData.exit = {};
+       groupData.exit.enabled = true;
+       groupData.exit.text = q;
+       fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+       await reply('✅ Mensagem de saída configurada com sucesso!\n\n📝 Mensagem definida como:\n' + q);
+     } catch (error) {
+       console.error(error);
+       await reply('❌ Ocorreu um erro ao configurar a mensagem de saída.');
+     }
+   }
+   break;
+
+   case 'saida': case 'exit': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isGroupAdmin) return reply('❌ Apenas administradores podem ativar/desativar mensagens de saída.');
+     try {
+       if (!groupData.exit) groupData.exit = {};
+       groupData.exit.enabled = !groupData.exit.enabled;
+       fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+       await reply(groupData.exit.enabled ? '✅ Mensagens de saída ativadas!' : '❌ Mensagens de saída desativadas!');
+     } catch (error) {
+       console.error(error);
+       await reply('❌ Ocorreu um erro ao configurar mensagens de saída.');
+     };
+   };
+   break;
+
+   case 'modorpg': {
+    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+    if (!isGroupAdmin) return reply('❌ Apenas administradores podem usar este comando.');
+    if (!groupData.modorpg) {
+      groupData.modorpg = true;
+      fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+      reply('✅ *Modo RPG ativado!* Agora os comandos de RPG estão disponíveis no grupo.');
+    } else {
+      groupData.modorpg = false;
+      fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+      reply('⚠️ *Modo RPG desativado!* Os comandos de RPG não estão mais disponíveis.');
+    };
+   };
+   break;
+   
     case 'soadm': case 'onlyadm': case 'soadmin': {
     if (!isGroup) return reply('❌ *Este comando só pode ser usado em grupos!*');
     if (!isGroupAdmin) return reply('🚫 *Apenas administradores podem utilizar este comando!*');     
@@ -1127,11 +1201,11 @@ try {
    case 'gay': case 'burro': case 'inteligente': case 'otaku': case 'fiel': case 'infiel': case 'corno':  case 'gado': case 'gostoso': case 'feio': case 'rico': case 'pobre': case 'pirocudo': case 'pirokudo': case 'nazista': case 'ladrao': case 'safado': case 'vesgo': case 'bebado': case 'machista': case 'homofobico': case 'racista': case 'chato': case 'sortudo': case 'azarado': case 'forte': case 'fraco': case 'pegador': case 'otario': case 'macho': case 'bobo': case 'nerd': case 'preguicoso': case 'trabalhador': case 'brabo': case 'lindo': case 'malandro': case 'simpatico': case 'engracado': case 'charmoso': case 'misterioso': case 'carinhoso': case 'desumilde': case 'humilde': case 'ciumento': case 'corajoso': case 'covarde': case 'esperto': case 'talarico': case 'chorao': case 'brincalhao': case 'bolsonarista': case 'petista': case 'comunista': case 'lulista': case 'traidor': case 'bandido': case 'cachorro': case 'vagabundo': case 'pilantra': case 'mito': case 'padrao': case 'comedia': case 'psicopata': case 'fortao': case 'magrelo': case 'bombado': case 'chefe': case 'presidente': case 'rei': case 'patrao': case 'playboy': case 'zueiro': case 'gamer': case 'programador': case 'visionario': case 'billionario': case 'poderoso': case 'vencedor': case 'senhor': {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não esta ativo nesse grupo');
-    let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games: {} };
+    let gamesData = fs.existsSync(__dirname + '/funcs/json/games.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/games.json')) : { games: {} };
     const target = menc_os2 ? menc_os2 : sender;
     const targetName = `@${target.split('@')[0]}`;
     const level = Math.floor(Math.random() * 101);
-    let responses = fs.existsSync(__dirname + '/.funcs/.json/.gamestext.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.gamestext.json')) : {};
+    let responses = fs.existsSync(__dirname + '/funcs/json/gamestext.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/gamestext.json')) : {};
     const responseText = responses[command].replaceAll('#nome#', targetName).replaceAll('#level#', level) || `📊 ${targetName} tem *${level}%* de ${command}! 🔥`;
     const media = gamesData.games[command]
     if (media?.image) {
@@ -1147,11 +1221,11 @@ break;
    case 'lesbica': case 'burra': case 'inteligente': case 'otaku': case 'fiel': case 'infiel': case 'corna': case 'gado': case 'gostosa': case 'feia': case 'rica': case 'pobre': case 'bucetuda': case 'nazista': case 'ladra': case 'safada': case 'vesga': case 'bebada': case 'machista': case 'homofobica': case 'racista': case 'chata': case 'sortuda': case 'azarada': case 'forte': case 'fraca': case 'pegadora': case 'otaria': case 'boba': case 'nerd': case 'preguicosa': case 'trabalhadora': case 'braba': case 'linda': case 'malandra': case 'simpatica': case 'engracada': case 'charmosa': case 'misteriosa': case 'carinhosa': case 'desumilde': case 'humilde': case 'ciumenta': case 'corajosa': case 'covarde': case 'esperta': case 'talarica': case 'chorona': case 'brincalhona': case 'bolsonarista': case 'petista': case 'comunista': case 'lulista': case 'traidora': case 'bandida': case 'cachorra': case 'vagabunda': case 'pilantra': case 'mito': case 'padrao': case 'comedia': case 'psicopata': case 'fortona': case 'magrela': case 'bombada': case 'chefe': case 'presidenta': case 'rainha': case 'patroa': case 'playboy': case 'zueira': case 'gamer': case 'programadora': case 'visionaria': case 'bilionaria': case 'poderosa': case 'vencedora': case 'senhora': {
     if (!isGroup) return reply('❌ Este comando so pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não esta ativo nesse grupo');
-    let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games: {} };
+    let gamesData = fs.existsSync(__dirname + '/funcs/json/games.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/games.json')) : { games: {} };
     const target = menc_os2 ? menc_os2 : sender;
     const targetName = `@${target.split('@')[0]}`;
     const level = Math.floor(Math.random() * 101);
-    let responses = fs.existsSync(__dirname + '/.funcs/.json/.gamestext2.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.gamestext2.json')) : {};
+    let responses = fs.existsSync(__dirname + '/funcs/json/gamestext2.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/gamestext2.json')) : {};
     const responseText = responses[command].replaceAll('#nome#', targetName).replaceAll('#level#', level) || `📊 ${targetName} tem *${level}%* de ${command}! 🔥`;
     const media = gamesData.games[command]
     if (media?.image) {
@@ -1168,13 +1242,13 @@ case 'rankgay': case 'rankburro': case 'rankinteligente': case 'rankotaku': case
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
     let path = __dirname + '/../database/grupos/' + from + '.json';
-    let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { ranks: {} };
+    let gamesData = fs.existsSync(__dirname + '/funcs/json/games.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/games.json')) : { ranks: {} };
     let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
     let membros = AllgroupMembers.filter(m => !['0', 'marca'].includes(data.mark[m]));
     if (membros.length < 5) return reply('❌ Membros insuficientes para formar um ranking.');
     let top5 = membros.sort(() => Math.random() - 0.5).slice(0, 5);
     let cleanedCommand = command.endsWith('s') ? command.slice(0, -1) : command;
-    let ranksData = fs.existsSync(__dirname + '/.funcs/.json/.ranks.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.ranks.json')) : { ranks: {} };
+    let ranksData = fs.existsSync(__dirname + '/funcs/json/ranks.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/ranks.json')) : { ranks: {} };
     let responseText = ranksData[cleanedCommand] || `📊 *Ranking de ${cleanedCommand.replace('rank', '')}*:\n\n`;
     top5.forEach((m, i) => {
         responseText += `🏅 *#${i + 1}* - @${m.split('@')[0]}\n`;
@@ -1194,13 +1268,13 @@ case 'ranklesbica': case 'rankburra': case 'rankinteligente': case 'rankotaku': 
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
     let path = __dirname + '/../database/grupos/' + from + '.json';
-    let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { ranks: {} };
+    let gamesData = fs.existsSync(__dirname + '/funcs/json/games.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/games.json')) : { ranks: {} };
     let data = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path)) : { mark: {} };
     let membros = AllgroupMembers.filter(m => !['0', 'marca'].includes(data.mark[m]));
     if (membros.length < 5) return reply('❌ Membros insuficientes para formar um ranking.');
     let top5 = membros.sort(() => Math.random() - 0.5).slice(0, 5);
     let cleanedCommand = command.endsWith('s') ? command.slice(0, -1) : command;
-    let ranksData = fs.existsSync(__dirname + '/.funcs/.json/.ranks.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.ranks.json')) : { ranks: {} };
+    let ranksData = fs.existsSync(__dirname + '/funcs/json/ranks.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/ranks.json')) : { ranks: {} };
     let responseText = ranksData[cleanedCommand]+'\n\n' || `📊 *Ranking de ${cleanedCommand.replace('rank', '')}*:\n\n`;
     top5.forEach((m, i) => {
         responseText += `🏅 *#${i + 1}* - @${m.split('@')[0]}\n`;
@@ -1220,8 +1294,8 @@ break;
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
     if(!menc_os2) return reply('Marque um usuário.');
-    let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games2: {} };
-    let GamezinData = fs.existsSync(__dirname + '/.funcs/.json/.markgame.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.markgame.json')) : { ranks: {} };
+    let gamesData = fs.existsSync(__dirname + '/funcs/json/games.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/games.json')) : { games2: {} };
+    let GamezinData = fs.existsSync(__dirname + '/funcs/json/markgame.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/markgame.json')) : { ranks: {} };
     let responseText = GamezinData[command].replaceAll('#nome#', `@${menc_os2.split('@')[0]}`) || `Voce acabou de dar um(a) ${command} no(a) @${menc_os2.split('@')[0]}`;
     let media = gamesData.games2[command];
     if (media?.image) {
@@ -1231,6 +1305,198 @@ break;
     } else {
         await nazu.sendMessage(from, { text: responseText, mentions: [menc_os2] });
     }
+   break;
+   
+   
+   //COMANDOS DE JOGOS
+   case 'ttt':
+   case 'jogodavelha': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!tictactoe.hasActiveGame(from)) {
+       const opponent = menc_os2 || (AllgroupMembers.filter(m => m !== sender)[Math.floor(Math.random() * (AllgroupMembers.length - 1))]);
+       if (opponent === sender) return reply('❌ Você não pode jogar contra você mesmo!');
+       const result = tictactoe.startGame(from, sender, opponent);
+       if (result.success) {
+         await nazu.sendMessage(from, { text: result.message, mentions: result.mentions });
+       } else {
+         await reply(result.message);
+       };
+       return;
+     };
+     if (!q) return reply('❌ Digite uma posição de 1 a 9 para fazer sua jogada!');
+     const position = parseInt(q);
+     const result = tictactoe.makeMove(from, sender, position);
+     if (result.success) {
+       await nazu.sendMessage(from, { text: result.message, mentions: [sender] });
+     } else {
+       await reply(result.message);
+     };
+   };
+   break;
+   
+   
+      // Comandos do RPG
+   case 'rpgclasses': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     await reply(rpg.getClasses());
+   }
+   break;
+
+   case 'rpgregistrar':
+   case 'rpgregister': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!q) return reply('❌ Escolha uma classe! Use /rpgclasses para ver as classes disponíveis.');
+     
+     const result = rpg.createPlayer(sender, q.toLowerCase());
+     await reply(result.message);
+   }
+   break;
+
+   case 'rpgstatus': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     const player = rpg.getPlayer(sender);
+     if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
+     
+     await reply(player.getStatus());
+   }
+   break;
+
+   case 'rpgdungeons': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     await reply(rpg.listDungeons());
+   }
+   break;
+
+   case 'rpgdungeon':
+   case 'rpgentrar': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     const player = rpg.getPlayer(sender);
+     if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
+     if (!q) return reply('❌ Escolha uma dungeon! Use /rpgdungeons para ver as dungeons disponíveis.');
+     
+     const result = rpg.enterDungeon(player, q.toLowerCase());
+     await reply(result.message);
+   }
+   break;
+
+   case 'rpgattack':
+   case 'rpgatacar': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     const player = rpg.getPlayer(sender);
+     if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
+     
+     const result = rpg.processAttack(player);
+     await reply(result.log);
+   }
+   break;
+
+   case 'rpgskill': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     const player = rpg.getPlayer(sender);
+     if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
+     if (!q) return reply('❌ Digite o nome da habilidade que deseja usar!');
+     
+     const result = rpg.processAttack(player, true, q);
+     await reply(result.log);
+   }
+   break;
+
+   case 'rpgflee':
+   case 'rpgfugir': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     const player = rpg.getPlayer(sender);
+     if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
+     
+     const result = rpg.flee(player);
+     await reply(result.message);
+   }
+   break;
+
+   case 'rpgshop':
+   case 'rpgloja': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     await reply(rpg.shop.listItems());
+   }
+   break;
+
+   case 'rpgbuy':
+   case 'rpgcomprar': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     const player = rpg.getPlayer(sender);
+     if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
+     if (!q) return reply('❌ Digite o nome do item que deseja comprar!');
+     
+     const result = rpg.shop.buyItem(player, q);
+     await reply(result.message);
+   }
+   break;
+
+   case 'rpguse':
+   case 'rpgusar': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     const player = rpg.getPlayer(sender);
+     if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
+     if (!q) return reply('❌ Digite o nome do item que deseja usar!');
+     
+     const result = player.useItem(q);
+     if (result) {
+       await reply(result);
+     } else {
+       await reply('❌ Não foi possível usar este item!');
+     }
+   }
+   break;
+
+   case 'rpgequip':
+   case 'rpgequipar': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     const player = rpg.getPlayer(sender);
+     if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
+     if (!q) return reply('❌ Digite o nome do item que deseja equipar!');
+     
+     const result = player.equipItem(q);
+     await reply(result.message);
+   }
+   break;
+
+   case 'rpgtop':
+   case 'rpgrank': {
+     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     
+     const top = rpg.getTopPlayers();
+     let rankText = '🏆 *RANKING DO RPG*\n\n';
+     rankText += top.join('\n');
+     
+     await nazu.sendMessage(from, { 
+       text: rankText, 
+       mentions: top.map(t => t.split('@')[0] + '@s.whatsapp.net')
+     });
+   }
    break;
    
  default:

@@ -1,3 +1,9 @@
+// Export de menus
+// Sistema unico, diferente de qualquer outro bot
+// Criador: Hiudy
+// Caso for usar deixe o caralho dos créditos 
+// <3
+
 const menu = require('./menu.js');
 const menudown = require('./menudown.js');
 const menuadm = require('./menuadm.js');
@@ -9,15 +15,4 @@ const menuSticker = require('./menufig.js');
 const menuIa = require('./menuia.js');
 const menuRpg = require('./menurpg.js');
 
-module.exports = {
-    menu,
-    menudown,
-    menuadm,
-    menubn,
-    menuDono,
-    menuMembros,
-    menuFerramentas,
-    menuSticker,
-    menuIa,
-    menuRpg
-};
+module.exports = { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa, menuRpg };
