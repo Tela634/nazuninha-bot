@@ -20,10 +20,11 @@ const styleText = require(__dirname+'/utils/gerarnick.js');
 const emojiMix = require(__dirname+'/utils/emojimix.js');
 const upload = require(__dirname+'/utils/upload.js');
 const { sendSticker } = require(__dirname+'/utils/sticker.js');
+const consulta = require(__dirname+'/utils/consulta.js');
 
 //jogos 
 const tictactoe = require(__dirname+'/games/tictactoe.js');
 const rpg = require(__dirname+'/games/rpg.js');
 
 //exports
-module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg };
+module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, consulta };
