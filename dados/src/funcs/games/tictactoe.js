@@ -32,7 +32,7 @@ class TicTacToe {
             return { success: false, message: '❌ Esta posição já está ocupada!' };
         };
 
-        this.board[index] = this.currentTurn;
+        this.board[index] = this.currentTurn === 'X' ? "❌" : "⭕";
         this.moves++;
 
         if (this.checkWin()) {
