@@ -1499,6 +1499,20 @@ break;
    }
    break;
    
+   
+   //CONSULTAS
+   case 'nome': try {
+   if(!q) return reply(`🔍 Está faltando o nome.\n\nExemplo: ${prefix}${command} Jair messias bolsonaro`);
+   nazu.react('🔎');
+   f1 = await axios.get(`https://scraper.mdzapis.com/consultar/mdz?type=nome&data=${q}&base=ABREVIADO&apikey=sonygozadinhas`);
+   if(f1.data.error) return reply(f1.data.error);
+   await reply(f1.data.resultado+`\nBy: Nazuninha Bot\nCreator: Hiudy`);
+   } catch(e) {
+   nazu.react('❌');
+   console.error(e);
+   await reply('❌ *Ocorreu um erro*');
+   };
+   break;
  default:
  if(isCmd) await nazu.react('❌');
  };
