@@ -23,6 +23,7 @@ const { sendSticker } = require(__dirname+'/utils/sticker.js');
 
 //jogos 
 const tictactoe = require(__dirname+'/games/tictactoe.js');
+const rpg = require(__dirname+'/games/rpg.js');
 
 //exports
-module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe };
+module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg };
