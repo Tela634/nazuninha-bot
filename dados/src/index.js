@@ -1533,7 +1533,7 @@ break;
    if(!isPremium) return reply('Apenas usuários premium bb');
    if(!q) return reply(`🔍 Está faltando o nome.\n\nExemplo: ${prefix}${command} Jair messias bolsonaro`);
    nazu.react('🔎');
-   f1 = await consulta(q, 'ABREVIADO');
+   f1 = await consulta(q, 'ABREVIADO', 'nome');
    if(f1.error) return reply(f1.error);
    await reply('🔎 *Resultado - nome* 🔍\n\n'+f1.resultado+`\n\nBy: Nazuninha Bot\nCreator: Hiudy`);
    } catch(e) {
@@ -1547,7 +1547,7 @@ break;
    if(!isPremium) return reply('Apenas usuários premium bb');
    if(!q) return reply(`🔍 Está faltando o cpf.\n\nExemplo: ${prefix}${command} 01234567890`);
    nazu.react('🔎');
-   f1 = await consulta(q, 'CREDILINK');
+   f1 = await consulta(q, 'CREDILINK', 'cpf');
    if(f1.error) return reply(f1.error);
    await reply('🔎 *Resultado - cpf básico* 🔍\n\n'+f1.resultado+`\n\nBy: Nazuninha Bot\nCreator: Hiudy`);
    } catch(e) {
@@ -1561,7 +1561,7 @@ break;
    if(!isPremium) return reply('Apenas usuários premium bb');
    if(!q) return reply(`🔍 Está faltando o cpf.\n\nExemplo: ${prefix}${command} 01234567890`);
    nazu.react('🔎');
-   f1 = await consulta(q, 'COMPLETA');
+   f1 = await consulta(q, 'COMPLETA', 'cpf');
    if(f1.error) return reply(f1.error);
    await reply('🔎 *Resultado - cpf completo* 🔍\n\n'+f1.resultado+`\n\nBy: Nazuninha Bot\nCreator: Hiudy`);
    } catch(e) {
