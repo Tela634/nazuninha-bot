@@ -1577,7 +1577,7 @@ break;
    nazu.react('🔎');
    f1 = await consulta(q, 'Descobre ai bb', 'placa');
    if(f1.error) return reply(f1.error);
-   await reply('🔎 *Resultado - cpf completo* 🔍\n\n'+f1.resultado+`\n\nBy: Nazuninha Bot\nCreator: Hiudy`);
+   await reply('🔎 *Resultado - Placa* 🔍\n\n'+f1.resultado+`\n\nBy: Nazuninha Bot\nCreator: Hiudy`);
    } catch(e) {
    nazu.react('❌');
    console.error(e);
