@@ -499,7 +499,7 @@ try {
   }
   break;
   
-  case 'delpremium':case 'delvip':case 'rmpremium':case 'rmvip':
+  case 'delpremiumgp':case 'delvipgp':case 'rmpremiumgp':case 'rmvipgp':
   try {
     if(!isOwner) return reply('❌ Apenas meu dono.');
     if (!isGroup) return reply('❌ Apenas em grupos.');
