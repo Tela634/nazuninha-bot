@@ -1589,7 +1589,7 @@ break;
    
    case 'tel': case 'telefone': try {
    if(!isPremium) return reply('Apenas usuários premium bb');
-   if(!q) return reply(`🔍 Está faltando a placa.\n\nExemplo: ${prefix}${command} ABC1234`);
+   if(!q) return reply(`🔍 Está faltando o telefone.\n\nExemplo: ${prefix}${command} 33998230030`);
    nazu.react('🔎');
    f1 = await consulta(q, 'OPERADORA', 'telefone');
    if(f1.error) return reply(f1.error);
