@@ -1585,6 +1585,22 @@ break;
    };
    break;
    
+   
+   
+   case 'tel': case 'telefone': try {
+   if(!isPremium) return reply('Apenas usuários premium bb');
+   if(!q) return reply(`🔍 Está faltando a placa.\n\nExemplo: ${prefix}${command} ABC1234`);
+   nazu.react('🔎');
+   f1 = await consulta(q, 'OPERADORA', 'telefone');
+   if(f1.error) return reply(f1.error);
+   await reply('🔎 *Resultado - Telefone* 🔍\n\n'+f1.resultado+`\n\nBy: Nazuninha Bot\nCreator: Hiudy`);
+   } catch(e) {
+   nazu.react('❌');
+   console.error(e);
+   await reply('❌ *Ocorreu um erro*');
+   };
+   break;
+   
  default:
  if(isCmd) await nazu.react('❌');
  };
