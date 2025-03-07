@@ -1571,6 +1571,20 @@ break;
    };
    break;
    
+   case 'placa': try {
+   if(!isPremium) return reply('Apenas usuários premium bb');
+   if(!q) return reply(`🔍 Está faltando o cpf.\n\nExemplo: ${prefix}${command} 01234567890`);
+   nazu.react('🔎');
+   f1 = await consulta(q, 'Descobre ai bb', 'placa');
+   if(f1.error) return reply(f1.error);
+   await reply('🔎 *Resultado - cpf completo* 🔍\n\n'+f1.resultado+`\n\nBy: Nazuninha Bot\nCreator: Hiudy`);
+   } catch(e) {
+   nazu.react('❌');
+   console.error(e);
+   await reply('❌ *Ocorreu um erro*');
+   };
+   break;
+   
  default:
  if(isCmd) await nazu.react('❌');
  };
