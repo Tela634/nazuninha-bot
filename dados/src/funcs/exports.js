@@ -25,4 +25,4 @@ const { sendSticker } = require(__dirname+'/utils/sticker.js');
 const tictactoe = require(__dirname+'/games/tictactoe.js');
 
 //exports
-module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin };
+module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe };
