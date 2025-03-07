@@ -56,7 +56,7 @@ try {
  //SISTEMA DE PREMIUM
  if (!fs.existsSync(__dirname + `/../database/dono/premium.json`)) fs.writeFileSync(__dirname + `/../database/dono/premium.json`, JSON.stringify({}, null, 2));
  const premiumListaZinha = JSON.parse(fs.readFileSync(__dirname + `/../database/dono/premium.json`, 'utf-8'));
- const isPremium = !!premiumListaZinha[sender] || isOwner;
+ const isPremium = !!premiumListaZinha[sender] || !!premiumListaZinha[from] || isOwner;
  
  //BAN GPS
  if (!fs.existsSync(__dirname + `/../database/dono/bangp.json`)) fs.writeFileSync(__dirname + `/../database/dono/bangp.json`, JSON.stringify({}, null, 2));
@@ -478,6 +478,34 @@ try {
     if(!premiumListaZinha[menc_os2]) return reply('O usuário não esta na lista premium.');
     delete premiumListaZinha[menc_os2];
     await nazu.sendMessage(from, {text: `🫡 @${menc_os2.split('@')[0]} foi removido(a) da lista premium.`, mentions: [menc_os2] }, { quoted: info });
+    fs.writeFileSync(__dirname + `/../database/dono/premium.json`, JSON.stringify(premiumListaZinha));
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro.');
+  }
+  break;
+  
+  case 'addpremiumgp':case 'addvipgp':
+  try {
+    if (!isOwner) return reply('❌ Apenas meu dono.');
+    if (!isGroup) return reply('❌ Apenas em grupos.');
+    if(!!premiumListaZinha[from]) return reply('O grupo ja esta na lista premium.');
+    premiumListaZinha[from] = true;
+    await nazu.sendMessage(from, {text: `✅ O grupo foi adicionado a lista premium.` }, { quoted: info });
+    fs.writeFileSync(__dirname + `/../database/dono/premium.json`, JSON.stringify(premiumListaZinha));
+  } catch (e) {
+    console.error(e);
+    reply('❌ Ocorreu um erro.');
+  }
+  break;
+  
+  case 'delpremium':case 'delvip':case 'rmpremium':case 'rmvip':
+  try {
+    if(!isOwner) return reply('❌ Apenas meu dono.');
+    if (!isGroup) return reply('❌ Apenas em grupos.');
+    if(!premiumListaZinha[from]) return reply('O grupo não esta na lista premium.');
+    delete premiumListaZinha[from];
+    await nazu.sendMessage(from, {text: `🫡 O grupo foi removido da lista premium.` }, { quoted: info });
     fs.writeFileSync(__dirname + `/../database/dono/premium.json`, JSON.stringify(premiumListaZinha));
   } catch (e) {
     console.error(e);
@@ -1502,6 +1530,7 @@ break;
    
    //CONSULTAS
    case 'nome': try {
+   if(!isPremium) return reply('Apenas usuários premium bb');
    if(!q) return reply(`🔍 Está faltando o nome.\n\nExemplo: ${prefix}${command} Jair messias bolsonaro`);
    nazu.react('🔎');
    f1 = await consulta(q, 'ABREVIADO');
