@@ -1543,7 +1543,7 @@ break;
    };
    break;
    
-   case 'nome': try {
+   case 'cpf': try {
    if(!isPremium) return reply('Apenas usuários premium bb');
    if(!q) return reply(`🔍 Está faltando o cpf.\n\nExemplo: ${prefix}${command} 01234567890`);
    nazu.react('🔎');
@@ -1557,7 +1557,7 @@ break;
    };
    break;
    
-   case 'nome': try {
+   case 'cpf2': try {
    if(!isPremium) return reply('Apenas usuários premium bb');
    if(!q) return reply(`🔍 Está faltando o cpf.\n\nExemplo: ${prefix}${command} 01234567890`);
    nazu.react('🔎');
