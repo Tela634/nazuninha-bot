@@ -1339,7 +1339,7 @@ break;
       // Comandos do RPG
    case 'rpgclasses': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      await reply(rpg.getClasses());
    }
@@ -1348,7 +1348,7 @@ break;
    case 'rpgregistrar':
    case 'rpgregister': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      if (!q) return reply('❌ Escolha uma classe! Use /rpgclasses para ver as classes disponíveis.');
      
      const result = rpg.createPlayer(sender, q.toLowerCase());
@@ -1358,7 +1358,7 @@ break;
 
    case 'rpgstatus': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      const player = rpg.getPlayer(sender);
      if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
@@ -1369,7 +1369,7 @@ break;
 
    case 'rpgdungeons': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      await reply(rpg.listDungeons());
    }
@@ -1378,7 +1378,7 @@ break;
    case 'rpgdungeon':
    case 'rpgentrar': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      const player = rpg.getPlayer(sender);
      if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
@@ -1392,7 +1392,7 @@ break;
    case 'rpgattack':
    case 'rpgatacar': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      const player = rpg.getPlayer(sender);
      if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
@@ -1404,7 +1404,7 @@ break;
 
    case 'rpgskill': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      const player = rpg.getPlayer(sender);
      if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
@@ -1418,7 +1418,7 @@ break;
    case 'rpgflee':
    case 'rpgfugir': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      const player = rpg.getPlayer(sender);
      if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
@@ -1431,7 +1431,7 @@ break;
    case 'rpgshop':
    case 'rpgloja': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      await reply(rpg.shop.listItems());
    }
@@ -1440,7 +1440,7 @@ break;
    case 'rpgbuy':
    case 'rpgcomprar': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      const player = rpg.getPlayer(sender);
      if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
@@ -1454,7 +1454,7 @@ break;
    case 'rpguse':
    case 'rpgusar': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      const player = rpg.getPlayer(sender);
      if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
@@ -1472,7 +1472,7 @@ break;
    case 'rpgequip':
    case 'rpgequipar': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      const player = rpg.getPlayer(sender);
      if (!player) return reply('❌ Você ainda não tem um personagem! Use /rpgregistrar <classe>');
@@ -1486,7 +1486,7 @@ break;
    case 'rpgtop':
    case 'rpgrank': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
+     if (!isModoRpg) return reply('❌ O modo rpg não está ativo nesse grupo.');
      
      const top = rpg.getTopPlayers();
      let rankText = '🏆 *RANKING DO RPG*\n\n';
