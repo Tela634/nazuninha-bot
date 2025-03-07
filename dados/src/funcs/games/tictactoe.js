@@ -137,5 +137,5 @@ module.exports = {
     },
     hasActiveGame: (groupId) => {
         return !!activeGames[groupId];
-    };
+    }
 };
