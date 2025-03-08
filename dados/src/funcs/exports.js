@@ -25,10 +25,10 @@ const consulta = require(__dirname+'/utils/consulta.js');
 //jogos 
 const tictactoe = require(__dirname+'/games/tictactoe.js');
 const rpg = require(__dirname+'/games/rpg.js');
-const { vab } = require(__dirname+'/games/vab.js');
 
 //Json
 const toolsJson = JSON.parse(fs.readFileSync(__dirname+'/json/tools.json', 'utf-8'));
+const vabJson = JSON.parse(fs.readFileSync(__dirname+'/json/vab.json', 'utf-8'));
 
 //exports
-module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, consulta, toolsJson, vab };
+module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, consulta, toolsJson, vabJson };

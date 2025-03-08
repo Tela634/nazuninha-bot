@@ -6,7 +6,7 @@
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { exec, spawn, execSync } = require('child_process');
-const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, consulta, toolsJson, vab }  = require(__dirname+'/funcs/exports.js');
+const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, consulta, toolsJson, vabJson }  = require(__dirname+'/funcs/exports.js');
 const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa, menuRpg } = require(__dirname+'/menus/index.js');
 const FormData = require("form-data");
 const axios = require('axios');
@@ -1227,9 +1227,16 @@ try {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não esta ativo nesse grupo');
     await nazu.sendMessage(from, {poll: {name: toolsJson.iNever[Math.floor(Math.random() * toolsJson.iNever.length)],values: ["Eu nunca", "Eu ja"], selectableCount: 1}, messageContextInfo: { messageSecret: Math.random()}}, {from, options: {userJid: nazu?.user?.id}})
-   }
+   };
    break
    
+   case 'vab': {
+   if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+   if (!isModoBn) return reply('❌ O modo brincadeira não esta ativo nesse grupo');
+   const vabs = vabJson[Math.floor(Math.random() * vabJson.length)];
+   await nazu.sendMessage(from, {poll: {name: 'O que você prefere?',values: [vabs.option1, vabs.option2], selectableCount: 1}, messageContextInfo: { messageSecret: Math.random()}}, {from, options: {userJid: nazu?.user?.id}})
+   };
+   break
    case 'gay': case 'burro': case 'inteligente': case 'otaku': case 'fiel': case 'infiel': case 'corno':  case 'gado': case 'gostoso': case 'feio': case 'rico': case 'pobre': case 'pirocudo': case 'pirokudo': case 'nazista': case 'ladrao': case 'safado': case 'vesgo': case 'bebado': case 'machista': case 'homofobico': case 'racista': case 'chato': case 'sortudo': case 'azarado': case 'forte': case 'fraco': case 'pegador': case 'otario': case 'macho': case 'bobo': case 'nerd': case 'preguicoso': case 'trabalhador': case 'brabo': case 'lindo': case 'malandro': case 'simpatico': case 'engracado': case 'charmoso': case 'misterioso': case 'carinhoso': case 'desumilde': case 'humilde': case 'ciumento': case 'corajoso': case 'covarde': case 'esperto': case 'talarico': case 'chorao': case 'brincalhao': case 'bolsonarista': case 'petista': case 'comunista': case 'lulista': case 'traidor': case 'bandido': case 'cachorro': case 'vagabundo': case 'pilantra': case 'mito': case 'padrao': case 'comedia': case 'psicopata': case 'fortao': case 'magrelo': case 'bombado': case 'chefe': case 'presidente': case 'rei': case 'patrao': case 'playboy': case 'zueiro': case 'gamer': case 'programador': case 'visionario': case 'billionario': case 'poderoso': case 'vencedor': case 'senhor': {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
     if (!isModoBn) return reply('❌ O modo brincadeira não esta ativo nesse grupo');
