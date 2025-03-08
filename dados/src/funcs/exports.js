@@ -4,7 +4,7 @@
 //Criador: hiudy
 //Versão: 0.0.1
 //Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
-
+const 'fs' = require('fs');
 
 //downloads
 const youtube = require(__dirname+'/downloads/youtube.js');
@@ -25,6 +25,10 @@ const consulta = require(__dirname+'/utils/consulta.js');
 //jogos 
 const tictactoe = require(__dirname+'/games/tictactoe.js');
 const rpg = require(__dirname+'/games/rpg.js');
+const { vab } = require(__dirname+'/games/vab.js');
+
+//Json
+const toolsJson = JSON.parse(fs.readFileSync(__dirname+'/json/tools.json', 'utf-8')):
 
 //exports
-module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, consulta };
+module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, consulta, toolsJson, vab };
