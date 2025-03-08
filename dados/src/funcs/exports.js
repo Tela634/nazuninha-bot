@@ -28,7 +28,7 @@ const rpg = require(__dirname+'/games/rpg.js');
 const { vab } = require(__dirname+'/games/vab.js');
 
 //Json
-const toolsJson = JSON.parse(fs.readFileSync(__dirname+'/json/tools.json', 'utf-8')):
+const toolsJson = JSON.parse(fs.readFileSync(__dirname+'/json/tools.json', 'utf-8'));
 
 //exports
 module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, consulta, toolsJson, vab };
