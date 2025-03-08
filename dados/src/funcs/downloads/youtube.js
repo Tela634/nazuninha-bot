@@ -6,6 +6,7 @@
 
 const yts = require('yt-search');
 const axios = require('axios');
+const { ytmp3, ytmp4 } = require('ruhend-scraper');
 
 async function search(name) {
     try {
@@ -115,12 +116,16 @@ async function mp3(input) {
     const format = 'm4a';
 
     try {
+        /*
         const ytdlResponse = await ytdlv2(url, format);
         if (ytdlResponse.ok && ytdlResponse.downloadUrl) {
             return { ok: true, url: ytdlResponse.downloadUrl };
         } else {
             return { ok: false, msg: ytdlResponse.msg || 'Falha ao obter o link de download.' };
         }
+        */
+        const resultZin = await ytmp3(url);
+        return { ok: true, url: resultZin.audio };
     } catch (error) {
         return { ok: false, msg: 'Erro ao processar o vídeo.' };
     }
@@ -130,12 +135,16 @@ async function mp4(input, quality = '360') {
     const url = getVideoUrl(input);
 
     try {
+    /*
         const ytdlResponse = await ytdlv2(url, quality);
         if (ytdlResponse.ok && ytdlResponse.downloadUrl) {
             return { ok: true, url: ytdlResponse.downloadUrl };
         } else {
             return { ok: false, msg: ytdlResponse.msg || 'Falha ao obter o link de download.' };
         }
+        */
+        const resultZin = await ytmp4(url);
+        return { ok: true, url: resultZin.video };
     } catch (error) {
         return { ok: false, msg: 'Erro ao processar o vídeo.' };
     }
