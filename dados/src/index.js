@@ -192,6 +192,28 @@ try {
   };
   break;
   
+  case 'nazu': case 'nazuninha': case 'ai': try {
+  if(!q) return reply('Cade a pergunta meu amor?');
+  nazu.react('💞');
+  bahz = await ai(q, 'nazu');
+  await reply(bahz);
+  } catch(e) {
+  console.error(e);
+  await reply('Ocorreu um erro em meus sistemas internos meu bem 😞');
+  };
+  break;
+  
+  case 'gemini': try {
+  if(!q) return reply('Cade a pergunta?');
+  nazu.react('💞');
+  bahz = await ai(q, 'gemini');
+  await reply(bahz);
+  } catch(e) {
+  console.error(e);
+  await reply('Ocorreu um erro em meus sistemas internos 😞');
+  };
+  break;
+  
   
   //FERRAMENTAS
   case 'encurtalink': case 'tinyurl': try {
