@@ -21,6 +21,7 @@ const emojiMix = require(__dirname+'/utils/emojimix.js');
 const upload = require(__dirname+'/utils/upload.js');
 const { sendSticker } = require(__dirname+'/utils/sticker.js');
 const consulta = require(__dirname+'/utils/consulta.js');
+const ai = require(__dirname+'/utils/ai.js');
 
 //jogos 
 const tictactoe = require(__dirname+'/games/tictactoe.js');
@@ -31,4 +32,4 @@ const toolsJson = JSON.parse(fs.readFileSync(__dirname+'/json/tools.json', 'utf-
 const vabJson = JSON.parse(fs.readFileSync(__dirname+'/json/vab.json', 'utf-8'));
 
 //exports
-module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, consulta, toolsJson, vabJson };
+module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, consulta, toolsJson, vabJson, ai };
