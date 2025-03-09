@@ -11,11 +11,10 @@ const readline = require('readline');
 const { execSync } = require('child_process');
 const pino = require('pino');
 const fs = require('fs');
-const NodeCache = require("node-cache");
 
 const logger = pino({ level: 'silent' });
 const AUTH_DIR = 'dados/database/qr-code';
-const msgRetryCounterCache = new NodeCache();
+const msgRetryCounterCache = new Map();
 
 const { prefixo, nomebot, nomedono, numerodono, aviso } = require('./config.json');
 

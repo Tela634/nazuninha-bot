@@ -8,7 +8,6 @@ const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { exec, spawn, execSync } = require('child_process');
 const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, consulta, toolsJson, vabJson }  = require(__dirname+'/funcs/exports.js');
 const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa, menuRpg } = require(__dirname+'/menus/index.js');
-const FormData = require("form-data");
 const axios = require('axios');
 const pathz = require('path');
 const fs = require('fs');

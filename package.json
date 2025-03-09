@@ -21,10 +21,8 @@
   "license": "ISC",
   "dependencies": {
     "baileys": "npm:@neoxr/baileys@latest",
-    "cheerio": "latest",
+    "linkedom": "latest",
     "fluent-ffmpeg": "latest",
-    "form-data": "latest",
-    "node-cache": "latest",
     "node-webpmux": "latest",
     "qrcode-terminal": "latest",
     "yt-search": "latest",
