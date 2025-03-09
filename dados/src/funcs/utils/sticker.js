@@ -73,6 +73,9 @@ async function writeExif(media, metadata, isVideo = false, rename = false) {
     } catch (err) {
         console.error("Erro ao processar EXIF:", err);
     } finally {
+    
+    const buff = await fs.readFile(tmpFileOut);
+    
         try {
             await fs.unlink(tmpFileIn);
         } catch (err) {
@@ -86,7 +89,7 @@ async function writeExif(media, metadata, isVideo = false, rename = false) {
         }
     }
 
-    return tmpFileOut;
+    return buff;
 }
 
 const sendSticker = async (nazu, jid, { sticker: path, type = 'image', packname = '', author = '', rename = false }, { quoted } = {}) => {
