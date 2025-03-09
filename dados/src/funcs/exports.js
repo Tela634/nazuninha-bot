@@ -21,7 +21,7 @@ const emojiMix = require(__dirname+'/utils/emojimix.js');
 const upload = require(__dirname+'/utils/upload.js');
 const { sendSticker } = require(__dirname+'/utils/sticker.js');
 const consulta = require(__dirname+'/utils/consulta.js');
-const ai = require(__dirname+'/utils/ai.js');
+const ai = async (text, model) => (await require(__dirname + '/utils/ai.js')(text, model)).replaceAll('**', '*');
 
 //jogos 
 const tictactoe = require(__dirname+'/games/tictactoe.js');
