@@ -106,7 +106,7 @@ const sendSticker = async (nazu, jid, { sticker: path, type = 'image', packname 
         buffer = await convertToWebp(buff, type === 'video');
     }
 
-    await nazu.sendMessage(jid, { sticker: { url: buffer }, ...(packname || author ? { packname, author } : {}) }, { quoted });
+    await nazu.sendMessage(jid, { sticker: buffer, ...(packname || author ? { packname, author } : {}) }, { quoted });
     return buffer;
 };
 
