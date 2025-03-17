@@ -1633,6 +1633,20 @@ break;
    };
    break;
    
+   case 'likeff': case 'like': 
+    try {
+        if (!q) return reply('❌ Você precisa informar um ID!');
+        await reply('⏳ Processando seu pedido... Aguarde um momento.');
+        const { data } = await axios.get(`https://likes.ffgarena.cloud/api/like?uid=${q}&quantity=100`);
+        if (data.message) return reply(`⚠️ ${data.message}`);
+        if (data.BotSend <= 0) return reply('❌ Você já atingiu o limite diário de likes.');
+        reply(`✨ *Likes Enviados com Sucesso!* ✨\n\n📌 *Servidor:* ${data.PlayerRegion}\n👤 *Nick:* ${data.PlayerNickname}\n🎚 *Nível:* ${data.PlayerLevel}\n⭐ *EXP:* ${data.PlayerEXP.toLocaleString()}\n❤️ *Antes:* ${data.Likes_Antes}\n💖 *Depois:* ${data.Likes_Depois}\n\n🔥 *Aproveite seus novos likes!* 🔥`);
+    } catch (e) {
+        console.error(e);
+        reply('❌ Ocorreu um erro ao enviar os likes. Tente novamente mais tarde.');
+    };
+    break;
+    
  default:
  if(isCmd) await nazu.react('❌');
  };
