@@ -9,7 +9,7 @@ async function styleText(text) {
 
         let result = [];
         
-        document.querySelectorAll('table tbody tr').forEach(row => {
+        document.querySelectorAll('table tr').forEach(row => {
             const secondTd = row.querySelector('td:nth-child(2)');
             if (secondTd) {
                 result.push(secondTd.textContent.trim());
