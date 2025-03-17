@@ -610,7 +610,7 @@ try {
         totalComandosCategoria += comandosCategoria;
       };
       const comandosSemCategoria = comandos.length - totalComandosCategoria;
-      await nazu.sendMessage(from, {image: {url: `https://nazuninha-banner-gen.onrender.com/banner?num=${String(comandos.length)}&theme=miku`}, caption: `╭〔 🤖 *Meus Comandos* 〕╮\n` + `┣ 📌 Total: *${comandos.length}* comandos\n` + `┣ 📌 Comandos por Categoria:\n┣\n` + Object.keys(comandosPorCategoria).map(categoria => `┣ 📌 ${categoria}: *${comandosPorCategoria[categoria]}* comandos`).join('\n') + `\n┣ 📌 Sem categoria: *${comandosSemCategoria}* comandos\n` + `╰━━━━━━━━━━━━━━━╯`}, { quoted: info });
+      await nazu.sendMessage(from, {image: {url: `http://nxf-02.nexfuture.com.br:25582/banner?num=${String(comandos.length)}&theme=miku`}, caption: `╭〔 🤖 *Meus Comandos* 〕╮\n` + `┣ 📌 Total: *${comandos.length}* comandos\n` + `┣ 📌 Comandos por Categoria:\n┣\n` + Object.keys(comandosPorCategoria).map(categoria => `┣ 📌 ${categoria}: *${comandosPorCategoria[categoria]}* comandos`).join('\n') + `\n┣ 📌 Sem categoria: *${comandosSemCategoria}* comandos\n` + `╰━━━━━━━━━━━━━━━╯`}, { quoted: info });
     });
   break;
 
@@ -621,7 +621,7 @@ try {
     const config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
     function formatUptime(seconds) {let d = Math.floor(seconds / (24 * 3600));let h = Math.floor((seconds % (24 * 3600)) / 3600);let m = Math.floor((seconds % 3600) / 60);let s = Math.floor(seconds % 60);let uptimeStr = [];if (d > 0) uptimeStr.push(`${d}d`);if (h > 0) uptimeStr.push(`${h}h`);if (m > 0) uptimeStr.push(`${m}m`);if (s > 0) uptimeStr.push(`${s}s`);return uptimeStr.join(' ');};    
     const uptime = formatUptime(process.uptime());
-    await nazu.sendMessage(from, { image: {url: `https://nazuninha-banner-gen.onrender.com/banner?num=${String(speedConverted.toFixed(3)).replaceAll('.', '')}&theme=original`}, caption: `\n📡 *Status do Bot*\n-----------------------------------\n🤖 *Nome:* ${config.nomebot}\n👤 *Dono:* ${config.nomedono}\n\n📌 *Prefixo:* ${config.prefixo}\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime:* ${uptime}` }, { quoted: info })
+    await nazu.sendMessage(from, { image: {url: `http://nxf-02.nexfuture.com.br:25582/banner?num=${String(speedConverted.toFixed(3)).replaceAll('.', '')}&theme=original`}, caption: `\n📡 *Status do Bot*\n-----------------------------------\n🤖 *Nome:* ${config.nomebot}\n👤 *Dono:* ${config.nomedono}\n\n📌 *Prefixo:* ${config.prefixo}\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime:* ${uptime}` }, { quoted: info })
   } catch (e) {
     console.error(e);
     reply('❌ Ocorreu um erro ao obter as informações.');
