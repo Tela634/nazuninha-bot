@@ -4,7 +4,8 @@ const { DOMParser } = require('linkedom');
 async function styleText(text) {
     try {
         const { data } = await axios.get(`http://qaz.wtf/u/convert.cgi?text=${encodeURIComponent(text)}`);
-
+        
+        // Criando o DOM corretamente
         const document = new DOMParser().parseFromString(data, 'text/html');
 
         let result = [];
