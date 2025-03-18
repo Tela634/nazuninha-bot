@@ -571,7 +571,7 @@ try {
   case 'rankinativos': 
   case 'rankinativo': {
     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-    blue67 = groupData.contador.sort((a, b) => ((a.msg + a.cmd) < (b.cmd + b.msg)) ? 0 : -1);
+    blue67 = groupData.contador.sort((a, b) => (a.msg + a.cmd) - (b.msg + b.cmd));
     menc = [];
     blad = `*🗑️ Rank dos ${blue67.length < 10 ? blue67.length : 10} mais inativos do grupo:*\n`;
     for (i6 = 0; i6 < (blue67.length < 10 ? blue67.length : 10); i6++) {
