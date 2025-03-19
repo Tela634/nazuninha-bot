@@ -50,7 +50,7 @@ async function Filmes(texto) {
         if (result.link.includes('/video/')) {
             try {
                 const videoData = await swiftly.scrape(result.link, {
-                    videoUrl: '#tokyvideo_player source@src',
+                    videoUrl: '#tokyvideo_player@src',
                     img: '#tokyvideo_player@poster',
                     name: '#tokyvideo_player@data-title'
                 });
