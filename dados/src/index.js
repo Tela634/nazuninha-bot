@@ -639,7 +639,7 @@ case 'ping':
     const cpuUso = os.loadavg()[0].toFixed(2);
     const cpuModelo = os.cpus()[0].model;
     const nodeVersao = process.version;
-    var getGroups = await akame.groupFetchAllParticipating();
+    var getGroups = await nazu.groupFetchAllParticipating();
     var groups = Object.entries(getGroups).map(entry => entry[1]);
     var totalGrupos = groups.length;
     const mensagem = `┏━〔 🤖 *STATUS DO BOT* 〕━┓\n\n📌 *Prefixo:* ${config.prefixo}\n👑 *Dono:* ${config.nomedono}\n🤖 *Nome:* ${config.nomebot}\n💬 *Grupos Ativos:* ${totalGrupos}\n\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime do Bot:* ${uptimeBot}\n🖥 *Uptime do Sistema:* ${uptimeSistema}\n\n💾 *Memória:* ${ramUso} GB / ${ramTotal} GB\n⚡ *CPU:* ${cpuUso}%\n🔧 *Processador:* ${cpuModelo}\n📜 *Node.js:* ${nodeVersao}\n\n┗━━━━━━━━━━━━━━━━┛`;
