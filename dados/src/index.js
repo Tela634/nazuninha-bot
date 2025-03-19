@@ -11,6 +11,7 @@ const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas,
 const axios = require('axios');
 const pathz = require('path');
 const fs = require('fs');
+const os = require('os');
 
 async function NazuninhaBotExec(nazu, info) {
 const { numerodono, nomedono, nomebot, prefixo, prefixo: prefix, debug } = JSON.parse(fs.readFileSync(__dirname+'/config.json'));
@@ -614,18 +615,39 @@ try {
     });
   break;
 
-  case 'ping':
+case 'ping':
   try {
     const timestamp = Date.now();
     const speedConverted = (Date.now() - (info.messageTimestamp * 1000)) / 1000;
     const config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
-    function formatUptime(seconds) {let d = Math.floor(seconds / (24 * 3600));let h = Math.floor((seconds % (24 * 3600)) / 3600);let m = Math.floor((seconds % 3600) / 60);let s = Math.floor(seconds % 60);let uptimeStr = [];if (d > 0) uptimeStr.push(`${d}d`);if (h > 0) uptimeStr.push(`${h}h`);if (m > 0) uptimeStr.push(`${m}m`);if (s > 0) uptimeStr.push(`${s}s`);return uptimeStr.join(' ');};    
-    const uptime = formatUptime(process.uptime());
-    await nazu.sendMessage(from, { image: {url: `http://nxf-02.nexfuture.com.br:25582/banner?num=${String(speedConverted.toFixed(3)).replaceAll('.', '')}&theme=original`}, caption: `\n📡 *Status do Bot*\n-----------------------------------\n🤖 *Nome:* ${config.nomebot}\n👤 *Dono:* ${config.nomedono}\n\n📌 *Prefixo:* ${config.prefixo}\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime:* ${uptime}` }, { quoted: info })
+    function formatUptime(seconds) {
+      let d = Math.floor(seconds / (24 * 3600));
+      let h = Math.floor((seconds % (24 * 3600)) / 3600);
+      let m = Math.floor((seconds % 3600) / 60);
+      let s = Math.floor(seconds % 60);
+      let uptimeStr = [];
+      if (d > 0) uptimeStr.push(`${d}d`);
+      if (h > 0) uptimeStr.push(`${h}h`);
+      if (m > 0) uptimeStr.push(`${m}m`);
+      if (s > 0) uptimeStr.push(`${s}s`);
+      return uptimeStr.join(' ');
+    };
+    const uptimeBot = formatUptime(process.uptime());
+    const uptimeSistema = formatUptime(os.uptime());
+    const ramTotal = (os.totalmem() / 1024 / 1024 / 1024).toFixed(2);
+    const ramUso = ((os.totalmem() - os.freemem()) / 1024 / 1024 / 1024).toFixed(2);
+    const cpuUso = os.loadavg()[0].toFixed(2);
+    const cpuModelo = os.cpus()[0].model;
+    const nodeVersao = process.version;
+    var getGroups = await akame.groupFetchAllParticipating();
+    var groups = Object.entries(getGroups).map(entry => entry[1]);
+    var totalGrupos = groups.length;
+    const mensagem = `┏━〔 🤖 *STATUS DO BOT* 〕━┓\n\n📌 *Prefixo:* ${config.prefixo}\n👑 *Dono:* ${config.nomedono}\n🤖 *Nome:* ${config.nomebot}\n💬 *Grupos Ativos:* ${totalGrupos}\n\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime do Bot:* ${uptimeBot}\n🖥 *Uptime do Sistema:* ${uptimeSistema}\n\n💾 *Memória:* ${ramUso} GB / ${ramTotal} GB\n⚡ *CPU:* ${cpuUso}%\n🔧 *Processador:* ${cpuModelo}\n📜 *Node.js:* ${nodeVersao}\n\n┗━━━━━━━━━━━━━━━━┛`;
+    await nazu.sendMessage(from, { image: { url: `http://nxf-02.nexfuture.com.br:25582/banner?num=${String(speedConverted.toFixed(3)).replaceAll('.', '')}&theme=original` }, caption: mensagem }, { quoted: info });
   } catch (e) {
     console.error(e);
     reply('❌ Ocorreu um erro ao obter as informações.');
-  }
+  };
   break;
   
   
