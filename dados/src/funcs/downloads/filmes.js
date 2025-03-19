@@ -50,16 +50,20 @@ async function Filmes(texto) {
         if (result.link.includes('/video/')) {
             try {
                 const videoData = await swiftly.scrape(result.link, {
-                    videoUrl: '#tokyvideo_player source@src',
                     img: '#tokyvideo_player@poster',
-                    name: '#tokyvideo_player@data-title'
+                    name: '#tokyvideo_player@data-title',
+                    video: '#tokyvideo_player'
                 });
 
-                if (videoData.videoUrl && videoData.img && videoData.name) {
+                const videoUrl = videoData.video[0]?.attributes?.src || null;
+                const img = videoData.img[0]?.attributes?.poster || null;
+                const name = videoData.name[0]?.attributes?.title || null;
+
+                if (videoUrl && img && name) {
                     return {
-                        img: videoData.img,
-                        name: videoData.name,
-                        url: videoData.videoUrl
+                        img: img,
+                        name: name,
+                        url: videoUrl
                     };
                 }
             } catch (error) {
