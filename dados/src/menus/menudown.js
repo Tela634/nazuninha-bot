@@ -11,6 +11,7 @@ async function menudown(prefix) {
 │ *${prefix}playvid*
 │ *${prefix}assistir*
 │ *${prefix}mcplugin*
+│ *${prefix}apkmod* ou *${prefix}mod*
 ╰──────────────╯
 
 ╭──────────────╮

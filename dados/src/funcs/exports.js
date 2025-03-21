@@ -13,7 +13,7 @@ const pinterest = require(__dirname+'/downloads/pinterest.js');
 const igdl = require(__dirname+'/downloads/igdl.js');
 const mcPlugin = require(__dirname+'/downloads/mcplugins.js');
 const FilmesDL = require(__dirname+'/downloads/filmes.js');
-
+const apkMod = require(__dirname+'/downloads/apkmod.js');
 //utils
 const reportError = require(__dirname+'/utils/debug.js');
 const styleText = require(__dirname+'/utils/gerarnick.js');
@@ -31,4 +31,4 @@ const toolsJson = JSON.parse(fs.readFileSync(__dirname+'/json/tools.json', 'utf-
 const vabJson = JSON.parse(fs.readFileSync(__dirname+'/json/vab.json', 'utf-8'));
 
 //exports
-module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, toolsJson, vabJson, ai };
+module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, toolsJson, vabJson, ai, apkMod };
