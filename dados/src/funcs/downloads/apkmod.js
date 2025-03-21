@@ -5,7 +5,7 @@ async function apkMod(searchText) { // By Hiudy
     try {
         // Busca a página de pesquisa
         const searchResponse = await swiftly.get(`https://apkmodct.com/?s=${searchText}`);
-        const searchDoc = new DOMParser().parseFromString(searchResponse.data, 'text/html');
+        const searchDoc = new DOMParser().parseFromString(searchResponse, 'text/html');
 
         // Pega o primeiro post da busca
         const postElement = searchDoc.querySelector('div.post a');
@@ -17,7 +17,7 @@ async function apkMod(searchText) { // By Hiudy
 
         // Acessa a página do post
         const postResponse = await swiftly.get(postUrl);
-        const postDoc = new DOMParser().parseFromString(postResponse.data, 'text/html');
+        const postDoc = new DOMParser().parseFromString(postResponse, 'text/html');
 
         // Pega a descrição
         const description = postDoc.querySelector('meta[name="description"]')?.content || 'não disponível';
@@ -36,7 +36,7 @@ async function apkMod(searchText) { // By Hiudy
 
         // Acessa a página de download
         const downloadResponse = await swiftly.get(mainPicUrl);
-        const downloadDoc = new DOMParser().parseFromString(downloadResponse.data, 'text/html');
+        const downloadDoc = new DOMParser().parseFromString(downloadResponse, 'text/html');
 
         // Pega o link de download
         const downloadUrl = downloadDoc.querySelector('div.col-xs-12 a')?.href;
