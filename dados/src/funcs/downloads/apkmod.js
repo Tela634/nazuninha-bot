@@ -1,62 +1,45 @@
 const swiftly = require('swiftly');
+const { DOMParser } = require('linkedom');
 
 async function apkMod(searchText) { // By Hiudy
     try {
-        const searchResults = await swiftly.scrape(`https://apkmodct.com/?s=${searchText}`, {
-            selector: 'div.post a',
-            transform: (el) => ({
-                postUrl: el.href,
-                postTitle: el.title
-            })
+        // Busca a página de pesquisa
+        const searchResponse = await swiftly.get(`https://apkmodct.com/?s=${searchText}`);
+        const searchDoc = new DOMParser().parseFromString(searchResponse.data, 'text/html');
+
+        // Pega o primeiro post da busca
+        const postElement = searchDoc.querySelector('div.post a');
+        if (!postElement) return { error: 'nenhum resultado encontrado' };
+
+        const postUrl = postElement.href;
+        const postTitle = postElement.title;
+        const imageUrl = searchDoc.querySelector('figure.home-icon img')?.src || 'não encontrada';
+
+        // Acessa a página do post
+        const postResponse = await swiftly.get(postUrl);
+        const postDoc = new DOMParser().parseFromString(postResponse.data, 'text/html');
+
+        // Pega a descrição
+        const description = postDoc.querySelector('meta[name="description"]')?.content || 'não disponível';
+
+        // Extrai detalhes da tabela
+        const details = {};
+        postDoc.querySelectorAll('table.table-bordered tr').forEach(row => {
+            const key = row.querySelector('th')?.textContent.trim().toLowerCase();
+            const value = row.querySelector('td')?.textContent.trim();
+            if (key && value) details[key] = value;
         });
 
-        if (!searchResults.length) return { error: 'nenhum resultado encontrado' };
-
-        const { postUrl, postTitle } = searchResults[0];
-
-        const imageResults = await swiftly.scrape(`https://apkmodct.com/?s=${searchText}`, {
-            selector: 'figure.home-icon img',
-            transform: (el) => el.src
-        });
-
-        const imageUrl = imageResults[0] || 'não encontrada';
-
-        const postDetails = await swiftly.scrape(postUrl, {
-            selector: 'meta[name="description"]',
-            transform: (el) => el.content || 'não disponível'
-        });
-
-        const description = postDetails[0];
-
-        const details = await swiftly.scrape(postUrl, {
-            selector: 'table.table-bordered tr',
-            transform: (el) => ({
-                key: el.querySelector('th')?.textContent.trim().toLowerCase(),
-                value: el.querySelector('td')?.textContent.trim()
-            })
-        });
-
-        const detailsMap = {};
-        details.forEach(({ key, value }) => {
-            if (key && value) detailsMap[key] = value;
-        });
-
-        const mainPicResults = await swiftly.scrape(postUrl, {
-            selector: 'div.main-pic a',
-            transform: (el) => el.href
-        });
-
-        const mainPicUrl = mainPicResults[0];
-
+        // Pega o link principal
+        const mainPicUrl = postDoc.querySelector('div.main-pic a')?.href;
         if (!mainPicUrl) return { error: 'nenhum link principal encontrado' };
 
-        const downloadResults = await swiftly.scrape(mainPicUrl, {
-            selector: 'div.col-xs-12 a',
-            transform: (el) => el.href
-        });
+        // Acessa a página de download
+        const downloadResponse = await swiftly.get(mainPicUrl);
+        const downloadDoc = new DOMParser().parseFromString(downloadResponse.data, 'text/html');
 
-        const downloadUrl = downloadResults[0];
-
+        // Pega o link de download
+        const downloadUrl = downloadDoc.querySelector('div.col-xs-12 a')?.href;
         if (!downloadUrl) return { error: 'nenhum link de download encontrado' };
 
         return {
@@ -64,17 +47,17 @@ async function apkMod(searchText) { // By Hiudy
             description,
             image: imageUrl,
             details: {
-                name: detailsMap['name'] || 'não disponível',
-                updated: detailsMap['updated'] || 'não disponível',
-                version: detailsMap['version'] || 'não disponível',
-                category: detailsMap['category'] || 'não disponível',
-                modinfo: detailsMap['mod info'] || 'não disponível',
-                size: detailsMap['size'] || 'não disponível',
-                rate: detailsMap['rate'] || 'não disponível',
-                requires: detailsMap['requires android'] || 'não disponível',
-                developer: detailsMap['developer'] || 'não disponível',
-                googleplay: detailsMap['google play'] || 'não disponível',
-                downloads: detailsMap['downloads'] || 'não disponível',
+                name: details['name'] || 'não disponível',
+                updated: details['updated'] || 'não disponível',
+                version: details['version'] || 'não disponível',
+                category: details['category'] || 'não disponível',
+                modinfo: details['mod info'] || 'não disponível',
+                size: details['size'] || 'não disponível',
+                rate: details['rate'] || 'não disponível',
+                requires: details['requires android'] || 'não disponível',
+                developer: details['developer'] || 'não disponível',
+                googleplay: details['google play'] || 'não disponível',
+                downloads: details['downloads'] || 'não disponível',
             },
             download: downloadUrl,
         };
