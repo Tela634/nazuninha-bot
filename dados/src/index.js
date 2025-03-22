@@ -659,7 +659,7 @@ case 'ping':
     var groups = Object.entries(getGroups).map(entry => entry[1]);
     var totalGrupos = groups.length;
     const mensagem = `┏━〔 🤖 *STATUS DO BOT* 〕━┓\n\n📌 *Prefixo:* ${config.prefixo}\n👑 *Dono:* ${config.nomedono}\n🤖 *Nome:* ${config.nomebot}\n💬 *Grupos Ativos:* ${totalGrupos}\n\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime do Bot:* ${uptimeBot}\n🖥 *Uptime do Sistema:* ${uptimeSistema}\n\n💾 *Memória:* ${ramUso} GB / ${ramTotal} GB\n⚡ *CPU:* ${cpuUso}%\n🔧 *Processador:* ${cpuModelo}\n📜 *Node.js:* ${nodeVersao}\n\n┗━━━━━━━━━━━━━━┛`;
-    await nazu.sendMessage(from, { image: { url: `http://nxf-02.nexfuture.com.br:25582/banner?num=${String(speedConverted.toFixed(3)).replaceAll('.', '').replaceAll('-', '')}&theme=original` }, caption: mensagem }, { quoted: info });
+    await nazu.sendMessage(from, { image: { url: `http://nxf-02.nexfuture.com.br:25582/banner?num=${0.000>speedConverted ? "0" : String(speedConverted.toFixed(3)).replaceAll('.', '')}&theme=original` }, caption: mensagem }, { quoted: info });
   } catch (e) {
     console.error(e);
     reply('❌ Ocorreu um erro ao obter as informações.');
