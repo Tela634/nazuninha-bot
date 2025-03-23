@@ -1596,7 +1596,26 @@ break;
      });
    }
    break;
-
+   
+   
+   //funções do free fire
+   case 'bioff':
+   case 'mudarbio':
+  try {
+    if (!q || !q.includes('/')) 
+      return await reply("⚠️ *Uso incorreto!*\n\n🔹 *Formato correto:* _mudarbio SEU_TOKEN/[b]SUA_BIO_\n📌 *Exemplo:* _mudarbio abc123/[b]Sou pro player!_");
+    const [accessToken, ...bioParts] = q.split('/');
+    const novaBio = encodeURIComponent(bioParts.join('/'));
+    if (!accessToken || !novaBio) 
+      return await reply("⚠️ *Token ou bio inválidos!*\n\n📝 *Formato esperado:* _mudarbio SEU_TOKEN/[b]SUA_BIO_\n❓ *Dica:* Seu token é a chave de acesso, e sua bio deve estar após '/[b]'.");
+    const { data } = await axios.get(`https://system.ffgarena.cloud/api/bio_change?access_token=${accessToken}&account_bio=${novaBio}&region=br`);
+    return await reply(data.success ? `✅ *Bio alterada com sucesso!*\n\n🎯 *ID da Conta:* ${data.response.account_id}\n📝 *Nova Bio:* _${data.response.new_bio}_\n\n🚀 *Agora seu perfil está atualizado!*` : "❌ *Erro ao alterar a bio!*\n\n🔑 *Verifique se seu token está correto.*\n⚡ *Tente novamente em alguns minutos.*");
+  } catch (error) {
+    console.error(error.message);
+    await reply("❌ *Erro ao conectar à API!*\n\n🌐 *Pode ser uma instabilidade no servidor.*\n🔄 *Tente novamente mais tarde!*");
+  };
+  break;
+  
  default:
  if(isCmd) await nazu.react('❌');
  };
