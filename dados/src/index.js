@@ -65,7 +65,7 @@ try {
  
  //INFOS DE GRUPO
   const groupMetadata = !isGroup ? {} : await nazu.groupMetadata(from);
-  const groupName = isGroup ? groupMetadata.subject : '';
+  const groupName = isGroup && groupMetadata.subject ? groupMetadata.subject : '';
   const AllgroupMembers = !isGroup ? [] : groupMetadata.participants.map(p => p.id);
   const groupAdmins = !isGroup ? [] : groupMetadata.participants.filter(p => p.admin).map(p => p.id);
   const botNumber = nazu.user.id.split(':')[0] + '@s.whatsapp.net';
