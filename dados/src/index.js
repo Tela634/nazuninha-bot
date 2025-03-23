@@ -204,9 +204,10 @@ try {
     var files = [];
     if (boij2) {
       var buffer = await getFileBuffer(boij2, 'image');
+      var linkzimg = await upload(buffer, true);
       files.push({
         type: 'image',
-        data: buffer.toString('base64')
+        data: linkzimg
       });
     }
 
