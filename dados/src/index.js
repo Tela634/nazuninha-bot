@@ -206,7 +206,7 @@ try {
       var buffer = await getFileBuffer(boij2, 'image');
       files.push({
         type: 'image',
-        data: 'base64:' + buffer.toString('base64')
+        data: buffer.toString('base64')
       });
     }
 
