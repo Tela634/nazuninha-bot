@@ -193,15 +193,35 @@ try {
   };
   break;
   
-  case 'nazu': case 'nazuninha': case 'ai': try {
-  if(!q) return reply('Cade a pergunta meu amor?');
-  nazu.react('💞');
-  bahz = await ai(q, 'nazu');
-  await reply(bahz);
-  } catch(e) {
-  console.error(e);
-  await reply('Ocorreu um erro em meus sistemas internos meu bem 😞');
-  };
+  case 'nazu': case 'nazuninha': case 'ai': 
+  try {
+    if (!q) return reply('Cade a pergunta meu amor?');
+    nazu.react('💞');
+
+    var RSM = info.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+    var boij2 = RSM?.imageMessage || info.message?.imageMessage || RSM?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || RSM?.viewOnceMessage?.message?.imageMessage;
+
+    var files = [];
+    if (boij2) {
+      var buffer = await getFileBuffer(boij2, 'image');
+      files.push({
+        type: 'image',
+        data: buffer.toString('base64')
+      });
+    }
+
+    let bahz = (await axios.post("https://api.cognima.com.br/api/chat?key=CognimaTeamFreeKey", { 
+      message: q, 
+      chat_id: sender, 
+      model_name: "nazuninha",
+      files
+    })).data;
+
+    await reply(bahz.reply);
+  } catch (e) {
+    console.error(e);
+    await reply('Ocorreu um erro em meus sistemas internos meu bem 😞');
+  }
   break;
   
   case 'gemini': try {
