@@ -79,7 +79,7 @@ async function startNazu() {
     let phoneNumber = await ask('📞 Digite seu número (com DDD e DDI): ');
     phoneNumber = phoneNumber.replace(/\D/g, '');
     if (!/^\d{10,15}$/.test(phoneNumber)) return console.log('❌ Número inválido! Tente novamente.');
-    const code = await nazu.requestPairingCode(phoneNumber, 'NAZUNA11');
+    const code = await nazu.requestPairingCode(phoneNumber, 'N4ZUN411');
     console.log(`🔢 Seu código de pareamento: ${code}`);
     console.log('📲 No WhatsApp, vá em "Aparelhos Conectados" -> "Conectar com Número de Telefone" e insira o código.');
   } catch (err) {
