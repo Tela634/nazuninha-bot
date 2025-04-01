@@ -6,7 +6,6 @@
 
 const yts = require('yt-search');
 const axios = require('axios');
-const { ytmp3, ytmp4 } = require('ruhend-scraper');
 
 async function search(name) {
     try {
@@ -111,43 +110,49 @@ async function ytdlv2(url, format) {
     }
 }
 
-async function mp3(input) {
+async function mp3(input, v ='1') {
     const url = getVideoUrl(input);
     const format = 'm4a';
 
     try {
-        /*
+        if(v == '2') {
         const ytdlResponse = await ytdlv2(url, format);
         if (ytdlResponse.ok && ytdlResponse.downloadUrl) {
             return { ok: true, url: ytdlResponse.downloadUrl };
         } else {
             return { ok: false, msg: ytdlResponse.msg || 'Falha ao obter o link de download.' };
         }
-        */
-        const resultZin = await ytmp3(url);
-        return { ok: true, url: resultZin.audio };
+        } else {
+        return { ok: true, url: `https://nodz-apis.com.br/api/downloads/youtube/audio?&url=${url}&apiKey=nazu` };
+        }
     } catch (error) {
         return { ok: false, msg: 'Erro ao processar o vídeo.' };
     }
 }
 
-async function mp4(input, quality = '360') {
+async function mp4(input, quality = '360', v = '1') {
     const url = getVideoUrl(input);
 
     try {
-    /*
+        if(v == '2') {
         const ytdlResponse = await ytdlv2(url, quality);
         if (ytdlResponse.ok && ytdlResponse.downloadUrl) {
             return { ok: true, url: ytdlResponse.downloadUrl };
         } else {
             return { ok: false, msg: ytdlResponse.msg || 'Falha ao obter o link de download.' };
         }
-        */
-        const resultZin = await ytmp4(url);
-        return { ok: true, url: resultZin.video };
+        } else {
+        return { ok: true, url: `https://nodz-apis.com.br/api/downloads/youtube/video?&url=${url}&apiKey=nazu` };
+        }
     } catch (error) {
         return { ok: false, msg: 'Erro ao processar o vídeo.' };
     }
 }
 
-module.exports = { search, mp3, mp4 };
+module.exports = { 
+  search, 
+  mp3, 
+  mp4, 
+  mp3v2: (url) => mp3(url, '2'), 
+  mp4v2: (url) => mp4(url, '360', '2') 
+};

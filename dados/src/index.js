@@ -347,6 +347,41 @@ break;
   }
   break;
   
+    
+  case 'play2':
+  case 'ytmp32':
+  try {
+    if (!q) return reply(`Digite o nome da música.\n> Ex: ${prefix + command} Back to Black`);
+    nazu.react(['💖']);
+    datinha = await youtube.search(q);
+    if(!datinha.ok) return reply(datinha.msg);
+    await nazu.sendMessage(from, { image: { url: datinha.data.thumbnail }, caption: `🎵 *Música Encontrada* 🎵\n\n📌 *Nome:* ${datinha.data.title}\n👤 *Canal:* ${datinha.data.author.name}\n👀 *Visualizações:* ${datinha.data.views}\n🔗 *Link:* ${datinha.data.url}`, footer: `By: ${nomebot}` }, { quoted: info });
+    dlRes = await youtube.mp3v2(datinha.data.url);
+    if(!dlRes.ok) return reply(dlRes.msg);
+    await nazu.sendMessage(from, {audio: {url: dlRes.url}, fileName: datinha.data.title, mimetype: 'audio/mp4'}, {quoted: info});
+  } catch (e) {
+    console.error(e);
+    reply('Ocorreu um erro durante a requisição.');
+  }
+  break;
+  
+  case 'playvid2':
+  case 'ytmp42':
+  try {
+    if (!q) return reply(`Digite o nome da música.\n> Ex: ${prefix + command} Back to Black`);
+    nazu.react(['💖']);
+    datinha = await youtube.search(q);
+    if(!datinha.ok) return reply(datinha.msg);
+    await nazu.sendMessage(from, { image: { url: datinha.data.thumbnail }, caption: `🎵 *Música Encontrada* 🎵\n\n📌 *Nome:* ${datinha.data.title}\n👤 *Canal:* ${datinha.data.author.name}\n👀 *Visualizações:* ${datinha.data.views}\n🔗 *Link:* ${datinha.data.url}`, footer: `By: ${nomebot}` }, { quoted: info });
+    dlRes = await youtube.mp4v2(datinha.data.url);
+    if(!dlRes.ok) return reply(dlRes.msg);
+    await nazu.sendMessage(from, {video: {url: dlRes.url}, fileName: datinha.data.title, mimetype: 'video/mp4'}, {quoted: info});
+  } catch (e) {
+    console.error(e);
+    reply('Ocorreu um erro durante a requisição.');
+  }
+  break;
+  
   case 'tiktok': case 'tiktokaudio': case 'tiktokvideo': case 'tiktoks': case 'tiktoksearch': case 'ttk': case 'tkk':
    try {
     if (!q) return reply(`Digite um nome ou o link de um vídeo.\n> Ex: ${prefix}${command} Gato`);
