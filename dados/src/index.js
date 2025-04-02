@@ -208,7 +208,7 @@ try {
   case 'code-gen': try {
   if(!isPremium) return reply('Apenas usuários premium.');
   if(!q) return reply('falta o prompt.');
-  const response = await axios.get(`https://api.cognima.com.br/api/priv/code-gen?key=CognimaTeamFreeKey&q=${q}`, { responseType: 'arraybuffer' });
+  const response = await axios.get(`https://api.cognima.com.br/api/ia/code-gen?key=CognimaTeamFreeKey&q=${q}`, { responseType: 'arraybuffer' });
   const mimeType = response.headers['content-type'];
   const contentDisposition = response.headers['content-disposition'];
   let nomeArquivo = Date.now();
