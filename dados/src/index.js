@@ -197,19 +197,35 @@ try {
   try {
     if (!q) return reply('Cade a pergunta meu amor?');
     nazu.react('💞');
-    
-    let bahz = (await axios.post("https://api.cognima.com.br/api/chat?key=CognimaTeamFreeKey", { 
-      message: q, 
-      chat_id: sender, 
-      model_name: "nazuninha",
-    })).data;
-
+    let bahz = (await axios.post("https://api.cognima.com.br/api/ia/chat?key=CognimaTeamFreeKey", { message: q, chat_id: `nazuninha_${sender.split('@')[0]}`, model_name: "nazuninha", })).data;
     await reply(bahz.reply);
   } catch (e) {
     console.error(e);
     await reply('Ocorreu um erro em meus sistemas internos meu bem 😞');
   }
   break;
+  
+  case 'code-gen': try {
+  if(!isPremium) return reply('Apenas usuários premium.');
+  if(!q) return reply('falta o prompt.');
+  const response = await axios.get(`https://api.cognima.com.br/api/priv/code-gen?key=CognimaTeamFreeKey&q=${q}`, { responseType: 'arraybuffer' });
+  const mimeType = response.headers['content-type'];
+  const contentDisposition = response.headers['content-disposition'];
+  let nomeArquivo = Date.now();
+  if (contentDisposition) {
+    const match = contentDisposition.match(/filename="?([^"]+)"?/);
+    if (match) nomeArquivo = match[1];
+  };
+  if (!nomeArquivo.includes('.')) {
+    const extensoes = { 'application/json': 'json', 'text/plain': 'txt', 'application/javascript': 'js', 'application/zip': 'zip', 'application/pdf': 'pdf' };
+    nomeArquivo += '.' + (extensoes[mimeType] || 'bin');
+  };
+  await nazu.sendMessage(from, { document: response.data, mimetype: mimeType, fileName: nomeArquivo }, { quoted: info });
+  } catch(e) {
+  console.error(e);
+  await reply('erro.');
+  };
+  break
   
   case 'gemini': try {
   if(!q) return reply('Cade a pergunta?');
@@ -669,7 +685,7 @@ break;
         totalComandosCategoria += comandosCategoria;
       };
       const comandosSemCategoria = comandos.length - totalComandosCategoria;
-      await nazu.sendMessage(from, {image: {url: `http://nxf-02.nexfuture.com.br:25582/banner?num=${String(comandos.length)}&theme=miku`}, caption: `╭〔 🤖 *Meus Comandos* 〕╮\n` + `┣ 📌 Total: *${comandos.length}* comandos\n` + `┣ 📌 Comandos por Categoria:\n┣\n` + Object.keys(comandosPorCategoria).map(categoria => `┣ 📌 ${categoria}: *${comandosPorCategoria[categoria]}* comandos`).join('\n') + `\n┣ 📌 Sem categoria: *${comandosSemCategoria}* comandos\n` + `╰━━━━━━━━━━━━━━━╯`}, { quoted: info });
+      await nazu.sendMessage(from, {image: {url: `https://api.cognima.com.br/api/banner/counter?key=CognimaTeamFreeKey&num=${String(comandos.length)}&theme=miku`}, caption: `╭〔 🤖 *Meus Comandos* 〕╮\n` + `┣ 📌 Total: *${comandos.length}* comandos\n` + `┣ 📌 Comandos por Categoria:\n┣\n` + Object.keys(comandosPorCategoria).map(categoria => `┣ 📌 ${categoria}: *${comandosPorCategoria[categoria]}* comandos`).join('\n') + `\n┣ 📌 Sem categoria: *${comandosSemCategoria}* comandos\n` + `╰━━━━━━━━━━━━━━━╯`}, { quoted: info });
     });
   break;
 
@@ -701,7 +717,7 @@ case 'ping':
     var groups = Object.entries(getGroups).map(entry => entry[1]);
     var totalGrupos = groups.length;
     const mensagem = `┏━〔 🤖 *STATUS DO BOT* 〕━┓\n\n📌 *Prefixo:* ${config.prefixo}\n👑 *Dono:* ${config.nomedono}\n🤖 *Nome:* ${config.nomebot}\n💬 *Grupos Ativos:* ${totalGrupos}\n\n🚀 *Latência:* ${speedConverted.toFixed(3)}s\n⏳ *Uptime do Bot:* ${uptimeBot}\n🖥 *Uptime do Sistema:* ${uptimeSistema}\n\n💾 *Memória:* ${ramUso} GB / ${ramTotal} GB\n⚡ *CPU:* ${cpuUso}%\n🔧 *Processador:* ${cpuModelo}\n📜 *Node.js:* ${nodeVersao}\n\n┗━━━━━━━━━━━━━━┛`;
-    await nazu.sendMessage(from, { image: { url: `http://nxf-02.nexfuture.com.br:25582/banner?num=${0.000>speedConverted ? "0" : String(speedConverted.toFixed(3)).replaceAll('.', '')}&theme=original` }, caption: mensagem }, { quoted: info });
+    await nazu.sendMessage(from, { image: { url: `https://api.cognima.com.br/api/banner/counter?key=CognimaTeamFreeKey&num=${0.000>speedConverted ? "0" : String(speedConverted.toFixed(3)).replaceAll('.', '')}&theme=original` }, caption: mensagem }, { quoted: info });
   } catch (e) {
     console.error(e);
     reply('❌ Ocorreu um erro ao obter as informações.');
