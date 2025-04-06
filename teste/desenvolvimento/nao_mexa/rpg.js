@@ -1135,44 +1135,6 @@ async function cassino(sender, aposta) {
 }
 
 
-// Função para fazer upload ou atualizar a foto no GitHub
-async function uploadFoto(buffer, idUser) {
-    try {
-        const axios = require('axios');
-
-        const fileName = `tinder/profile/${idUser}.jpg`;
-        const githubApiUrl = `https://api.github.com/repos/hiudyy/nazuninha/contents/${fileName}`;
-        const base64Image = buffer.toString('base64');
-        const token = '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';
-
-        // Verifica se o arquivo já existe
-        const existingFile = await axios.get(githubApiUrl, {
-            headers: { Authorization: `token ${token}` }
-        }).catch(() => null);
-
-        // Prepara os dados para o upload
-        const data = {
-            message: existingFile ? `Atualização do perfil Tinder de ${idUser}` : `Upload do perfil Tinder de ${idUser}`,
-            content: base64Image,
-        };
-
-        // Se o arquivo existir, inclui o SHA do último commit
-        if (existingFile && existingFile.data) {
-            data.sha = existingFile.data.sha;
-        }
-
-        // Faz o upload ou atualização
-        const response = await axios.put(githubApiUrl, data, {
-            headers: { Authorization: `token ${token}` }
-        });
-
-        return { url: response.data.content.download_url }; // Retorna o link da imagem
-    } catch (error) {
-        console.error(error.response?.data || error.message);
-        return { error: "❌ Erro ao fazer upload da foto no GitHub." };
-    }
-}
-
 // Função para registrar o perfil do Tinder
 async function registrarTinder(sender, name, bufferFoto) {
     try {
