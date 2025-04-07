@@ -1073,7 +1073,7 @@ case 'ping':
    case 'welcomeimg': {
   if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
   if (!isGroupAdmin) return reply('❌ Apenas administradores podem configurar a foto de boas-vindas.');
-  if (!isQuotedImage && !isImage) return reply('❌ Marque uma imagem ou envie uma imagem com o comando!');
+  if (q !== 'gif' && !isQuotedImage && !isImage) return reply('❌ Marque uma imagem ou envie uma imagem com o comando!');
 
   try {
     if (q !== 'gif') {
