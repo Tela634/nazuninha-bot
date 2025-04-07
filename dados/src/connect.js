@@ -107,7 +107,12 @@ async function startNazu() {
      const welcomeText = textBv.replaceAll('#numerodele#', `@${sender.split('@')[0]}`).replaceAll('#nomedogp#', GroupMetadata.subject).replaceAll('#desc#', GroupMetadata.desc || '').replaceAll('#membros#', GroupMetadata.participants.length);
 
      if(jsonGp.welcome && jsonGp.welcome.image) {
+       if(jsonGp.welcome.image === 'gif') {
+       bah = JSON.parse(fs.readFileSync('./../database/pushname.json'));
+       await nazu.sendMessage(from, {video: { url: `https://api.cognima.com.br/api/welcome-gif?key=CognimaTeamFreeKey&name=${bah[sender] ? bah[sender] : 'user'}` }, gifPlayback: true, caption: welcomeText,mentions: [sender]});
+       } else {
        await nazu.sendMessage(from, {image: { url: jsonGp.welcome.image },caption: welcomeText,mentions: [sender]});
+       };
      } else {
        await nazu.sendMessage(from, {text: welcomeText,mentions: [sender]});
      };
@@ -131,6 +136,7 @@ async function startNazu() {
     for (const info of m.messages) {
     if(!info.message) return;
     if(m.type == "append") return;  
+    fs.existsSync('./../database/pushname.json') || fs.writeFileSync('./../database/pushname.json', JSON.stringify({})); bah = JSON.parse(fs.readFileSync('./../database/pushname.json')); bah[info.key.remoteJid.endsWith('@g.us') ? (info.key.participant.includes(':') ? info.key.participant.split(':')[0] + '@s.whatsapp.net' : info.key.participant) : info.key.remoteJid] = info.pushName || 'user'; fs.writeFileSync('./../database/pushname.json', JSON.stringify(bah));
     const indexModulePath = __dirname + '/index.js';
     delete require.cache[require.resolve(indexModulePath)];
     const indexModule = require(indexModulePath);

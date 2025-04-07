@@ -1069,27 +1069,35 @@ case 'ping':
     }};
     break;
     
-   case 'fotobv': case 'welcomeimg': {
-     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isGroupAdmin) return reply('❌ Apenas administradores podem configurar a foto de boas-vindas.');
-     if (!isQuotedImage && !isImage) return reply('❌ Marque uma imagem ou envie uma imagem com o comando!');
-     try {
-       const media = await getFileBuffer(
-         isQuotedImage ? info.message.extendedTextMessage.contextInfo.quotedMessage.imageMessage : info.message.imageMessage,
-         'image'
-       );
-       const uploadResult = await upload(media);
-       if (!uploadResult) throw new Error('Falha ao fazer upload da imagem');
-       if (!groupData.welcome) groupData.welcome = {};
-       groupData.welcome.image = uploadResult;
-       fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
-       await reply('✅ Foto de boas-vindas configurada com sucesso!');
-     } catch (error) {
-       console.error(error);
-       await reply('❌ Ocorreu um erro ao configurar a foto de boas-vindas.');
-     };
-   };
-   break;
+   case 'fotobv':
+   case 'welcomeimg': {
+  if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+  if (!isGroupAdmin) return reply('❌ Apenas administradores podem configurar a foto de boas-vindas.');
+  if (!isQuotedImage && !isImage) return reply('❌ Marque uma imagem ou envie uma imagem com o comando!');
+
+  try {
+    if (q !== 'gif') {
+      const imgMessage = isQuotedImage
+        ? info.message.extendedTextMessage.contextInfo.quotedMessage.imageMessage
+        : info.message.imageMessage;
+      const media = await getFileBuffer(imgMessage, 'image');
+      const uploadResult = await upload(media);
+      if (!uploadResult) throw new Error('Falha ao fazer upload da imagem');
+      if (!groupData.welcome) groupData.welcome = {};
+      groupData.welcome.image = uploadResult;
+    } else if (q === 'gif') {
+      if (!groupData.welcome) groupData.welcome = {};
+      groupData.welcome.image = 'gif';
+    }
+
+    fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+    await reply('✅ Foto de boas-vindas configurada com sucesso!');
+  } catch (error) {
+    console.error(error);
+    await reply('❌ Ocorreu um erro ao configurar a foto de boas-vindas.');
+  }
+}
+break;
 
    case 'fotosaida': case 'fotosaiu': case 'imgsaiu': case 'exitimg': {
      if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
