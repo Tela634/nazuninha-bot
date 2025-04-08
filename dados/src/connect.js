@@ -7,6 +7,7 @@
 const { Boom } = require('@hapi/boom');
 const { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, DisconnectReason, proto, makeInMemoryStore } = require('baileys');
 
+const axios = require('axios');
 const readline = require('readline');
 const { execSync } = require('child_process');
 const pino = require('pino');
@@ -109,7 +110,8 @@ async function startNazu() {
      if(jsonGp.welcome && jsonGp.welcome.image) {
        if(jsonGp.welcome.image === 'gif') {
        bah = JSON.parse(fs.readFileSync(__dirname+'/../database/pushname.json'));
-       await nazu.sendMessage(from, {video: { url: `https://api.cognima.com.br/api/welcome-gif?key=CognimaTeamFreeKey&name=${bah[sender] ? bah[sender] : 'user'}` }, gifPlayback: true, caption: welcomeText,mentions: [sender]});
+       const buffer = (await axios.get(`https://api.cognima.com.br/api/welcome-gif?key=CognimaTeamFreeKey&name=${bah[sender] ? bah[sender] : 'user'}`, { responseType: 'arraybuffer' })).data;
+       await nazu.sendMessage(from, { video: buffer, gifPlayback: true, caption: welcomeText, mentions: [sender] });
        } else {
        await nazu.sendMessage(from, {image: { url: jsonGp.welcome.image },caption: welcomeText,mentions: [sender]});
        };

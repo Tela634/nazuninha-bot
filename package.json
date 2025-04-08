@@ -29,6 +29,7 @@
     "ruhend-scraper": "latest",
     "hercai": "latest",
     "os": "latest",
-    "swiftly": "latest"
+    "swiftly": "latest",
+    "speedtest-net": "latest"
   }
 }
