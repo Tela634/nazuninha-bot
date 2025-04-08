@@ -1508,7 +1508,7 @@ break;
   case 'pix':case 'reg':case 'registrar':case 'delrg':case 'saldo':case 'banco':case 'depositar':case 'deposito':case 'sacar':case 'saque':case 'depoall':case 'saqueall':case 'trabalhar':case 'empregos':case 'trabalhos':case 'addemprego':case 'demissao':case 'delemprego':case 'loja':case 'comprar':case 'vender':case 'me':case 'inventario':case 'pescar':case 'minerar':case 'mina':case 'cacar':case 'assaltar':case 'namorar':case 'aceitar':case 'recusar':case 'divorcio':case 'casar':case 'minhadupla':case 'adotar':case 'soltar':case 'alimentar':case 'banho':case 'tosar':case 'veterinario':case 'meupet':case 'cassino':case 'apostar':case 'brincar':case 'passear':case 'carinho':
     try {
         if (!isGroup) return reply('Este comando só pode ser utilizado em grupos.');
-        if (!isModoRPG) return reply('Este comando só pode ser utilizado com o modo RPG ativo.');
+        if (!isModoRpg) return reply('Este comando só pode ser utilizado com o modo RPG ativo.');
         if (!DadosRp && !['registrar', 'reg'].includes(command)) return reply('Você não está registrado.');
 
         switch (command) {
