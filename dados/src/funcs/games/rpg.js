@@ -13,7 +13,7 @@ const fs = require('fs').promises;
 let delay = {};
 
 // DIRETÓRIO DO RPG
-const RpgPath = path.join(__dirname, './../dados/database/rpg');
+const RpgPath = path.join(__dirname, '/../../../database/rpg');
 
 // CRIAR PASTA DE RPG (CASO NÃO EXISTA)
 fs.mkdir(RpgPath, { recursive: true }).catch(console.error);
