@@ -1049,6 +1049,7 @@ async function verificarConquistas(sender) {
 // ATUALIZAÇÃO DO EXPORT
 module.exports = Object.assign(getUser, {
     rg: registrar,
+    MOEDAS,
     batalhar,
     explorarMasmorra,
     craftar,
