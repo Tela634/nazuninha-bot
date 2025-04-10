@@ -8,7 +8,7 @@ async function menu(prefix) {
 │  📂 *Submenus disponíveis* 
 ├──────────────┤
 │🤖 *${prefix}menuia*
-│  ➥ _Comandos de Inteligência Artificial_
+│  ➥ _Inteligência Artificial_
 │      _e geração de conteúdo_
 │📥 *${prefix}menudown*
 │  ➥ _Baixe músicas, vídeos, fotos_
