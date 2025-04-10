@@ -912,7 +912,141 @@ async function listarLoja() {
     return `🛒 *Loja* 🛒\n${itensLoja.map(i => `${i.nome} - ${i.valor} ${MOEDAS.dinheiro}`).join('\n')}`;
 }
 
-// EXPORTS ATUALIZADOS
+// SISTEMA DE PROPRIEDADES (IMPLEMENTAÇÃO COMPLETA)
+async function comprarPropriedade(sender, propriedadeNome) {
+    const user = await getUser(sender);
+    const propriedade = propriedades[normalizarTexto(propriedadeNome)];
+    if (!propriedade) return '⚠️ Essa propriedade não existe nos registros eternos! Opções: casa, fazenda, castelo, torre arcana, santuário.';
+    if (user.moedas.dinheiro < propriedade.custo) return `⚠️ Faltam ${propriedade.custo - user.moedas.dinheiro} ${MOEDAS.dinheiro} para adquirir essa propriedade!`;
+    if (user.propriedades.some(p => p.nome === propriedadeNome)) return '⚠️ Você já possui essa propriedade!';
+
+    user.moedas.dinheiro -= propriedade.custo;
+    user.propriedades.push({ nome: propriedadeNome, nivel: 1, ultimaColeta: 0, upgrades: [] });
+    await saveUser(sender, user);
+    return `🏡 *Propriedade Adquirida!* Você agora é dono de uma ${propriedadeNome} por ${propriedade.custo} ${MOEDAS.dinheiro}. Produção a cada ${propriedade.delay / 3600}h!`;
+}
+
+async function coletarProducao(sender) {
+    const user = await getUser(sender);
+    if (user.propriedades.length === 0) return '⚠️ Você não possui propriedades para coletar!';
+
+    let log = `🌾 *Coleta das Propriedades* 🌾\n`;
+    let totalRecompensa = {};
+    for (let prop of user.propriedades) {
+        const propriedade = propriedades[prop.nome];
+        const tempoPassado = Date.now() / 1000 - prop.ultimaColeta;
+        if (tempoPassado < propriedade.delay) {
+            log += `⏳ ${prop.nome}: Aguarde ${Math.ceil((propriedade.delay - tempoPassado) / 3600)} horas!\n`;
+            continue;
+        }
+
+        const ciclos = Math.floor(tempoPassado / propriedade.delay);
+        Object.entries(propriedade.producao).forEach(([recurso, valor]) => {
+            totalRecompensa[recurso] = (totalRecompensa[recurso] || 0) + valor * ciclos * prop.nivel;
+            user.moedas[recurso] += valor * ciclos * prop.nivel;
+        });
+        prop.ultimaColeta = Date.now() / 1000;
+        log += `🏡 ${prop.nome} (Nv.${prop.nivel}): +${Object.entries(propriedade.producao).map(([k, v]) => `${v * ciclos * prop.nivel} ${MOEDAS[k]}`).join(', ')}\n`;
+    }
+
+    await saveUser(sender, user);
+    return log.length > 30 ? log : '⚠️ Nenhuma produção pronta para coleta!';
+}
+
+async function melhorarPropriedade(sender, propriedadeNome, upgradeNome) {
+    const user = await getUser(sender);
+    const propriedade = user.propriedades.find(p => normalizarTexto(p.nome) === normalizarTexto(propriedadeNome));
+    if (!propriedade) return '⚠️ Você não possui essa propriedade!';
+    const upgradesDisponiveis = propriedades[propriedade.nome].upgrades;
+    const custoUpgrade = upgradesDisponiveis[upgradeNome];
+    if (!custoUpgrade) return `⚠️ Upgrade inválido para ${propriedade.nome}! Opções: ${Object.keys(upgradesDisponiveis).join(', ')}.`;
+    if (propriedade.upgrades.includes(upgradeNome)) return '⚠️ Esse upgrade já foi aplicado!';
+    if (user.moedas.dinheiro < custoUpgrade) return `⚠️ Faltam ${custoUpgrade - user.moedas.dinheiro} ${MOEDAS.dinheiro} para esse aprimoramento!`;
+
+    user.moedas.dinheiro -= custoUpgrade;
+    propriedade.upgrades.push(upgradeNome);
+    propriedade.nivel++;
+    await saveUser(sender, user);
+    return `🏠 *Propriedade Aprimorada!* ${propriedade.nome} agora tem ${upgradeNome} e subiu para nível ${propriedade.nivel}! Custo: ${custoUpgrade} ${MOEDAS.dinheiro}.`;
+}
+
+// SISTEMA DE GUILDAS (FUNÇÕES FALTANTES)
+async function guildaConvidar(sender, alvo) {
+    const user = await getUser(sender);
+    const alvoUser = await getUser(alvo);
+    if (!user.guilda || user.guilda.lider !== sender) return '⚠️ Apenas o líder pode convidar!';
+    if (!alvoUser) return '⚠️ Esse guerreiro não existe!';
+    if (alvoUser.guilda) return '⚠️ Esse jogador já pertence a uma guilda!';
+    if (user.guilda.membros.length >= 50) return '⚠️ Sua guilda atingiu o limite de 50 membros!';
+
+    alvoUser.missões.push({ tipo: 'convite guilda', origem: sender, guilda: user.guilda.nome, expira: Date.now() / 1000 + 24 * 60 * 60 });
+    await saveUser(alvo, alvoUser);
+    return `📜 *Convite Enviado!* ${alvoUser.nome} foi convidado para a ${user.guilda.nome}. Ele tem 24h para aceitar!`;
+}
+
+async function guildaAceitar(sender, guildaNome) {
+    const user = await getUser(sender);
+    const convite = user.missões.find(m => m.tipo === 'convite guilda' && normalizarTexto(m.guilda) === normalizarTexto(guildaNome));
+    if (!convite) return '⚠️ Você não tem um convite para essa guilda!';
+    if (Date.now() / 1000 > convite.expira) return '⚠️ Esse convite expirou!';
+
+    const lider = await getUser(convite.origem);
+    if (!lider.guilda || lider.guilda.nome !== guildaNome) return '⚠️ A guilda não existe mais ou o líder mudou!';
+    
+    user.guilda = { nome: guildaNome, lider: convite.origem, membros: lider.guilda.membros, nivel: lider.guilda.nivel, recursos: lider.guilda.recursos, missões: lider.guilda.missões, fortaleza: lider.guilda.fortaleza };
+    lider.guilda.membros.push(sender);
+    user.missões = user.missões.filter(m => m !== convite);
+    await saveUser(sender, user);
+    await saveUser(convite.origem, lider);
+    return `⚜️ *Bem-vindo à ${guildaNome}!* Você agora faz parte desta irmandade eterna!`;
+}
+
+// SISTEMA DE CONQUISTAS
+async function verificarConquistas(sender) {
+    const user = await getUser(sender);
+    let log = '';
+    for (let [nome, conquista] of Object.entries(conquistas)) {
+        if (user.titulos.includes(nome)) continue;
+
+        let conquistou = true;
+        if (conquista.requisito.inimigos) {
+            for (let [inimigo, qtd] of Object.entries(conquista.requisito.inimigos)) {
+                if ((user.conquistas.inimigosMortos[inimigo] || 0) < qtd) conquistou = false;
+            }
+        } else if (conquista.requisito.masmorras && user.conquistas.masmorrasCompletadas < conquista.requisito.masmorras) {
+            conquistou = false;
+        } else if (conquista.requisito.craft && user.conquistas.itensCraftados < conquista.requisito.craft) {
+            conquistou = false;
+        } else if (conquista.requisito.nivel && user.nivel < conquista.requisito.nivel) {
+            conquistou = false;
+        } else if (conquista.requisito.guerras && user.conquistas.guerrasVencidas < conquista.requisito.guerras) {
+            conquistou = false;
+        }
+
+        if (conquistou) {
+            Object.entries(conquista.recompensa).forEach(([key, value]) => {
+                if (key === 'titulos') user.titulos.push(value);
+                else user.moedas[key] += value;
+            });
+            if (conquista.bonus) {
+                if (conquista.bonus.todos) {
+                    Object.keys(user.atributos).forEach(attr => user.atributos[attr] += conquista.bonus.todos);
+                } else {
+                    Object.entries(conquista.bonus).forEach(([attr, val]) => user.atributos[attr] += val);
+                }
+            }
+            log += `🏅 *Conquista Desbloqueada: ${nome}!* Recompensas: ${Object.entries(conquista.recompensa).map(([k, v]) => k === 'titulos' ? v : `${v} ${MOEDAS[k]}`).join(', ')}. Bônus: ${conquista.bonus ? Object.entries(conquista.bonus).map(([k, v]) => `${k} +${v}`).join(', ') : 'Nenhum'}.\n`;
+        }
+    }
+
+    if (log) {
+        await saveUser(sender, user);
+        return log;
+    }
+    return null;
+}
+
+// ATUALIZAÇÃO DO EXPORT
 module.exports = Object.assign(getUser, {
     rg: registrar,
     batalhar,
