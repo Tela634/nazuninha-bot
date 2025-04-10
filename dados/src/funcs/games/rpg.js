@@ -118,7 +118,7 @@ const inimigos = {
     'abominação eterea': { vida: 4000, ataque: 150, defesa: 70, recompensa: { dinheiro: 8000, runas: 5, xp: 2000 } },
     'senhor das runas': { vida: 6000, ataque: 160, defesa: 100, recompensa: { dinheiro: 12000, runas: 10, reliquias: 10, xp: 3500 } },
     'kraken abissal': { vida: 4500, ataque: 140, defesa: 80, recompensa: { dinheiro: 7000, essencia: 25, xp: 1800 } },
-];
+};
 
 // MASMORRAS EXPANDIDAS
 const masmorras = {
