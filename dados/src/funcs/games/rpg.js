@@ -1,1377 +1,965 @@
 /*
- SISTEMA DE RPG - V1
- CRIADOR: HIUDY
+ SISTEMA DE RPG - V7
+ CRIADOR ORIGINAL: HIUDY
+ FORJADO NA ETERNIDADE POR: Cognima Team
  
- AVISO, ESSE SCRIPT FOI CRIADO DO ZERO POR MIM (HIUDY), NÃO VAZE OU VENDA ESSE SCRIPT SEM A MINHA PERMISSÃO, CASO FOR MELHORAR/MODIFICAR O CODIGO NÃO TIRE OS MEUS CRÉDITOS.
+ RPG definitivo com um universo infinito, sistemas interligados e glória eterna.
 */
 
 // IMPORTAÇÕES
 const path = require('path');
 const fs = require('fs').promises;
 
-//TEMPORÁRIO PARA DELAY :)
-let delay = {};
-
 // DIRETÓRIO DO RPG
 const RpgPath = path.join(__dirname, '/../../../database/rpg');
-
-// CRIAR PASTA DE RPG (CASO NÃO EXISTA)
 fs.mkdir(RpgPath, { recursive: true }).catch(console.error);
 
-//EMPREGOS
+// UTILITÁRIOS
+function normalizarTexto(texto) {
+    return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function chance(probabilidade) {
+    return Math.random() < probabilidade;
+}
+
+// SISTEMAS GLOBAIS
+let delays = {};
+let eventosGlobais = {};
+let mercadoNegro = {};
+let guerrasAtivas = {};
+let climaAtual = 'sol';
+let horaAtual = new Date().getHours();
+let mundo = { reinos: {}, portais: {}, cataclismas: 0 };
+
+// MOEDAS
+const MOEDAS = {
+    dinheiro: '💰',
+    gemas: '💎',
+    prestigio: '⭐',
+    almas: '👻',
+    essencia: '✨',
+    fragmentos: '🪙',
+    reliquias: '🏺',
+    ether: '🌌',
+    runas: '🔮'
+};
+
+// CLIMA E CICLO DIA/NOITE
+const CLIMAS = ['sol', 'chuva', 'neve', 'tempestade', 'nevoa', 'calor extremo', 'eclipse', 'aurora magica', 'trevas eternas', 'chuva de meteoros', 'ventos etereos', 'vortex dimensional'];
+setInterval(() => {
+    climaAtual = CLIMAS[Math.floor(Math.random() * CLIMAS.length)];
+    console.log(`🌍 O clima mudou para: ${climaAtual}`);
+    if (climaAtual === 'vortex dimensional' && chance(0.1)) mundo.cataclismas++;
+}, 1000 * 60 * 8); // Muda a cada 8 minutos
+
+setInterval(() => {
+    horaAtual = new Date().getHours();
+}, 1000 * 60);
+
+// EMPREGOS EXPANDIDOS
 const empregos = [
-    { nome: 'lixeiro', salarioMin: 50, salarioMax: 150, xpNecessaria: 0, delay: 'Sua próxima rota de coleta de lixos so acontece daqui #segundos# segundos.' },
-    { nome: 'faxineiro', salarioMin: 80, salarioMax: 200, xpNecessaria: 20, delay: 'O prédio esta limpo por agora, vá descansar um pouco, volte daqui #segundos# segundos.' },
-    { nome: 'garcom', salarioMin: 100, salarioMax: 250, xpNecessaria: 40, delay: 'Esta na sua hora de descanso, outro garçom esta servindo os pratos, volte daqui #segundos# segundos para trabalhar novamente.' },
-    { nome: 'motorista', salarioMin: 150, salarioMax: 300, xpNecessaria: 80, delay: 'Seu próximo horário de saída é so daqui #segundos# segundos.' },
-    { nome: 'vendedor', salarioMin: 200, salarioMax: 400, xpNecessaria: 100, delay: 'Voce está sem peças disponíveis para venda, sua próxima entrega de produtos chega daqui #segundos# segundos.' },
-    { nome: 'cozinheiro', salarioMin: 250, salarioMax: 500, xpNecessaria: 150, delay: 'Voce já esta cozinhando a muito tempo, vá descansar um pouco, volte daqui #segundos# segundos, o seu braço direito cuida da cozinha enquanto isso.' },
-    { nome: 'professor', salarioMin: 300, salarioMax: 600, xpNecessaria: 180, delay: 'Sua próxima aula so começa daqui #segundos# segundos.' },
-    { nome: 'engenheiro', salarioMin: 400, salarioMax: 800, xpNecessaria: 250, delay: 'Voce não tem nada para fazer no momento, volte daqui #segundos# segundos para mais trabalho.' },
-    { nome: 'policial', salarioMin: 450, salarioMax: 900, xpNecessaria: 350, delay: 'Seu turno so começa daqui #segundos# segundos.' },
-    { nome: 'advogado', salarioMin: 500, salarioMax: 1000, xpNecessaria: 450, delay: 'O caso de seu cliente so irá a julgamento daqui #segundos# segundos.' },
-    { nome: 'medico', salarioMin: 600, salarioMax: 1200, xpNecessaria: 600, delay: 'Voce está no seu horário de descanso, apenas aproveite e volte daqui #segundos# segundos, e torça para não chegar nenhuma emergência' },
+    { nome: 'lixeiro', salarioMin: 50, salarioMax: 250, xpNecessaria: 0, habilidades: { 'limpeza rapida': { nivel: 1, efeito: '+20% dinheiro' }, 'reciclagem eterea': { nivel: 20, efeito: '+20 ether' } }, delay: 120 },
+    { nome: 'ferreiro', salarioMin: 300, salarioMax: 1000, xpNecessaria: 50, habilidades: { 'forja basica': { nivel: 1, efeito: 'Cria armas simples' }, 'metal divino': { nivel: 30, efeito: '+100% dano armas' } }, delay: 180 },
+    { nome: 'mago', salarioMin: 700, salarioMax: 2500, xpNecessaria: 200, habilidades: { 'magia elemental': { nivel: 1, efeito: 'Feitiços básicos' }, 'arcano infinito': { nivel: 35, efeito: 'Feitiços +150% dano' } }, delay: 300 },
+    { nome: 'cacador de recompensas', salarioMin: 800, salarioMax: 3000, xpNecessaria: 300, habilidades: { 'rastreio': { nivel: 1, efeito: '+25% chance sucesso' }, 'corte eterno': { nivel: 30, efeito: '+250% dano critico' } }, delay: 240 },
+    { nome: 'alquimista', salarioMin: 600, salarioMax: 2000, xpNecessaria: 150, habilidades: { 'pocoes basicas': { nivel: 1, efeito: 'Cria poções simples' }, 'elixir transcendente': { nivel: 25, efeito: 'Poções +200% efeito' } }, delay: 200 },
+    { nome: 'mercador', salarioMin: 500, salarioMax: 1500, xpNecessaria: 100, habilidades: { 'negociacao': { nivel: 1, efeito: '+25% lucro vendas' }, 'rotas do ether': { nivel: 25, efeito: 'Acesso mercado negro +50% lucro' } }, delay: 150 },
+    { nome: 'guardiao', salarioMin: 900, salarioMax: 2500, xpNecessaria: 400, habilidades: { 'defesa basica': { nivel: 1, efeito: '+20 defesa' }, 'escudo eterno': { nivel: 30, efeito: '+100 defesa em combate' } }, delay: 300 },
+    { nome: 'explorador', salarioMin: 650, salarioMax: 1800, xpNecessaria: 250, habilidades: { 'mapa mental': { nivel: 1, efeito: '+20% chance achados' }, 'caminho do vazio': { nivel: 25, efeito: '+100% recompensas masmorras' } }, delay: 240 },
+    { nome: 'bardo', salarioMin: 550, salarioMax: 1600, xpNecessaria: 120, habilidades: { 'cancao inspiradora': { nivel: 1, efeito: '+15% XP todos' }, 'hino da eternidade': { nivel: 25, efeito: '+50% XP todos' } }, delay: 180 },
+    { nome: 'necromante', salarioMin: 1000, salarioMax: 3500, xpNecessaria: 500, habilidades: { 'invocacao basica': { nivel: 1, efeito: 'Invoca 1 esqueleto' }, 'exercito das trevas': { nivel: 35, efeito: 'Invoca 10 esqueletos +75% dano' } }, delay: 360 },
+    { nome: 'engenheiro', salarioMin: 700, salarioMax: 2000, xpNecessaria: 300, habilidades: { 'maquinas basicas': { nivel: 1, efeito: 'Cria armadilhas simples' }, 'tecnologia arcana': { nivel: 30, efeito: 'Armadilhas +150% dano' } }, delay: 240 },
+    { nome: 'ladrao', salarioMin: 600, salarioMax: 2500, xpNecessaria: 200, habilidades: { 'furtividade': { nivel: 1, efeito: '+30% chance assalto' }, 'mestre do caos': { nivel: 25, efeito: '+150% chance assalto' } }, delay: 200 },
+    { nome: 'sacerdote', salarioMin: 800, salarioMax: 2200, xpNecessaria: 350, habilidades: { 'oracao basica': { nivel: 1, efeito: '+10 favor divino' }, 'milagre divino': { nivel: 30, efeito: '+50 favor divino' } }, delay: 300 },
+    { nome: 'arqueiro', salarioMin: 650, salarioMax: 1900, xpNecessaria: 250, habilidades: { 'tiro preciso': { nivel: 1, efeito: '+20% dano critico' }, 'chuva de flechas': { nivel: 25, efeito: '+100% dano em área' } }, delay: 240 },
+    { nome: 'cavaleiro', salarioMin: 900, salarioMax: 2700, xpNecessaria: 400, habilidades: { 'carga basica': { nivel: 1, efeito: '+25 ataque' }, 'lanca da ordem': { nivel: 30, efeito: '+100 ataque em combate' } }, delay: 300 },
 ];
 
-//ITEM DA LOJA || ITENS COM VENDA ACEITA
+// ITENS DA LOJA E MERCADO NEGRO
 const itensLoja = [
-    { nome: 'picareta', valor: 700, venda: 300 },
-    { nome: 'isca', valor: 800, venda: 320 },
-    { nome: 'faca', valor: 900, venda: 350 },
-    { nome: 'arma', valor: 1100, venda: 480 },
-    { nome: 'municao', valor: 300, venda: 80 },
-    { nome: 'computador', valor: 1300, venda: 600 },
-    { nome: 'racao', valor: 150, venda: 50 },
-    { nome: 'escudo', valor: 1450, venda: 760 }
-];
-const itensVenda = [
-    { nome: 'carvao', venda: 50 },
-    { nome: 'prata', venda: 70 },
-    { nome: 'ferro', venda: 80 },
-    { nome: 'ouro', venda: 95 },
-    { nome: 'diamante', venda: 115 },
-    { nome: 'esmeralda', venda: 130 },
-    { nome: 'peixe', venda: 40 },
-    { nome: 'peixes', venda: 40 },
-    { nome: 'carne', venda: 30 },
-    { nome: 'carnes', venda: 30 }
+    { nome: 'espada de ferro', valor: 1200, venda: 500, tipo: 'arma', atributos: { ataque: 25 } },
+    { nome: 'potion de vida', valor: 400, venda: 150, tipo: 'consumivel', efeito: 'Recupera 75 vida' },
+    { nome: 'grimorio basico', valor: 2500, venda: 1000, tipo: 'magia', atributos: { inteligencia: 15 } },
+    { nome: 'armadura de couro', valor: 1800, venda: 700, tipo: 'armadura', atributos: { defesa: 20 } },
+    { nome: 'anel de agilidade', valor: 3000, venda: 1200, tipo: 'acessorio', atributos: { agilidade: 15 } },
+    { nome: 'cajado elemental', valor: 3500, venda: 1400, tipo: 'arma', atributos: { ataque: 20, inteligencia: 20 } },
+    { nome: 'lanterna mistica', valor: 4500, venda: 1800, tipo: 'acessorio', atributos: { sorte: 20 } },
+    { nome: 'arco simples', valor: 2000, venda: 800, tipo: 'arma', atributos: { ataque: 30 } },
+    { nome: 'escudo de madeira', valor: 1500, venda: 600, tipo: 'armadura', atributos: { defesa: 15 } },
 ];
 
-//FUNÇÃO QUE RETORNA A LOJA
-async function GerarLoja() {
- try {
- let textLoja = `- *🛒 NAZU MARKET 🛒*\n`;
- for(item of itensLoja) {
- textLoja += `\n- ${item.nome} (R$${item.valor})`;
- };
- textLoja += `\n\n> Para realizar a compra utilize o comando #prefix#comprar [Nome do item]\n> Exemplo: #prefix#comprar picareta`;
- return {message: textLoja};
- } catch (e) {
- console.error(e);
- return false;
-}
+const itensMercadoNegro = [
+    { nome: 'adaga das sombras', valor: 12000, almas: 30, tipo: 'arma', atributos: { ataque: 90, veneno: 25 } },
+    { nome: 'elixir proibido', valor: 18000, almas: 50, tipo: 'consumivel', efeito: 'Dobra atributos por 4h' },
+    { nome: 'manto do vazio', valor: 30000, almas: 60, tipo: 'armadura', atributos: { defesa: 80, agilidade: 35 } },
+    { nome: 'orbe das almas', valor: 25000, almas: 75, tipo: 'acessorio', atributos: { inteligencia: 50, almasPorInimigo: 3 } },
+    { nome: 'reliquia do caos', valor: 40000, reliquias: 15, tipo: 'acessorio', atributos: { forca: 60, sorte: 25 } },
+    { nome: 'grimorio proibido', valor: 35000, ether: 20, tipo: 'magia', atributos: { inteligencia: 70 } },
+    { nome: 'espada eterea', valor: 50000, runas: 10, tipo: 'arma', atributos: { ataque: 120 } },
+];
+
+// INIMIGOS EXPANDIDOS
+const inimigos = {
+    'goblin': { vida: 75, ataque: 15, defesa: 10, recompensa: { dinheiro: 75, xp: 25 } },
+    'ogro': { vida: 300, ataque: 40, defesa: 25, recompensa: { dinheiro: 300, xp: 120 } },
+    'dragao': { vida: 2500, ataque: 120, defesa: 80, recompensa: { dinheiro: 4000, gemas: 30, xp: 1000 } },
+    'lich': { vida: 1500, ataque: 100, defesa: 70, recompensa: { dinheiro: 2000, almas: 20, xp: 750 } },
+    'hidra': { vida: 3000, ataque: 90, defesa: 60, recompensa: { dinheiro: 4500, essencia: 15, xp: 1200 } },
+    'espirito amaldicoado': { vida: 1200, ataque: 80, defesa: 40, recompensa: { almas: 20, xp: 500 } },
+    'golem de pedra': { vida: 1800, ataque: 70, defesa: 100, recompensa: { dinheiro: 2500, fragmentos: 10, xp: 800 } },
+    'sereia assassina': { vida: 1400, ataque: 85, defesa: 45, recompensa: { gemas: 25, xp: 550 } },
+    'tita ancestral': { vida: 5000, ataque: 140, defesa: 90, recompensa: { dinheiro: 10000, essencia: 20, xp: 2500 } },
+    'fenix das cinzas': { vida: 2200, ataque: 110, defesa: 65, recompensa: { dinheiro: 3500, reliquias: 7, xp: 1100 } },
+    'cavaleiro negro': { vida: 2600, ataque: 95, defesa: 75, recompensa: { dinheiro: 4000, fragmentos: 15, xp: 950 } },
+    'devorador de mundos': { vida: 7000, ataque: 180, defesa: 120, recompensa: { dinheiro: 15000, essencia: 30, reliquias: 15, xp: 4000 } },
+    'espectro do vazio': { vida: 1600, ataque: 90, defesa: 50, recompensa: { almas: 25, xp: 600 } },
+    'guardião celestial': { vida: 3500, ataque: 130, defesa: 85, recompensa: { dinheiro: 6000, ether: 10, xp: 1500 } },
+    'abominação eterea': { vida: 4000, ataque: 150, defesa: 70, recompensa: { dinheiro: 8000, runas: 5, xp: 2000 } },
+    'senhor das runas': { vida: 6000, ataque: 160, defesa: 100, recompensa: { dinheiro: 12000, runas: 10, reliquias: 10, xp: 3500 } },
+    'kraken abissal': { vida: 4500, ataque: 140, defesa: 80, recompensa: { dinheiro: 7000, essencia: 25, xp: 1800 } },
+];
+
+// MASMORRAS EXPANDIDAS
+const masmorras = {
+    'caverna sombria': { nivelMin: 5, inimigos: ['goblin', 'ogro'], recompensa: { gemas: 50, itens: ['espada de ferro'] } },
+    'templo perdido': { nivelMin: 15, inimigos: ['dragao', 'lich'], recompensa: { almas: 30, itens: ['grimorio basico'] } },
+    'abismo infernal': { nivelMin: 25, inimigos: ['hidra', 'espirito amaldicoado'], recompensa: { essencia: 25, itens: ['manto do vazio'] } },
+    'fortaleza de pedra': { nivelMin: 20, inimigos: ['golem de pedra', 'sereia assassina'], recompensa: { fragmentos: 20, itens: ['armadura de couro'] } },
+    'ruinas titanicas': { nivelMin: 35, inimigos: ['tita ancestral', 'lich'], recompensa: { dinheiro: 20000, essencia: 30, itens: ['orbe das almas'] } },
+    'ninho da fenix': { nivelMin: 30, inimigos: ['fenix das cinzas', 'cavaleiro negro'], recompensa: { reliquias: 15, itens: ['lanterna mistica'] } },
+    'abismo do devorador': { nivelMin: 50, inimigos: ['devorador de mundos', 'espectro do vazio'], recompensa: { dinheiro: 25000, essencia: 40, reliquias: 20, itens: ['reliquia do caos'] } },
+    'santuário celestial': { nivelMin: 40, inimigos: ['guardião celestial', 'abominação eterea'], recompensa: { ether: 15, itens: ['cajado elemental'] } },
+    'coração rúnico': { nivelMin: 60, inimigos: ['senhor das runas', 'kraken abissal'], recompensa: { dinheiro: 30000, runas: 15, reliquias: 25, itens: ['espada eterea'] } },
 };
 
-// FUNÇÃO DE REGISTRAR USUÁRIO
-async function rgUser(sender, name = "") {
-    try {
-        const userPath = path.join(RpgPath, `${sender}.json`);
-        const saldo = { banco: 0, carteira: 0 };
-        const object = {
-            id: sender,
-            nome: name,
-            saldo: saldo,
-            inventario: {}
-        };
-        await fs.writeFile(userPath, JSON.stringify(object, null, '\t'));
-        return true;
-    } catch (e) {
-        console.error(e);
-        return false;
-    }
-}
+// CONQUISTAS EXPANDIDAS
+const conquistas = {
+    'matador de goblins': { requisito: { 'goblin': 20 }, recompensa: { dinheiro: 1500, titulos: 'matador de goblins' }, bonus: { forca: 15 } },
+    'caca dragoes': { requisito: { 'dragao': 15 }, recompensa: { gemas: 100, titulos: 'caca dragoes' }, bonus: { ataque: 30 } },
+    'mestre das masmorras': { requisito: { masmorras: 20 }, recompensa: { essencia: 30, titulos: 'mestre das masmorras' }, bonus: { vitalidade: 25 } },
+    'alquimista supremo': { requisito: { craft: 50 }, recompensa: { fragmentos: 25, titulos: 'alquimista supremo' }, bonus: { inteligencia: 20 } },
+    'lenda viva': { requisito: { nivel: 100 }, recompensa: { prestigio: 200, titulos: 'lenda viva' }, bonus: { todos: 20 } },
+    'destruidor de titas': { requisito: { 'tita ancestral': 10 }, recompensa: { reliquias: 15, titulos: 'destruidor de titas' }, bonus: { forca: 25, defesa: 15 } },
+    'senhor das sombras': { requisito: { 'espectro do vazio': 30 }, recompensa: { almas: 75, titulos: 'senhor das sombras' }, bonus: { sorte: 20 } },
+    'conquistador do caos': { requisito: { 'devorador de mundos': 3 }, recompensa: { dinheiro: 75000, essencia: 75, titulos: 'conquistador do caos' }, bonus: { todos: 30 } },
+    'guardião do ether': { requisito: { 'guardião celestial': 10 }, recompensa: { ether: 20, titulos: 'guardião do ether' }, bonus: { inteligencia: 25 } },
+    'mestre das runas': { requisito: { 'senhor das runas': 5 }, recompensa: { runas: 15, titulos: 'mestre das runas' }, bonus: { todos: 25 } },
+    'vencedor de guerras': { requisito: { guerras: 5 }, recompensa: { prestigio: 150, titulos: 'vencedor de guerras' }, bonus: { carisma: 20 } },
+};
 
-// FUNÇÃO DE PEGAR INFORMAÇÕES DO USUÁRIO
+// FUNÇÃO BASE DO USUÁRIO
 async function getUser(sender) {
-    try {
-        const userPath = path.join(RpgPath, `${sender}.json`);
-        if (await fs.access(userPath).then(() => true).catch(() => false)) {
-            const userDados = JSON.parse(await fs.readFile(userPath, 'utf-8'));
-            return userDados;
-        } else {
-            return false;
-        }
-    } catch (e) {
-        console.error(e);
-        return false;
+    const userPath = path.join(RpgPath, `${sender}.json`);
+    if (await fs.access(userPath).then(() => true).catch(() => false)) {
+        return JSON.parse(await fs.readFile(userPath, 'utf-8'));
     }
+    return false;
 }
 
-// FUNÇÃO UTILITÁRIA: SALVAR USUÁRIO
-async function saveUser(sender, dadosUser) {
-    try {
-        const userPath = path.join(RpgPath, `${sender}.json`);
-        await fs.writeFile(userPath, JSON.stringify(dadosUser, null, '\t'));
-        return true;
-    } catch (e) {
-        console.error(e);
-        return false;
-    }
-}
-
-// ADICIONAR SALDO NA CARTEIRA
-async function addSaldo(sender, value) {
-    if (typeof sender === "undefined" || typeof value === "undefined") {
-        return "Uso: saldo.add(<sender>, <valor>) - Adiciona saldo à carteira do usuário.";
-    }
-    try {
-        const dadosUser = await getUser(sender);
-        if (!dadosUser || !Number(value)) return false;
-        dadosUser.saldo.carteira += Number(value);
-        return await saveUser(sender, dadosUser);
-    } catch (e) {
-        console.error(e);
-        return false;
-    }
-}
-
-// DELETAR SALDO DA CARTEIRA
-async function delSaldo(sender, value) {
-    return addSaldo(sender, -value);
-}
-
-// ADICIONAR SALDO NO BANCO
-async function addSaldoBank(sender, value) {
-    if (typeof sender === "undefined" || typeof value === "undefined") {
-        return "Uso: banco.add(<sender>, <valor>) - Adiciona saldo ao banco do usuário.";
-    }
-    try {
-        const dadosUser = await getUser(sender);
-        if (!dadosUser || !Number(value)) return false;
-        dadosUser.saldo.banco += Number(value);
-        return await saveUser(sender, dadosUser);
-    } catch (e) {
-        console.error(e);
-        return false;
-    }
-}
-
-// DELETAR SALDO NO BANCO
-async function delSaldoBank(sender, value) {
-    return addSaldoBank(sender, -value);
-}
-
-// ADICIONAR ITEM NO INVENTARIO
-async function addItem(sender, itemName, quantity = 1) {
-    if (!itemName || !quantity) {
-        return "Uso: inventario.add(<sender>, <item>, <quantidade>) - Adiciona itens ao inventário.";
-    }
-    try {
-        const dadosUser = await getUser(sender);
-        if (!dadosUser) return false;
-        if (!dadosUser.inventario[itemName]) dadosUser.inventario[itemName] = 0;
-        dadosUser.inventario[itemName] += quantity;
-        await saveUser(sender, dadosUser);
-        return true;
-    } catch (e) {
-        console.error(e);
-        return false;
-    }
-}
-
-//REMOVER ITEM DO INVENTÁRIO
-async function removeItem(sender, itemName, quantity = 1) {
-    if (!itemName || !quantity) {
-        return "Uso: inventario.remove(<sender>, <item>, <quantidade>) - Remove itens do inventário.";
-    }
-    try {
-        const dadosUser = await getUser(sender);
-        if (!dadosUser || !dadosUser.inventario[itemName]) return false;
-        dadosUser.inventario[itemName] -= quantity;
-        if (dadosUser.inventario[itemName] <= 0) {
-            delete dadosUser.inventario[itemName];
-        }
-        await saveUser(sender, dadosUser);
-        return true;
-    } catch (e) {
-        console.error(e);
-        return false;
-    }
-}
-
-//EXCLUIR REGISTRO DE USUÁRIO
-async function delUser(sender) {
-try {
- const userPath = path.join(RpgPath, `${sender}.json`);
- if(require('fs').existsSync(userPath)) {
-  await require('fs').unlinkSync(userPath);
-  return true
- } else {
-  return true;
- };
-} catch (e) {
- console.error(e);
- return false;
-}};
-
-//PEGAR LISTA DE EMPREGOS
-async function listarEmpregos(sender) {
-    try {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser) return false;
-    if (!dadosUser.xpEmprego) dadosUser.xpEmprego = 0;
-    const disponiveis = empregos.filter(e => dadosUser.xpEmprego >= e.xpNecessaria).map(e => e.nome);
-    const bloqueados = empregos.filter(e => dadosUser.xpEmprego < e.xpNecessaria).map(e => e.nome);
-    return { disponiveis, bloqueados };
-    } catch (e) {
- console.error(e);
- return false;
-}
-};
-
-//SE DEMITIR DO EMPREGO
-async function sairEmprego(sender) {
-try {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser) return false;
-    if (!dadosUser.emprego || dadosUser.emprego === "desempregado") return {message: 'Voce ja esta desempregado vagabundo.'};
-    dadosUser.emprego = "desempregado";
-    await saveUser(sender, dadosUser);
-    return {message: "Prontinho você saiu do seu emprego, agora voltou a ser um vagabundo."};
-    } catch (e) {
- console.error(e);
- return false;
-}
-};
-
-//ENTRAR EM UM EMPREGO
-async function entrarEmprego(sender, emprego) {
-try {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser) return false;
-    const empregoData = empregos.find(e => e.nome === emprego);
-    if (!empregoData) return {message: `Emprego inválido, utilize o comando empregos para ver os empregos disponíveis`};
-    if(!dadosUser.xpEmprego) dadosUser.xpEmprego = 0;
-    if (dadosUser.xpEmprego < empregoData.xpNecessaria) {
-        return {message: `Infelizmente eles não quiseram lhe contratar, disseram que você nao tem experiência o suficiente para um cargo deste nível.`};
-    };
-    dadosUser.emprego = emprego;
-    await saveUser(sender, dadosUser);
-    return {message: `Parabéns! Você agora está trabalhando como ${emprego}, Você nao é mais um vagabundo fudido 🥳.`};
-    } catch (e) {
- console.error(e);
- return false;
-}
-};
-
-//FUNÇÃO DE TRABALHAR (ALGUEM ME MATA PFV 😭)
-async function trabalhar(sender) {
-const dadosUser = await getUser(sender);
-if (!dadosUser) return false;
-if (dadosUser.emprego === "desempregado") return {message: 'Desde quando desempregado trabalha? vai procurar um emprego vagabundo'};
-const empregoData = empregos.find(e => e.nome === dadosUser.emprego);
-if (!empregoData) return false;
-
-let now = Date.now();
-
-if (delay[sender] && delay[sender]['trabalhar']) {
-let remainingTime = delay[sender]['trabalhar'] - now;
-if (remainingTime > 0) return {message: empregoData.delay.replaceAll("#segundos#", String(Math.ceil(remainingTime / 1000)))};
-};
-
-try {
-let salario = 0;
-let textoTrabalho = "";
-const chance = Math.random() * 100;
-
-switch (dadosUser.emprego) {
-case "lixeiro":
-if (chance > 30) {
-salario = Math.floor(Math.random() * (empregoData.salarioMax - empregoData.salarioMin)) + empregoData.salarioMin;
-textoTrabalho = `Você recolheu toneladas de lixo e manteve as ruas limpas. Recebeu R$${salario}!`;
-} else if (chance > 7) {
-textoTrabalho = "O caminhão de lixo quebrou hoje, e você não conseguiu trabalhar.";
-} else {
-salario = Math.floor(Math.random() * 140) + 100;
-textoTrabalho = `Sorte grande! Enquanto vasculhava o lixo, encontrou uma joia e vendeu por R$${salario}.`;
-}
-break;
-            
-case "faxineiro":
-if (chance > 30) {
-salario = Math.floor(Math.random() * (empregoData.salarioMax - empregoData.salarioMin)) + empregoData.salarioMin;
-textoTrabalho = `Você deixou tudo brilhando enquanto limpava o prédio. Ganhou R$${salario} pelo excelente trabalho!`;
-} else if (chance > 7) {
-textoTrabalho = "Você escorregou no sabão teve que ir para o hospital e acabou não conseguindo limpar nada hoje.";
-} else {
-salario = Math.floor(Math.random() * 150) + 100;
-textoTrabalho = `Você encontrou dinheiro escondido enquanto limpava um armário e ganhou R$${salario} extras!`;
-}
-break;
-
-case "garcom":
-if (chance > 30) {
-salario = Math.floor(Math.random() * (empregoData.salarioMax - empregoData.salarioMin)) + empregoData.salarioMin;
-textoTrabalho = `Você atendeu vários clientes e recebeu muitas gorjetas. Salário do dia: R$${salario}.`;
-} else if (chance > 7) {
-textoTrabalho = "Um cliente reclamou do serviço, e você não ganhou nada hoje.";
-} else {
-salario = Math.floor(Math.random() * 180) + 200;
-textoTrabalho = `Sorte grande! Um cliente rico deixou uma gorjeta enorme, e você ganhou R$${salario}!`;
-}
-break;
-
-case "motorista":
-if (chance > 30) {
-salario = Math.floor(Math.random() * (empregoData.salarioMax - empregoData.salarioMin)) + empregoData.salarioMin;
-textoTrabalho = `Você transportou várias pessoas com segurança e recebeu R$${salario} pelo serviço.`;
-} else if (chance > 7) {
-textoTrabalho = "Voce teve um pneu furado no meio do caminho e perdeu o dia de trabalho.";
-} else {
-salario = Math.floor(Math.random() * 200) + 200;
-textoTrabalho = `Sorte grande! Você foi contratado para uma viagem especial e ganhou R$${salario}!`;
-}
-break;
-
-case "vendedor":
-if (chance > 30) {
-salario = Math.floor(Math.random() * (empregoData.salarioMax - empregoData.salarioMin)) + empregoData.salarioMin;
-textoTrabalho = `Você vendeu muitos produtos e bateu a meta! Recebeu R$${salario}.`;
-} else if (chance > 7) {
-textoTrabalho = "Foi um dia difícil, nenhum cliente quis comprar nada.";
-} else {
-salario = Math.floor(Math.random() * 250) + 300;
-textoTrabalho = `Sorte grande! Você fechou uma venda enorme e ganhou R$${salario}!`;
-}
-break;
-            
-case "cozinheiro":
-if (chance > 30) {
-salario = Math.floor(Math.random() * (empregoData.salarioMax - empregoData.salarioMin)) + empregoData.salarioMin;
-textoTrabalho = `O restaurante estava muito movimentado hoje, você cozinhou vários pratos e recebeu R$${salario}.`;
-} else if (chance > 7) {
-textoTrabalho = "Seu chefe esta treinando um chefe substituto por isso você não foi trabalhar hoje e não recebeu nada.";
-} else {
-salario = Math.floor(Math.random() * 280) + 300;
-textoTrabalho = `Sorte grande! Um dos clientes do restaurante te contratou para um evento privado e você recebeu R$${salario}!`;
-}
-break;
-            
-case "professor":
-if (chance > 30) {
-salario = Math.floor(Math.random() * (empregoData.salarioMax - empregoData.salarioMin)) + empregoData.salarioMin;
-textoTrabalho = `Voce passou o dia inteiro aguentando um monte de crianças chatas e recebeu apenas R$${salario} por isso.`;
-} else if (chance > 7) {
-textoTrabalho = "Sua escola estava de paralisação hoje então você não foi trabalhar (escola pública né).";
-} else {
-salario = Math.floor(Math.random() * 300) + 350;
-textoTrabalho = `Um de seus alunos precisou de uma aula de reforço particular e te pagou R$${salario} por isso!`;
-}
-break;
-            
-case "engenheiro":
-if (chance > 30) {
-salario = Math.floor(Math.random() * (empregoData.salarioMax - empregoData.salarioMin)) + empregoData.salarioMin;
-textoTrabalho = `Voce trabalhou bastante e recebeu R$${salario}.`;
-} else {
-textoTrabalho = "Você cometeu um erro nos seus cálculos e por isso não ira receber nada.";
-}
-break;
-            
-case "policial":
-if (chance > 30) {
-salario = Math.floor(Math.random() * (empregoData.salarioMax - empregoData.salarioMin)) + empregoData.salarioMin;
-textoTrabalho = `Voce prendeu mais de 10 pessoas hoje e juntando seu salário e as comissões você recebeu R$${salario} por isso.`;
-} else if (chance > 7) {
-textoTrabalho = "Hoje era seu dia de folga.";
-} else {
-salario = Math.floor(Math.random() * 350) + 390;
-textoTrabalho = `Voce recebeu R$${salario} para deixar um caminhão passar sem parar ele, você não sabia do que se tratava mas aceitou.`;
-}
-break
-            
-case "advogado":
-if (chance > 30) {
-salario = Math.floor(Math.random() * (empregoData.salarioMax - empregoData.salarioMin)) + empregoData.salarioMin;
-textoTrabalho = `Voce trabalhou duro e recebeu R$${salario} de seu cliente por isso.`;
-} else if (chance > 7) {
-textoTrabalho = "Você perdeu o caso, seu cliente te processou e você teve que devolver todo o valor recebido dele.";
-} else {
-salario = Math.floor(Math.random() * 500) + 500;
-textoTrabalho = `Um presidente te contratou, e você recebeu R$${salario} por isso!`;
-}
-break
-            
-case "medico":
-if (chance > 30) {
-salario = Math.floor(Math.random() * (empregoData.salarioMax - empregoData.salarioMin)) + empregoData.salarioMin;
-textoTrabalho = `Hoje foi um dia bem movimentado do hospital, você trabalhou muito e recebeu R$${salario} por isso.`;
-} else if (chance > 7) {
-textoTrabalho = "Você passou mal hoje e quem precisou ser atendido foi você.";
-} else {
-salario = Math.floor(Math.random() * 650) + 600;
-textoTrabalho = `Voce foi contratado para fazer um atendimento particular e recebeu R$${salario} por isso!`;
-}
-break
-
-default:
-textoTrabalho = "Esse emprego ainda não teve as mensagens e os valores configurados, avise meu dono sobre isso.";
-break;
-}
-    
-if (!delay[sender]) delay[sender] = {};
-delay[sender]['trabalhar'] = now + (2 * 60 * 1000);
-
-if(!dadosUser.xpEmprego) dadosUser.xpEmprego = 0;
-const xpGanho = salario > 0 ? 1 : 0.5;
-dadosUser.xpEmprego += xpGanho;
-    
-const proximoEmprego = empregos.find(e => e.xpNecessaria > empregoData.xpNecessaria && e.xpNecessaria <= dadosUser.xpEmprego);
-if (proximoEmprego) {
-textoTrabalho += `\n\nQuando estava saindo do seu turno você recebeu uma ligação, era uma proposta de emprego, agora você pode trabalhar de ${proximoEmprego.nome} 🥳🥳.`;
-};
-
-await saveUser(sender, dadosUser);
-if (salario > 0) await addSaldo(sender, salario);
-return {message: textoTrabalho};
-//DEMOREI UMA HORA PRA FAZER ESSA MERDA DE SISTEMA DE TRABALHO, SE ESSA PORRA VAZAR NUNCA PERDOAREI VOCÊ.
-} catch (e) {
- console.error(e);
- return false;
-}
-};
-
-//FUNÇÃO DE COMPRAR ITENS
-async function comprarItem(sender, itemName) {
-try { 
-const item = itensLoja.find(i => i.nome === itemName); 
-if (!item) return { message: "Este item não esta disponível na loja, digite #prefix#loja para ver os itens disponíveis." };
-const dadosUser = await getUser(sender);
-if (!dadosUser) return false;
-if (dadosUser.saldo.carteira < item.valor) return { message: "Você não tem dinheiro suficiente para comprar este item.\n\n> Talvez seu dinheiro esteja no banco, para realizar uma compra é preciso sacar o dinheiro." };
-await delSaldo(sender, item.valor);
-await addItem(sender, itemName);
-return { message: `Você comprou um(a) ${itemName} por R$${item.valor}, o item ja esta no seu inventario.` };
-} catch (e) {
-console.error(e);
-return false;
-}};
-
-//FUNÇÃO DE VENDER ITENS 
-async function venderItem(sender, itemName, quantidade = 1) { 
-try { 
-const item = itensVenda.find(i => i.nome === itemName) || itensLoja.find(i => i.nome === itemName); 
-if (!item) return { message: "Este item não pode ser vendido." };
-const dadosUser = await getUser(sender);
-if (!dadosUser) return false;
-if (!dadosUser.inventario[itemName] || dadosUser.inventario[itemName] < quantidade) return { message: `Voce nao tem ${quantidade} ${itemName}, é impossível realizar esta venda\n\n> Quantidade de ${itemName} no seu inventario: ${dadosUser.inventario[itemName] ? dadosUser.inventario[itemName] : 0}.` };
-const ganho = item.venda * quantidade;
-await addSaldo(sender, ganho);
-await removeItem(sender, itemName, quantidade);
-return { message: `Você vendeu ${quantidade}x ${itemName} por R$${ganho}.` };
-} catch (e) {
-console.error(e);
-return false;
-}};
-
-//FUNÇÃO PARA REALIZAR PESCARIA 
-async function pescar(sender) {
-    try {
-        const dadosUser = await getUser(sender);
-        if (!dadosUser) return { message: "Usuário não encontrado." };
-
-        if (!dadosUser.inventario["isca"] || dadosUser.inventario["isca"] <= 0) {
-            return { message: "Você não tem iscas suficientes para pescar." };
-        }
-
-        const agora = Date.now();
-        if (!dadosUser.delay) dadosUser.delay = {};
-        if (dadosUser.delay.pescar && agora < dadosUser.delay.pescar) {
-            const restante = Math.ceil((dadosUser.delay.pescar - agora) / 1000);
-            return { message: `O lago está muito agitado! Espere ${restante} segundos antes de pescar novamente.` };
-        }
-
-        const peixes = Math.floor(Math.random() * 11) + 5;
-        
-        if (!dadosUser.delay) dadosUser.delay = {};
-        
-        dadosUser.delay.pescar = agora + 2 * 60 * 1000; // 2 minutos de delay
-        await saveUser(sender, dadosUser);
-       
-        await removeItem(sender, "isca", 1);
-        await addItem(sender, "peixe", peixes);
-        
-        return { message: `🎣 Você pescou ${peixes} peixes! Parabéns pela pescaria!` };
-    } catch (e) {
-        console.error(e);
-        return { message: "Ocorreu um erro durante a pescaria." };
-    }
-}
-
-//FUNÇÃO PARA REALIZAR UMA CAÇA
-async function realizarCaca(sender) {
-    try {
-        dadosUser = await getUser(sender);
-        if (!dadosUser) return { message: "Usuário não encontrado." };
-
-        if ((!dadosUser.inventario["arma"] || dadosUser.inventario["arma"] <= 0) ||
-            (!dadosUser.inventario["municao"] || dadosUser.inventario["municao"] <= 0)) {
-            return { message: "Você precisa de uma arma e munição para caçar." };
-        }
-
-        const agora = Date.now();
-        if (!dadosUser.delay) dadosUser.delay = {};
-        if (dadosUser.delay.cacar && agora < dadosUser.delay.cacar) {
-            const restante = Math.ceil((dadosUser.delay.cacar - agora) / 1000);
-            return { message: `Os animais estão escondidos! Espere ${restante} segundos antes de tentar caçar novamente.` };
-        }
-
-        const chanceDeQuebra = Math.random() < 0.2;
-        const carnes = Math.floor(Math.random() * 11) + 10;
-
-        if (chanceDeQuebra) {
-            await removeItem(sender, "arma", 1);
-            return { message: `Sua arma quebrou após a caça, mas você conseguiu ${carnes} carnes!` };
-        }
-        
-        dadosUser = await getUser(sender);
-        
-        if (!dadosUser.delay) dadosUser.delay = {};
-                
-        dadosUser.delay.cacar = agora + 4 * 60 * 1000;
-        await saveUser(sender, dadosUser);
-        
-        await removeItem(sender, "municao", 1);
-        await addItem(sender, "carne", carnes);
-
-        return { message: `🐗 Você caçou e conseguiu ${carnes} carnes!` };
-    } catch (e) {
-        console.error(e);
-        return { message: "Ocorreu um erro durante a caça." };
-    }
-}
-
-//FUNÇÃO PARA REALIZAR UMA MINERAÇÃO
-async function minerar(sender) {
-    try {
-        dadosUser = await getUser(sender);
-        if (!dadosUser) return { message: "Usuário não encontrado." };
-
-        if (!dadosUser.inventario.picareta || dadosUser.inventario.picareta <= 0) {
-            return { message: "Você precisa de uma picareta para minerar." };
-        }
-
-        const agora = Date.now();
-        if (!dadosUser.delay) dadosUser.delay = {};
-        if (dadosUser.delay.minerar && agora < dadosUser.delay.minerar) {
-            const restante = Math.ceil((dadosUser.delay.minerar - agora) / 1000);
-            return { message: `A mina está fechada para manutenção! Espere ${restante} segundos antes de tentar minerar novamente.` };
-        }
-
-        const minerios = [
-            { nome: "carvao", chance: 50 },
-            { nome: "ferro", chance: 30 },
-            { nome: "prata", chance: 20 },
-            { nome: "ouro", chance: 15 },
-            { nome: "diamante", chance: 5 },
-            { nome: "esmeralda", chance: 3 }
-        ];
-        const ganhos = [];
-
-        for (const minerio of minerios) {
-            if (Math.random() * 100 < minerio.chance) {
-                const quantidade = Math.floor(Math.random() * 3) + 1;
-                ganhos.push({ nome: minerio.nome, quantidade });
-                await addItem(sender, minerio.nome, quantidade);
-            }
-        }
-
-        if (Math.random() < 0.25) {
-            await removeItem(sender, "picareta", 1);
-            ganhos.push({ nome: "picareta quebrada", quantidade: 1 });
-        }
-        
-        dadosUser = await getUser(sender);
-        
-        if (!dadosUser.delay) dadosUser.delay = {};
-        
-        dadosUser.delay.minerar = agora + 3 * 60 * 1000; // 3 minutos de delay
-        await saveUser(sender, dadosUser);
-
-        const ganhoTexto = ganhos.length
-            ? ganhos.map(g => `${g.quantidade}x ${g.nome}`).join(", ")
-            : "nada";
-        return { message: `⛏️ Você minerou e encontrou: ${ganhoTexto}.` };
-    } catch (e) {
-        console.error(e);
-        return { message: "Ocorreu um erro durante a mineração." };
-    }
-}
-
-//FUNÇÃO PARA RENDERIZAR O INVENTÁRIO
-async function renderizarInventario(sender) {
-try {
-const dadosUser = await getUser(sender);
-if (!dadosUser) return false
-const inventario = dadosUser.inventario;
-if (!inventario || Object.keys(inventario).length === 0) return {message: "🛒 *Seu inventário está vazio.*"};
-let resposta = "📦 *Inventário* 📦\n\n";
-Object.keys(inventario).forEach(item => {
-resposta += `- *${item}*: ${inventario[item]}\n`;
-});
-return {message: resposta.trim()};
-} catch (e) {
-console.error(e);
-return "Erro ao renderizar o inventário.";
-}};
-
-//FUNÇÃO PARA RENDERIZAR TODAS AS INFORMAÇÕES DO USUÁRIO
-async function renderizarInformacoesUsuario(sender) {
-try {
-const dadosUser = await getUser(sender);
-if (!dadosUser) return false;
-const { nome, saldo, emprego, xpEmprego, inventario } = dadosUser;
-const inventarioTexto = inventario && Object.keys(inventario).length > 0 ? Object.keys(inventario).map(item => `- *${item}*: ${inventario[item]}`).join("\n") : "- Nenhum item";
-const resposta = `👤 *Informações do Usuário*\n---------------------------------\n- *Nome*: ${nome || "Desconhecido"}\n- *Emprego*: ${emprego || "Desempregado"}\n\n- *Saldo No Banco*: ${saldo?.banco || 0} 🏦\n- *Saldo Na Carteira*: ${saldo?.carteira || 0} 💵\n\n📦 *Inventário*:\n${inventarioTexto}\n---------------------------------`.trim();
-return {message: resposta};
-} catch (e) {
-console.error(e);
-return false;
-}};
-
-// FUNÇÃO PARA REALIZAR UM ASSALTO
-async function assaltar(sender, alvo) {
-    try {
-        const dadosUser = await getUser(sender);
-        const dadosAlvo = await getUser(alvo);
-
-        if (!dadosUser || !dadosAlvo) return { message: "Um dos usuários não está registrado no RPG." };
-
-        if (!dadosUser.inventario.faca || dadosUser.inventario.faca < 1) {
-            return { message: "Você precisa de uma faca para realizar um assalto." };
-        }
-
-        const agora = Date.now();
-        if (!dadosUser.delay) dadosUser.delay = {};
-        if (dadosUser.delay.assaltar && agora < dadosUser.delay.assaltar) {
-            const restante = Math.ceil((dadosUser.delay.assaltar - agora) / 1000);
-            return { message: `Você está sendo procurado pela polícia! Espere ${restante} segundos antes de tentar outro assalto.` };
-        }
-
-        if (dadosAlvo.inventario.escudo && dadosAlvo.inventario.escudo > 0) {
-            if (Math.random() * 100 < 20) {
-            dadosUser.delay.assaltar = agora + 5 * 60 * 1000;
-            await saveUser(sender, dadosUser);
-                await removeItem(alvo, "escudo", 1);
-                return { message: `Seu alvo estava protegido por um escudo! O escudo quebrou, mas você não conseguiu realizar o assalto.` };
-            }
-            dadosUser.delay.assaltar = agora + 5 * 60 * 1000;
-            await saveUser(sender, dadosUser);
-            return { message: "Seu alvo estava protegido por um escudo! Você não conseguiu realizar o assalto." };
-        }
-
-        const chanceSucesso = Math.random() * 100;
-        const dinheiroAlvo = dadosAlvo.saldo.carteira;
-
-        if (chanceSucesso > 30) {
-            const valorRoubado = Math.floor(dinheiroAlvo > 500 ? 500 : dinheiroAlvo * (Math.random() * 0.5 + 0.1));
-            dadosUser.delay.assaltar = agora + 5 * 60 * 1000;
-            await saveUser(sender, dadosUser);
-            await addSaldo(sender, valorRoubado);
-            await delSaldo(alvo, valorRoubado);
-            return { message: `💰 Assalto bem-sucedido! Você roubou R$${valorRoubado} de ${dadosAlvo.nome}. Corra antes que a polícia chegue!` };
-        } else if (chanceSucesso > 40) {
-            return { message: "O alvo percebeu o assalto e conseguiu escapar! Você não roubou nada desta vez." };
-        } else {
-            await removeItem(sender, 'faca', 1);
-            return { message: "O alvo reagiu ao assalto e conseguiu tomar sua faca! Você perdeu a arma e não conseguiu nada." };
-        }
-    } catch (e) {
-        console.error(e);
-        return { message: "Ocorreu um erro durante o assalto." };
-    }
-}
-
-// PEDIR EM CASAMENTO
-async function pedirCasamento(sender) {
-    const dadosUser = await getUser(sender);
-
-    if (!dadosUser.relacionamento) dadosUser.relacionamento = {};
-
-    if (dadosUser.relacionamento.tipo !== "namoro") return { message: "💍 Você precisa estar em um namoro para fazer o pedido de casamento." };
-
-    const parceiroId = dadosUser.relacionamento.parceiro;
-    const dadosParceiro = await getUser(parceiroId);
-
-    if (!dadosParceiro || !dadosParceiro.relacionamento) return { message: "Parece que houve um problema ao encontrar sua dupla. Tente novamente mais tarde." };
-
-    const tempoNamoro = (Date.now() - dadosUser.relacionamento.inicio) / (1000 * 60 * 60 * 24);
-    if (tempoNamoro < 5) return { message: "⏳ Você precisa estar namorando há pelo menos 5 dias antes de fazer o pedido de casamento." };
-
-    dadosParceiro.relacionamento.pedido = sender;
-    dadosParceiro.relacionamento.tipo = "casamento";
-    await saveUser(parceiroId, dadosParceiro);
-
-    return { message: `💍 Pedido de casamento enviado para ${dadosParceiro.nome}! Será que vocês darão o próximo grande passo? 💕\n\n> Digite !aceitar para aceitar e !recusar para recusar` };
-}
-
-//RECUSAR PEDIDO
-async function recusarPedido(sender) {
-    const dadosUser = await getUser(sender);
-
-    if (!dadosUser.relacionamento) dadosUser.relacionamento = {};
-
-    if (!dadosUser.relacionamento.pedido) return { message: "📭 Você não tem pedidos pendentes para recusar." };
-
-    const parceiroId = dadosUser.relacionamento.pedido;
-    const dadosParceiro = await getUser(parceiroId);
-
-    if (dadosParceiro && dadosParceiro.relacionamento) {
-        dadosParceiro.relacionamento.pedido = null;
-        await saveUser(parceiroId, dadosParceiro);
-    }
-
-    dadosUser.relacionamento.pedido = null;
-    await saveUser(sender, dadosUser);
-
-    return { message: `💔 Sinto muito, ${dadosParceiro ? dadosParceiro.nome : "alguém"}! ${dadosUser.nome} decidiu recusar o pedido. O amor pode ser complicado às vezes...` };
-}
-
-// ACEITAR PEDIDO
-async function aceitarPedido(sender) {
-    const dadosUser = await getUser(sender);
-
-    if (!dadosUser.relacionamento) dadosUser.relacionamento = {};
-
-    if (!dadosUser.relacionamento.pedido) return { message: "📭 Você não tem pedidos pendentes." };
-
-    const parceiroId = dadosUser.relacionamento.pedido;
-    const dadosParceiro = await getUser(parceiroId);
-
-    if (!dadosParceiro) return { message: "Erro ao encontrar o remetente do pedido. Parece que ele(a) desapareceu! 😢" };
-
-    if (!dadosParceiro.relacionamento) dadosParceiro.relacionamento = {};
-
-    // Verifica se o pedido é de namoro ou casamento
-    if (dadosUser.relacionamento.tipo === "casamento" && dadosParceiro.relacionamento.tipo === "namoro") {
-        // Promover para casamento
-        dadosUser.relacionamento.tipo = "casamento";
-        dadosParceiro.relacionamento.tipo = "casamento";
-
-        dadosUser.relacionamento.pedido = null;
-        dadosParceiro.relacionamento.pedido = null;
-
-        await saveUser(sender, dadosUser);
-        await saveUser(parceiroId, dadosParceiro);
-
-        return { message: `💍 Parabéns! Agora vocês estão oficialmente casados. Que a felicidade seja infinita! 🎉` };
-    } else if (!dadosUser.relacionamento.parceiro) {
-        // Caso seja um pedido de namoro
-        dadosUser.relacionamento.parceiro = parceiroId;
-        dadosUser.relacionamento.tipo = "namoro";
-        dadosUser.relacionamento.inicio = Date.now();
-        dadosUser.relacionamento.pedido = null;
-
-        dadosParceiro.relacionamento.parceiro = sender;
-        dadosParceiro.relacionamento.tipo = "namoro";
-        dadosParceiro.relacionamento.inicio = Date.now();
-        dadosParceiro.relacionamento.pedido = null;
-
-        await saveUser(sender, dadosUser);
-        await saveUser(parceiroId, dadosParceiro);
-
-        return { message: `🌹 Parabéns! ${dadosParceiro.nome} aceitou seu pedido de namoro. Que vocês vivam muitas aventuras juntos! 🥰` };
-    }
-
-    return { message: "Algo deu errado! Verifique o status do relacionamento e tente novamente." };
-}
-
-//VER INFORMAÇÕES DA DUPLA
-async function mostrarDupla(sender) {
-    const dadosUser = await getUser(sender);
-
-    if (!dadosUser.relacionamento || !dadosUser.relacionamento.parceiro) {
-        return { message: "📭 Você não está em um relacionamento no momento. Talvez seja a hora de buscar sua outra metade!" };
-    }
-
-    const parceiroId = dadosUser.relacionamento.parceiro;
-    const dadosParceiro = await getUser(parceiroId);
-
-    const inicio = new Date(dadosUser.relacionamento.inicio);
-    const inicioFormatado = inicio.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
-    const tempoTotal = Date.now() - dadosUser.relacionamento.inicio;
-
-    const dias = Math.floor(tempoTotal / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((tempoTotal % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutos = Math.floor((tempoTotal % (1000 * 60 * 60)) / (1000 * 60));
-    const segundos = Math.floor((tempoTotal % (1000 * 60)) / 1000);
-
-    return {
-        message: `💑 *Informações do Relacionamento* 💑\n\n👤 *Parceiro*: ${dadosParceiro.nome}\n📅 *Início do Namoro*: ${inicioFormatado}\n⏳ *Tempo Juntos*: ${dias} dias, ${horas} horas, ${minutos} minutos e ${segundos} segundos.\n\n💍 *Status*: ${dadosUser.relacionamento.tipo === "casamento" ? "Casados" : "Namorando"}`
-    };
-}
-// REALIZAR PEDIDO DE NAMORO
-async function pedirNamoro(sender, alvo) {
-    const dadosUser = await getUser(sender);
-    const dadosAlvo = await getUser(alvo);
-
-    if (!dadosUser || !dadosAlvo) return { message: "Um dos usuários não está registrado no RPG." };
-
-    if (!dadosUser.relacionamento) dadosUser.relacionamento = {};
-    if (!dadosAlvo.relacionamento) dadosAlvo.relacionamento = {};
-
-    if (dadosUser.relacionamento.parceiro) return { message: "💔 Você já está em um relacionamento! Não pode pedir outra pessoa em namoro." };
-    if (dadosAlvo.relacionamento.parceiro) return { message: "💔 Infelizmente, essa pessoa já está em um relacionamento." };
-
-    dadosAlvo.relacionamento.pedido = sender;
-    await saveUser(alvo, dadosAlvo);
-
-    return { message: `💌 Pedido enviado! Agora só resta esperar... Será que ${dadosAlvo.nome} aceitará ser sua dupla? O destino decidirá!\n\n> Digite !aceitar para aceitar e !recusar para recusar` };
-}
-
-//REALIZAR DIVORCIO
-async function divorcio(sender, confirmacao) {
-    if (confirmacao !== "1") return { message: "💔 Tem certeza que deseja se separar? Digite `!divorcio 1` para confirmar sua decisão." };
-
-    const dadosUser = await getUser(sender);
-
-    if (!dadosUser.relacionamento) dadosUser.relacionamento = {};
-
-    if (!dadosUser.relacionamento.parceiro) return { message: "📭 Você não está em um relacionamento para se divorciar. Talvez seja um sinal para não desistir do amor! 💕" };
-
-    const parceiroId = dadosUser.relacionamento.parceiro;
-    const dadosParceiro = await getUser(parceiroId);
-
-    if (dadosParceiro && dadosParceiro.relacionamento) {
-        dadosParceiro.relacionamento = null;
-        await saveUser(parceiroId, dadosParceiro);
-    }
-
-    dadosUser.relacionamento = null;
-    await saveUser(sender, dadosUser);
-
-    return { message: "💔 Que triste! O amor entre vocês chegou ao fim. Que vocês encontrem novos caminhos de felicidade." };
-}
-
-// CONSTANTES
-const CUSTO_TOSA = 200;
-const CUSTO_VETERINARIO = 500;
-
-// ESTRUTURA INICIAL DO PET
-const petInicial = {
-    nome: "",
-    tipo: "",
-    fome: 50,
-    felicidade: 50,
-    limpeza: 50,
-    saude: 50,
-    ultimaAlimentacao: null,
-    ultimoBanho: null,
-    ultimaTosa: null,
-    ultimaVisitaVeterinario: null,
-    ultimaInteracao: null
-};
-
-// ATUALIZA OS ATRIBUTOS DO PET
-async function atualizarAtributosPet(sender) {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser.pet) return false;
-
-    const pet = dadosUser.pet;
-    const agora = Date.now();
-
-    const tempoDesdeUltimaAlimentacao = pet.ultimaAlimentacao ? (agora - pet.ultimaAlimentacao) / (1000 * 60) : agora;
-    const tempoDesdeUltimoBanho = pet.ultimoBanho ? (agora - pet.ultimoBanho) / (1000 * 60) : agora;
-    const tempoDesdeUltimaInteracao = pet.ultimaInteracao ? (agora - pet.ultimaInteracao) / (1000 * 60) : agora;
-
-    // Calcula deterioração
-    const fomeDelta = tempoDesdeUltimaAlimentacao * 0.4; // Reduzida para desacelerar
-    const limpezaDelta = tempoDesdeUltimoBanho * 0.2;
-    const felicidadeDelta = tempoDesdeUltimaInteracao * 0.3 + pet.fome * 0.05; // Felicidade cai mais rápido se a fome for alta
-    const saudeDelta = (100 - pet.limpeza) * 0.02 + (100 - pet.felicidade) * 0.02; // Saúde cai por falta de limpeza e felicidade
-
-    // Atualiza estados
-    pet.fome = Math.min(100, pet.fome + fomeDelta);
-    pet.limpeza = Math.max(0, pet.limpeza - limpezaDelta);
-    pet.felicidade = Math.max(0, Math.min(100, pet.felicidade - felicidadeDelta));
-    pet.saude = Math.max(0, Math.min(100, pet.saude - saudeDelta));
-
-    pet.ultimaInteracao = agora;
-
-    await saveUser(sender, dadosUser);
+async function saveUser(sender, dados) {
+    const userPath = path.join(RpgPath, `${sender}.json`);
+    await fs.writeFile(userPath, JSON.stringify(dados, null, '\t'));
     return true;
 }
 
-// ADOTAR UM PET
-async function adotarPet(sender, nome, tipo) {
-    const dadosUser = await getUser(sender);
+// REGISTRO INICIAL
+async function registrar(sender, nome) {
+    const dados = {
+        id: sender,
+        nome,
+        nivel: 1,
+        experiencia: 0,
+        atributos: { forca: 15, agilidade: 15, inteligencia: 15, vitalidade: 20, sorte: 15, carisma: 10, resistencia: 10 },
+        moedas: { dinheiro: 1500, gemas: 25, prestigio: 0, almas: 0, essencia: 0, fragmentos: 0, reliquias: 0, ether: 0, runas: 0 },
+        saldo: { banco: 0, carteira: 1500 },
+        inventario: { 'potion de vida': 15 },
+        emprego: 'desempregado',
+        habilidades: {},
+        propriedades: [],
+        guilda: null,
+        pet: null,
+        magia: { nivel: 0, mana: 250, feitiços: [] },
+        reputacao: 0,
+        equipamento: { arma: null, armadura: null, acessorio: null, anel: null },
+        missões: [],
+        facção: null,
+        titulos: [],
+        conquistas: { inimigosMortos: {}, masmorrasCompletadas: 0, itensCraftados: 0, guerrasVencidas: 0, caravanasCompletadas: 0, portaisExplorados: 0, reinosFundados: 0 },
+        batalhas: { vitorias: {}, derrotas: 0 },
+        religiao: { deus: null, favor: 0 },
+        caravana: null,
+        arena: { vitorias: 0, derrotas: 0 },
+        reino: null,
+        portal: null,
+        forja: { nivel: 1, bonus: 0 },
+        alquimia: { nivel: 1, bonus: 0 },
+    };
+    await saveUser(sender, dados);
+    return `🌌 *Bem-vindo à Eternidade Forjada, ${nome}!* 🌌\nSua saga começa com 1500 ${MOEDAS.dinheiro}, 25 ${MOEDAS.gemas} e 15 poções de vida. O cosmos inteiro é seu para conquistar!`;
+}
 
-    if (!dadosUser) return { message: "⚠️ Você precisa estar registrado no RPG para adotar um pet." };
-    if (dadosUser.pet) return { message: "⚠️ Você já possui um pet! Solte o atual antes de adotar outro." };
-    if (!nome || nome.length > 15) return { message: "⚠️ O nome deve ter no máximo 15 caracteres." };
-    if (!["cachorro", "gato", "capivara"].includes(tipo.toLowerCase())) {
-        return { message: "⚠️ Tipo de pet inválido. Escolha entre *cachorro*, *gato* ou *capivara*." };
+// SISTEMA DE NÍVEL E ATRIBUTOS
+async function ganharXP(sender, quantidade) {
+    const user = await getUser(sender);
+    user.experiencia += quantidade;
+    const xpNecessario = user.nivel * 400 + Math.pow(user.nivel, 2) * 200;
+    if (user.experiencia >= xpNecessario) {
+        user.nivel++;
+        user.experiencia -= xpNecessario;
+        user.atributos.forca += 6;
+        user.atributos.agilidade += 6;
+        user.atributos.inteligencia += 6;
+        user.atributos.vitalidade += 15;
+        user.atributos.sorte += 5;
+        user.atributos.carisma += 4;
+        user.atributos.resistencia += 5;
+        user.magia.mana += 100;
+        await verificarConquistas(sender);
+        await saveUser(sender, user);
+        return `🌠 *Ascensão Cósmica!* ${user.nome}, você alcançou o nível ${user.nivel}! Seu nome ecoa pelas eras infinitas!`;
     }
-
-    dadosUser.pet = { ...petInicial, nome, tipo: tipo.toLowerCase() };
-    await saveUser(sender, dadosUser);
-
-    return { message: `🎉 *Parabéns!* Você adotou um(a) ${tipo} chamado(a) *${nome}*. Cuide bem dele(a) e aproveite a companhia!` };
+    await saveUser(sender, user);
+    return `⚡ *Poder Conquistado!* Você ganhou ${quantidade} XP! Progresso: ${user.experiencia}/${xpNecessario}.`;
 }
 
-// FAZER CARINHO NO PET
-async function fazerCarinho(sender) {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser.pet) return { message: "⚠️ Você não tem um pet. Adote um primeiro!" };
-
-    const pet = dadosUser.pet;
-
-    // Felicidade aumenta proporcionalmente
-    pet.felicidade = Math.min(100, pet.felicidade + 15);
-    pet.ultimaInteracao = Date.now();
-
-    await saveUser(sender, dadosUser);
-
-    return { message: `💖 Você fez carinho em *${pet.nome}*. Ele(a) parece mais feliz e satisfeito agora!` };
+async function distribuirPontos(sender, atributo, pontos) {
+    const user = await getUser(sender);
+    const attrs = ['forca', 'agilidade', 'inteligencia', 'vitalidade', 'sorte', 'carisma', 'resistencia'];
+    if (!attrs.includes(atributo)) return '⚠️ Atributo inválido. Escolha: força, agilidade, inteligência, vitalidade, sorte, carisma, resistência.';
+    if (pontos > user.nivel - Object.values(user.atributos).reduce((a, b) => a + b, 0) + 50) return '⚠️ Pontos insuficientes!';
+    user.atributos[atributo] += pontos;
+    await saveUser(sender, user);
+    return `✅ *Poder Forjado!* Você investiu ${pontos} pontos em ${atributo}. Novo valor: ${user.atributos[atributo]}.`;
 }
 
-// BRINCAR COM O PET
-async function brincarPet(sender) {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser.pet) return { message: "⚠️ Você não tem um pet. Adote um primeiro!" };
-
-    const pet = dadosUser.pet;
-
-    // Reduz fome, aumenta felicidade
-    pet.fome = Math.min(100, pet.fome + 15);
-    pet.felicidade = Math.min(100, pet.felicidade + 20);
-    pet.ultimaInteracao = Date.now();
-
-    await saveUser(sender, dadosUser);
-
-    return { message: `🎾 Você brincou com *${pet.nome}*. Ele(a) está cheio de energia, mas parece um pouco mais faminto agora!` };
-}
-
-// SOLTAR O PET
-async function soltarPet(sender) {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser.pet) return { message: "⚠️ Você não possui um pet para soltar." };
-
-    const pet = dadosUser.pet;
-    dadosUser.pet = null;
-
-    await saveUser(sender, dadosUser);
-    return { message: `💔 Você soltou seu pet *${pet.nome}*. Ele(a) sentirá saudades, mas está em boas mãos na natureza.` };
-}
-
-// ALIMENTAR O PET
-async function alimentarPet(sender) {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser.pet) return { message: "⚠️ Você não tem um pet. Adote um primeiro!" };
-
-    const pet = dadosUser.pet;
-    if (!dadosUser.inventario.racao || dadosUser.inventario.racao <= 0) {
-        return { message: "🍽️ Você não possui *ração* no inventário. Compre na loja para alimentar seu pet." };
-    }
-
-    pet.fome = Math.max(0, pet.fome - 20);
-    pet.felicidade = Math.min(100, pet.felicidade + 10);
-    pet.ultimaAlimentacao = Date.now();
-
-    await saveUser(sender, dadosUser);
+// SISTEMA DE COMBATE
+async function batalhar(sender, inimigoNome) {
+    const user = await getUser(sender);
+    const inimigo = inimigos[inimigoNome];
+    if (!inimigo) return '⚠️ Essa entidade não existe nas crônicas eternas!';
     
-    await removeItem(sender, "racao", 1);
-
-    return { message: `🍖 Você alimentou *${pet.nome}*. Ele(a) parece satisfeito e está mais feliz agora!` };
-}
-
-// DAR BANHO
-async function darBanho(sender) {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser.pet) return { message: "⚠️ Você não tem um pet. Adote um primeiro!" };
-
-    const pet = dadosUser.pet;
-    pet.limpeza = 100;
-    pet.ultimoBanho = Date.now();
-
-    await saveUser(sender, dadosUser);
-
-    return { message: `🚿 Você deu um banho em *${pet.nome}*. Ele(a) está limpinho e muito confortável agora!` };
-}
-
-// TOSAR O PET
-async function tosarPet(sender) {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser.pet) return { message: "⚠️ Você não tem um pet. Adote um primeiro!" };
-
-    if (dadosUser.saldo.carteira < CUSTO_TOSA) {
-        return { message: "⚠️ Você não possui saldo suficiente para pagar a tosa! (Custa R$200)." };
-    }
-
-    dadosUser.saldo.carteira -= CUSTO_TOSA;
-    const pet = dadosUser.pet;
-
-    pet.felicidade = 100;
-    pet.ultimaTosa = Date.now();
-
-    await saveUser(sender, dadosUser);
-
-    return { message: `✂️ Você levou *${pet.nome}* para tosar. Ele(a) está mais bonito(a) e feliz agora!` };
-}
-
-// LEVAR AO VETERINÁRIO
-async function levarAoVeterinario(sender) {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser.pet) return { message: "⚠️ Você não tem um pet. Adote um primeiro!" };
-
-    if (dadosUser.saldo.carteira < CUSTO_VETERINARIO) {
-        return { message: "⚠️ Você não possui saldo suficiente para pagar o veterinário! (Custa R$500)." };
-    }
-
-    dadosUser.saldo.carteira -= CUSTO_VETERINARIO;
-    const pet = dadosUser.pet;
-
-    pet.saude = 100;
-    pet.ultimaVisitaVeterinario = Date.now();
-
-    await saveUser(sender, dadosUser);
-
-    return { message: `🏥 Você levou *${pet.nome}* ao veterinário. Ele(a) está saudável e feliz agora!` };
-}
-
-// VER STATUS DO PET
-async function verPet(sender) {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser.pet) return { message: "⚠️ Você não tem um pet. Adote um primeiro!" };
-
-    const pet = dadosUser.pet;
-
-    return {
-        message: `
-🐾 *Status do Pet* 🐾
-- Nome: *${pet.nome}*
-- Tipo: *${pet.tipo}*
-- Fome: *${pet.fome.toFixed(2)}%*
-- Felicidade: *${pet.felicidade.toFixed(2)}%*
-- Limpeza: *${pet.limpeza.toFixed(2)}%*
-- Saúde: *${pet.saude.toFixed(2)}%*
-        `.trim()
-    };
-}
-
-// PASSEAR COM O PET
-async function passearPet(sender) {
-    const dadosUser = await getUser(sender);
-    if (!dadosUser.pet) return { message: "⚠️ Você não tem um pet. Adote um primeiro!" };
-
-    const pet = dadosUser.pet;
-
-    // Passeios aumentam felicidade e saúde, mas também consomem energia (fome aumenta)
-    const felicidadeGanho = Math.max(10, 30 - pet.fome * 0.2); // Ganha menos felicidade se o pet estiver com fome
-    const saudeGanho = Math.max(5, 20 - (100 - pet.limpeza) * 0.1); // Ganha menos saúde se o pet estiver sujo
-    const fomeGanho = 10; // Passear aumenta a fome
-
-    pet.felicidade = Math.min(100, pet.felicidade + felicidadeGanho);
-    pet.saude = Math.min(100, pet.saude + saudeGanho);
-    pet.fome = Math.min(100, pet.fome + fomeGanho);
-    pet.ultimaInteracao = Date.now();
-
-    await saveUser(sender, dadosUser);
-
-    // Mensagem personalizada
-    return { 
-        message: `
-🏞️ Você passeou com *${pet.nome}*. 
-Ele(a) está mais feliz (+${felicidadeGanho}%) e saudável (+${saudeGanho}%), mas parece um pouco mais faminto (+${fomeGanho}%).
-        `.trim()
-    };
-}
-
-
-// Lista de frutas disponíveis
-const frutas = ["🍎", "🍌", "🍒", "🍇", "🍍", "🍉"];
-
-// Função do cassino
-async function cassino(sender, aposta) {
-    if (!aposta || aposta < 150) {
-        return { message: "⚠️ A aposta mínima é de R$150. Tente novamente com um valor maior ou igual." };
-    }
-
-    const dadosUser = await getUser(sender);
-
-    if (dadosUser.saldo.carteira < aposta) {
-        return { message: "⚠️ Você não tem saldo suficiente para essa aposta." };
-    }
-
-    await delSaldo(sender, aposta);
-
-    const rodada = [
-        frutas[Math.floor(Math.random() * frutas.length)],
-        frutas[Math.floor(Math.random() * frutas.length)],
-        frutas[Math.floor(Math.random() * frutas.length)]
-    ];
-
-    const [f1, f2, f3] = rodada;
-    let resultado = "💔 *Você perdeu!* Melhor sorte na próxima.";
-    let premio = 0;
-    if (Math.random() <= 0.4) {
-        if (f1 === f2 && f2 === f3) {
-            premio = aposta * 5;
-            resultado = `🎉 *Jackpot!* Três frutas iguais: ${f1} ${f2} ${f3}\nVocê ganhou R$${premio.toLocaleString()}!`;
-        } else if (f1 === f2 || f2 === f3 || f1 === f3) {
-            resultado = `😐 Duas frutas iguais: ${f1} ${f2} ${f3}\nVocê não ganhou nem perdeu nada. Tente novamente!`;
-        } else {
-            resultado = `💔 *Você perdeu!* As frutas foram: ${f1} ${f2} ${f3}`;
+    let vidaJogador = user.atributos.vitalidade * 25 + user.atributos.resistencia * 10;
+    let ataqueJogador = user.atributos.forca + (user.equipamento.arma?.atributos?.ataque || 0) + (user.atributos.sorte * 1);
+    let defesaJogador = user.atributos.agilidade + (user.equipamento.armadura?.atributos?.defesa || 0) + user.atributos.resistencia * 0.5;
+    
+    let log = `⚔️ *Confronto Eterno contra ${inimigoNome}!* ⚔️\n`;
+    while (vidaJogador > 0 && inimigo.vida > 0) {
+        const critico = chance(user.atributos.sorte / 100);
+        const danoJogador = Math.max(0, ataqueJogador - inimigo.defesa) + (critico ? ataqueJogador * 1 : 0);
+        inimigo.vida -= danoJogador;
+        log += `🗡️ Você ataca com fúria cósmica${critico ? ' (CRÍTICO DIVINO!)' : ''}, causando ${danoJogador} de dano! Vida do ${inimigoNome}: ${inimigo.vida <= 0 ? 'Obliterado' : inimigo.vida}\n`;
+        
+        if (inimigo.vida > 0) {
+            const danoInimigo = Math.max(0, inimigo.ataque - defesaJogador);
+            vidaJogador -= danoInimigo;
+            log += `💥 O ${inimigoNome} responde com poder ancestral, causando ${danoInimigo} de dano! Sua vida: ${vidaJogador <= 0 ? 'Aniquilado' : vidaJogador}\n`;
         }
-    } else {
-        resultado = `💔 *Você perdeu!* As frutas foram: ${f1} ${f2} ${f3}`;
-    }
-
-    if (premio > 0) {
-        await addSaldo(sender, premio);
     }
     
-    return { message: `${resultado}\n\n💰 *Saldo Atual*: R$${(dadosUser.saldo.carteira + premio)}` };
+    if (vidaJogador > 0) {
+        Object.entries(inimigo.recompensa).forEach(([moeda, valor]) => user.moedas[moeda] += valor);
+        user.batalhas.vitorias[inimigoNome] = (user.batalhas.vitorias[inimigoNome] || 0) + 1;
+        user.conquistas.inimigosMortos[inimigoNome] = (user.conquistas.inimigosMortos[inimigoNome] || 0) + 1;
+        await ganharXP(sender, inimigo.recompensa.xp);
+        await verificarConquistas(sender);
+        await saveUser(sender, user);
+        return `${log}🏆 *Triunfo Imortal!* Você destruiu o ${inimigoNome}! Recompensas: ${Object.entries(inimigo.recompensa).map(([k, v]) => `${v} ${MOEDAS[k]}`).join(', ')}.`;
+    }
+    user.batalhas.derrotas++;
+    await saveUser(sender, user);
+    return `${log}☠️ *Queda nas Eras!* O ${inimigoNome} apagou sua luz. Retorne com a chama da vingança!`;
 }
 
+// SISTEMA DE MASMORRAS
+async function explorarMasmorra(sender, masmorraNome) {
+    const user = await getUser(sender);
+    const masmorra = masmorras[masmorraNome];
+    if (!masmorra) return '⚠️ Esse abismo não foi registrado nas eras!';
+    if (user.nivel < masmorra.nivelMin) return `⚠️ Apenas lendas de nível ${masmorra.nivelMin} podem desafiar este domínio!`;
+    
+    let log = `🏰 *Expedição à ${masmorraNome}!* 🏰\n`;
+    for (let inimigo of masmorra.inimigos) {
+        const resultado = await batalhar(sender, inimigo);
+        log += resultado + '\n';
+        if (resultado.includes('Queda')) return log;
+    }
+    
+    Object.entries(masmorra.recompensa).forEach(([moeda, valor]) => {
+        if (moeda !== 'itens') user.moedas[moeda] += valor * (1 + user.atributos.sorte * 0.01);
+    });
+    masmorra.recompensa.itens.forEach(item => user.inventario[item] = (user.inventario[item] || 0) + 1);
+    user.conquistas.masmorrasCompletadas++;
+    await verificarConquistas(sender);
+    await saveUser(sender, user);
+    return `${log}🌟 *Conquista das Profundezas!* Você dominou a ${masmorraNome}! Recompensas: ${Object.entries(masmorra.recompensa).map(([k, v]) => k === 'itens' ? v.join(', ') : `${v} ${MOEDAS[k]}`).join(', ')}.`;
+}
 
-// Função para fazer upload ou atualizar a foto no GitHub
-async function uploadFoto(buffer, idUser) {
-    try {
-        const axios = require('axios');
+// SISTEMA DE CRAFTING
+const receitas = {
+    'espada longa': { materiais: { ferro: 6, madeira: 3 }, resultado: { nome: 'espada longa', atributos: { ataque: 70 } }, tipo: 'arma' },
+    'potion maior': { materiais: { ervas: 4, agua: 2 }, resultado: { nome: 'potion maior', efeito: 'Recupera 300 vida' }, tipo: 'consumivel' },
+    'cajado arcano': { materiais: { madeira: 12, cristal: 6 }, resultado: { nome: 'cajado arcano', atributos: { inteligencia: 35 } }, tipo: 'arma' },
+    'armadura de escamas': { materiais: { couro: 12, ferro: 8 }, resultado: { nome: 'armadura de escamas', atributos: { defesa: 60 } }, tipo: 'armadura' },
+    'reliquia da luz': { materiais: { essencia: 15, reliquias: 7 }, resultado: { nome: 'reliquia da luz', atributos: { vitalidade: 25, sorte: 20 } }, tipo: 'acessorio' },
+    'anel do ether': { materiais: { ether: 10, gemas: 5 }, resultado: { nome: 'anel do ether', atributos: { resistencia: 20, inteligencia: 15 } }, tipo: 'anel' },
+};
 
-        const fileName = `tinder/profile/${idUser}.jpg`;
-        const githubApiUrl = `https://api.github.com/repos/hiudyy/nazuninha/contents/${fileName}`;
-        const base64Image = buffer.toString('base64');
-        const token = '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';
+async function craftar(sender, receitaNome) {
+    const user = await getUser(sender);
+    const receita = receitas[receitaNome];
+    if (!receita) return '⚠️ Essa receita não foi escrita nos tomos eternos!';
+    
+    for (let [item, qtd] of Object.entries(receita.materiais)) {
+        if ((user.inventario[item] || 0) < qtd) return `⚠️ Faltam ${qtd - (user.inventario[item] || 0)} ${item} para essa criação!`;
+    }
+    
+    for (let [item, qtd] of Object.entries(receita.materiais)) {
+        user.inventario[item] -= qtd;
+        if (user.inventario[item] === 0) delete user.inventario[item];
+    }
+    const bonusForja = user.forja.bonus * 0.05;
+    user.inventario[receita.resultado.nome] = (user.inventario[receita.resultado.nome] || 0) + 1;
+    user.conquistas.itensCraftados++;
+    await verificarConquistas(sender);
+    await saveUser(sender, user);
+    return `🔨 *Obra Eterna Forjada!* Você criou ${receita.resultado.nome} com ${bonusForja * 100}% de bônus da forja!`;
+}
 
-        // Verifica se o arquivo já existe
-        const existingFile = await axios.get(githubApiUrl, {
-            headers: { Authorization: `token ${token}` }
-        }).catch(() => null);
+// SISTEMA DE FORJA E ALQUIMIA
+async function melhorarForja(sender) {
+    const user = await getUser(sender);
+    if (user.moedas.fragmentos < user.forja.nivel * 50) return `⚠️ Faltam ${user.forja.nivel * 50 - user.moedas.fragmentos} ${MOEDAS.fragmentos} para aprimorar a forja!`;
+    
+    user.moedas.fragmentos -= user.forja.nivel * 50;
+    user.forja.nivel++;
+    user.forja.bonus += 5;
+    await saveUser(sender, user);
+    return `🔧 *Forja Aprimorada!* Nível ${user.forja.nivel} - Bônus de criação: +${user.forja.bonus}%.`;
+}
 
-        // Prepara os dados para o upload
-        const data = {
-            message: existingFile ? `Atualização do perfil Tinder de ${idUser}` : `Upload do perfil Tinder de ${idUser}`,
-            content: base64Image,
-        };
+async function melhorarAlquimia(sender) {
+    const user = await getUser(sender);
+    if (user.moedas.essencia < user.alquimia.nivel * 30) return `⚠️ Faltam ${user.alquimia.nivel * 30 - user.moedas.essencia} ${MOEDAS.essencia} para aprimorar a alquimia!`;
+    
+    user.moedas.essencia -= user.alquimia.nivel * 30;
+    user.alquimia.nivel++;
+    user.alquimia.bonus += 5;
+    await saveUser(sender, user);
+    return `⚗️ *Alquimia Elevada!* Nível ${user.alquimia.nivel} - Bônus de poções: +${user.alquimia.bonus}%.`;
+}
 
-        // Se o arquivo existir, inclui o SHA do último commit
-        if (existingFile && existingFile.data) {
-            data.sha = existingFile.data.sha;
+// SISTEMA DE PROPRIEDADES
+const propriedades = {
+    'casa': { custo: 8000, producao: { dinheiro: 100 }, delay: 24 * 60 * 60, upgrades: { 'jardim': 3000, 'torre': 6000, 'fontes': 10000, 'sala do trono': 15000 } },
+    'fazenda': { custo: 20000, producao: { comida: 25 }, delay: 12 * 60 * 60, upgrades: { 'celeiro': 8000, 'irrigacao': 12000, 'trator': 16000, 'moinho': 20000 } },
+    'castelo': { custo: 100000, producao: { prestigio: 25 }, delay: 48 * 60 * 60, upgrades: { 'muralha': 40000, 'salao': 50000, 'torre de mago': 60000, 'cripta': 80000 } },
+    'torre arcana': { custo: 150000, producao: { essencia: 20 }, delay: 72 * 60 * 60, upgrades: { 'cristal': 70000, 'biblioteca': 90000, 'observatorio': 120000 } },
+    'santuário': { custo: 120000, producao: { ether: 15 }, delay: 96 * 60 * 60, upgrades: { 'altar': 60000, 'jardins sagrados': 80000 } },
+};
+
+// SISTEMA DE GUILDAS
+async function criarGuilda(sender, nome) {
+    const user = await getUser(sender);
+    if (user.guilda) return '⚠️ Você já é parte de uma aliança!';
+    if (user.moedas.gemas < 300 || user.atributos.carisma < 20) return `⚠️ São necessárias 300 ${MOEDAS.gemas} e 20 de carisma para fundar uma guilda!`;
+    
+    user.moedas.gemas -= 300;
+    user.guilda = { nome, lider: sender, membros: [sender], nivel: 1, recursos: { ouro: 0, madeira: 0, pedra: 0, reliquias: 0, runas: 0 }, missões: [], fortaleza: { nivel: 1, defesas: 15, torres: 0 } };
+    await saveUser(sender, user);
+    return `⚜️ *Guilda ${nome} Erguida!* Você é o soberano supremo desta irmandade eterna!`;
+}
+
+async function guildaMissão(sender, tipo) {
+    const user = await getUser(sender);
+    if (!user.guilda) return '⚠️ Você não pertence a uma guilda!';
+    const missões = {
+        'caca ao dragao': { custo: { ouro: 5000 }, recompensa: { prestigio: 150, gemas: 75 }, dificuldade: 25 },
+        'defesa da fortaleza': { custo: { pedra: 3000 }, recompensa: { dinheiro: 12000, fragmentos: 30 }, dificuldade: 20 },
+        'busca por reliquias': { custo: { madeira: 2000 }, recompensa: { reliquias: 15, essencia: 20 }, dificuldade: 30 },
+        'ritual etereo': { custo: { runas: 10 }, recompensa: { ether: 20, runas: 5 }, dificuldade: 35 },
+    };
+    const missão = missões[tipo];
+    if (!missão) return '⚠️ Missão desconhecida!';
+    for (let [recurso, qtd] of Object.entries(missão.custo)) {
+        if (user.guilda.recursos[recurso] < qtd) return `⚠️ Faltam ${qtd - user.guilda.recursos[recurso]} ${recurso}!`;
+    }
+    
+    Object.entries(missão.custo).forEach(([recurso, qtd]) => user.guilda.recursos[recurso] -= qtd);
+    const sucesso = chance((user.guilda.nivel + user.guilda.fortaleza.nivel) / missão.dificuldade);
+    if (sucesso) {
+        Object.entries(missão.recompensa).forEach(([moeda, valor]) => user.guilda.recursos[moeda] = (user.guilda.recursos[moeda] || 0) + valor);
+        user.guilda.nivel++;
+        return `🌟 *Triunfo da Guilda!* "${tipo}" concluído! Recompensas: ${Object.entries(missão.recompensa).map(([k, v]) => `${v} ${MOEDAS[k]}`).join(', ')}. Guilda subiu para nível ${user.guilda.nivel}!`;
+    }
+    return '💥 *Fracasso da Guilda!* A missão foi perdida nas sombras...';
+}
+
+// SISTEMA DE GUERRA ENTRE GUILDAS
+async function declararGuerra(sender, guildaAlvoNome) {
+    const user = await getUser(sender);
+    const alvo = Object.values(await Promise.all(fs.readdir(RpgPath).map(f => getUser(f.split('.json')[0])))).find(u => u.guilda?.nome === guildaAlvoNome);
+    if (!user.guilda || user.guilda.lider !== sender) return '⚠️ Apenas o líder pode clamar guerra!';
+    if (!alvo || !alvo.guilda) return '⚠️ Essa guilda não existe nas eras!';
+    if (guerrasAtivas[user.guilda.nome]) return '⚠️ Sua guilda já está em conflito!';
+    
+    guerrasAtivas[user.guilda.nome] = { inimigo: alvo.guilda.nome, inicio: Date.now() / 1000, fim: Date.now() / 1000 + 72 * 60 * 60, pontos: { [user.guilda.nome]: 0, [alvo.guilda.nome]: 0 } };
+    return `⚔️ *Guerra Cósmica Declarada!* A ${user.guilda.nome} desafiou a ${alvo.guilda.nome}! 72 horas de caos se iniciam!`;
+}
+
+async function guerrear(sender, inimigoNome) {
+    const user = await getUser(sender);
+    if (!user.guilda || !guerrasAtivas[user.guilda.nome]) return '⚠️ Sua guilda não está em guerra!';
+    const guerra = guerrasAtivas[user.guilda.nome];
+    const resultado = await batalhar(sender, inimigoNome);
+    if (resultado.includes('Triunfo')) {
+        guerra.pontos[user.guilda.nome] += 15;
+        return `${resultado}\n⚔️ *Glória para a ${user.guilda.nome}!* Pontos: ${guerra.pontos[user.guilda.nome]}.`;
+    }
+    guerra.pontos[guerra.inimigo] += 10;
+    return `${resultado}\n⚔️ *Vantagem para a ${guerra.inimigo}!* Pontos: ${guerra.pontos[guerra.inimigo]}.`;
+}
+
+// SISTEMA DE ARENA PVP
+async function desafiarArena(sender, alvo) {
+    const user = await getUser(sender);
+    const alvoUser = await getUser(alvo);
+    if (!alvoUser) return '⚠️ Esse guerreiro não existe!';
+    if (delays[sender]?.arena > Date.now()) return `⏳ Aguarde ${Math.ceil((delays[sender].arena - Date.now()) / 60000)} minutos para duelar novamente!`;
+    
+    let vidaUser = user.atributos.vitalidade * 25 + user.atributos.resistencia * 10;
+    let ataqueUser = user.atributos.forca + (user.equipamento.arma?.atributos?.ataque || 0);
+    let defesaUser = user.atributos.agilidade + (user.equipamento.armadura?.atributos?.defesa || 0);
+    
+    let vidaAlvo = alvoUser.atributos.vitalidade * 25 + alvoUser.atributos.resistencia * 10;
+    let ataqueAlvo = alvoUser.atributos.forca + (alvoUser.equipamento.arma?.atributos?.ataque || 0);
+    let defesaAlvo = alvoUser.atributos.agilidade + (alvoUser.equipamento.armadura?.atributos?.defesa || 0);
+    
+    let log = `⚔️ *Duelo na Arena Eterna: ${user.nome} vs ${alvoUser.nome}!* ⚔️\n`;
+    while (vidaUser > 0 && vidaAlvo > 0) {
+        const danoUser = Math.max(0, ataqueUser - defesaAlvo);
+        vidaAlvo -= danoUser;
+        log += `🗡️ ${user.nome} ataca, causando ${danoUser} de dano! Vida de ${alvoUser.nome}: ${vidaAlvo <= 0 ? 'Derrotado' : vidaAlvo}\n`;
+        
+        if (vidaAlvo > 0) {
+            const danoAlvo = Math.max(0, ataqueAlvo - defesaUser);
+            vidaUser -= danoAlvo;
+            log += `🗡️ ${alvoUser.nome} revida, causando ${danoAlvo} de dano! Vida de ${user.nome}: ${vidaUser <= 0 ? 'Derrotado' : vidaUser}\n`;
         }
-
-        // Faz o upload ou atualização
-        const response = await axios.put(githubApiUrl, data, {
-            headers: { Authorization: `token ${token}` }
-        });
-
-        return { url: response.data.content.download_url }; // Retorna o link da imagem
-    } catch (error) {
-        console.error(error.response?.data || error.message);
-        return { error: "❌ Erro ao fazer upload da foto no GitHub." };
     }
+    
+    delays[sender] = delays[sender] || {};
+    delays[sender].arena = Date.now() + 30 * 60 * 1000; // 30min cooldown
+    if (vidaUser > 0) {
+        user.arena.vitorias++;
+        alvoUser.arena.derrotas++;
+        user.moedas.dinheiro += 3000;
+        user.moedas.prestigio += 10;
+        await saveUser(sender, user);
+        await saveUser(alvo, alvoUser);
+        return `${log}🏆 *${user.nome} Reina Supremo!* Ganhou 3000 ${MOEDAS.dinheiro} e 10 ${MOEDAS.prestigio}!`;
+    }
+    user.arena.derrotas++;
+    alvoUser.arena.vitorias++;
+    alvoUser.moedas.dinheiro += 3000;
+    alvoUser.moedas.prestigio += 10;
+    await saveUser(sender, user);
+    await saveUser(alvo, alvoUser);
+    return `${log}🏆 *${alvoUser.nome} Reina Supremo!* Ganhou 3000 ${MOEDAS.dinheiro} e 10 ${MOEDAS.prestigio}!`;
 }
 
-// Função para registrar o perfil do Tinder
-async function registrarTinder(sender, name, bufferFoto) {
-    try {
-        if (!name || !bufferFoto) {
-            return { message: "⚠️ Nome e foto são obrigatórios para o registro." };
+// SISTEMA DE REINOS
+async function fundarReino(sender, nome) {
+    const user = await getUser(sender);
+    if (user.reino) return '⚠️ Você já governa um reino!';
+    if (user.moedas.prestigio < 500 || user.atributos.carisma < 50) return `⚠️ São necessários 500 ${MOEDAS.prestigio} e 50 de carisma para fundar um reino!`;
+    
+    user.moedas.prestigio -= 500;
+    user.reino = { nome, lider: sender, nivel: 1, recursos: { ouro: 0, pedra: 0, madeira: 0, comida: 0 }, populacao: 100, defesas: 50 };
+    user.conquistas.reinosFundados++;
+    mundo.reinos[nome] = user.reino;
+    await verificarConquistas(sender);
+    await saveUser(sender, user);
+    return `👑 *Reino ${nome} Fundado!* Você é o soberano deste novo império! População inicial: 100, Defesas: 50.`;
+}
+
+async function coletarImpostos(sender) {
+    const user = await getUser(sender);
+    if (!user.reino) return '⚠️ Você não governa um reino!';
+    if (delays[sender]?.impostos > Date.now()) return `⏳ Aguarde ${Math.ceil((delays[sender].impostos - Date.now()) / 3600000)} horas para coletar novamente!`;
+    
+    const impostos = user.reino.populacao * 10 * (1 + user.atributos.carisma * 0.01);
+    user.moedas.dinheiro += impostos;
+    delays[sender] = delays[sender] || {};
+    delays[sender].impostos = Date.now() + 24 * 60 * 60 * 1000; // 24h cooldown
+    await saveUser(sender, user);
+    return `💰 *Impostos Coletados!* Seu reino rendeu ${impostos} ${MOEDAS.dinheiro}!`;
+}
+
+async function melhorarReino(sender, upgrade) {
+    const user = await getUser(sender);
+    if (!user.reino) return '⚠️ Você não governa um reino!';
+    const upgrades = {
+        'muralhas': { custo: { pedra: 5000 }, bonus: { defesas: 50 } },
+        'mercado': { custo: { ouro: 3000 }, bonus: { dinheiro: 200 } },
+        'fazendas': { custo: { madeira: 4000 }, bonus: { populacao: 50 } },
+    };
+    const up = upgrades[upgrade];
+    if (!up) return '⚠️ Upgrade inválido! Opções: muralhas, mercado, fazendas.';
+    for (let [recurso, qtd] of Object.entries(up.custo)) {
+        if (user.reino.recursos[recurso] < qtd) return `⚠️ Faltam ${qtd - user.reino.recursos[recurso]} ${recurso}!`;
+    }
+    
+    Object.entries(up.custo).forEach(([recurso, qtd]) => user.reino.recursos[recurso] -= qtd);
+    Object.entries(up.bonus).forEach(([key, val]) => user.reino[key] += val);
+    user.reino.nivel++;
+    await saveUser(sender, user);
+    return `🏰 *Reino Aprimorado!* ${upgrade} adicionado! Nível ${user.reino.nivel}, ${Object.entries(up.bonus).map(([k, v]) => `${k} +${v}`).join(', ')}.`;
+}
+
+// SISTEMA DE PORTAIS
+async function abrirPortal(sender, destino) {
+    const user = await getUser(sender);
+    if (user.portal) return '⚠️ Você já abriu um portal!';
+    const portais = {
+        'reino das sombras': { custo: { almas: 50 }, recompensa: { ether: 20, runas: 10 }, inimigos: ['espectro do vazio', 'abominação eterea'] },
+        'plano celestial': { custo: { ether: 30 }, recompensa: { reliquias: 15, essencia: 25 }, inimigos: ['guardião celestial'] },
+    };
+    const portal = portais[destino];
+    if (!portal) return '⚠️ Esse destino não está nos mapas etéreos!';
+    for (let [moeda, qtd] of Object.entries(portal.custo)) {
+        if (user.moedas[moeda] < qtd) return `⚠️ Faltam ${qtd - user.moedas[moeda]} ${MOEDAS[moeda]}!`;
+    }
+    
+    Object.entries(portal.custo).forEach(([moeda, qtd]) => user.moedas[moeda] -= qtd);
+    user.portal = { destino, aberto: Date.now() / 1000, fim: Date.now() / 1000 + 24 * 60 * 60 };
+    mundo.portais[destino] = user.portal;
+    await saveUser(sender, user);
+    return `🌌 *Portal Aberto para ${destino}!* Duração: 24h. Prepare-se para o desconhecido!`;
+}
+
+async function explorarPortal(sender) {
+    const user = await getUser(sender);
+    if (!user.portal) return '⚠️ Você não abriu um portal!';
+    if (Date.now() / 1000 > user.portal.fim) return '⚠️ O portal se fechou!';
+    
+    const portal = mundo.portais[user.portal.destino];
+    let log = `🌌 *Exploração do ${user.portal.destino}!* 🌌\n`;
+    for (let inimigo of portais[user.portal.destino].inimigos) {
+        const resultado = await batalhar(sender, inimigo);
+        log += resultado + '\n';
+        if (resultado.includes('Queda')) return log;
+    }
+    
+    Object.entries(portais[user.portal.destino].recompensa).forEach(([moeda, valor]) => user.moedas[moeda] += valor);
+    user.conquistas.portaisExplorados++;
+    user.portal = null;
+    delete mundo.portais[user.portal.destino];
+    await verificarConquistas(sender);
+    await saveUser(sender, user);
+    return `${log}🌟 *Portal Conquistado!* Recompensas: ${Object.entries(portais[user.portal.destino].recompensa).map(([k, v]) => `${v} ${MOEDAS[k]}`).join(', ')}.`;
+}
+
+// SISTEMA DE EVENTOS GLOBAIS
+const eventos = [
+    { nome: 'invasão demoníaca', duracao: 48 * 60 * 60, recompensa: { almas: 100, gemas: 75 }, inimigos: ['lich', 'hidra', 'devorador de mundos'] },
+    { nome: 'festival das estrelas', duracao: 24 * 60 * 60, recompensa: { dinheiro: 20000, prestigio: 50 }, buff: 'XP +75%' },
+    { nome: 'guerra dos titãs', duracao: 72 * 60 * 60, recompensa: { essencia: 50, fragmentos: 30 }, inimigos: ['tita ancestral', 'kraken abissal'] },
+    { nome: 'despertar etéreo', duracao: 36 * 60 * 60, recompensa: { ether: 25, runas: 15 }, inimigos: ['guardião celestial', 'abominação eterea'] },
+];
+
+async function iniciarEventoGlobal() {
+    const evento = eventos[Math.floor(Math.random() * eventos.length)];
+    eventosGlobais[evento.nome] = { fim: Date.now() / 1000 + evento.duracao, participantes: [], inimigosDerrotados: 0 };
+    return `🌍 *Evento Cósmico: ${evento.nome}!* Duração: ${evento.duracao / 3600}h. Recompensas: ${Object.entries(evento.recompensa).map(([k, v]) => `${v} ${MOEDAS[k]}`).join(', ')}. ${evento.inimigos ? 'Derrote os inimigos!' : 'Aproveite o buff!'}`;
+}
+
+async function participarEvento(sender, inimigoNome) {
+    const user = await getUser(sender);
+    const evento = Object.values(eventosGlobais).find(e => e.fim > Date.now() / 1000);
+    if (!evento) return '⚠️ Nenhum evento está ativo!';
+    if (!evento.participantes.includes(sender)) evento.participantes.push(sender);
+    
+    if (evento.inimigos && inimigoNome) {
+        const resultado = await batalhar(sender, inimigoNome);
+        if (resultado.includes('Triunfo')) evento.inimigosDerrotados++;
+        if (evento.inimigosDerrotados >= evento.participantes.length * 5) {
+            evento.participantes.forEach(async p => {
+                const u = await getUser(p);
+                Object.entries(eventos.find(e => e.nome === Object.keys(eventosGlobais).find(k => eventosGlobais[k] === evento)).recompensa).forEach(([moeda, valor]) => u.moedas[moeda] += valor);
+                await saveUser(p, u);
+            });
+            delete eventosGlobais[Object.keys(eventosGlobais).find(k => eventosGlobais[k] === evento)];
+            return `${resultado}\n🌟 *Evento Concluído!* Todos os participantes receberam: ${Object.entries(eventos.find(e => e.nome === Object.keys(eventosGlobais).find(k => eventosGlobais[k] === evento)).recompensa).map(([k, v]) => `${v} ${MOEDAS[k]}`).join(', ')}.`;
         }
-
-        const upload = await uploadFoto(bufferFoto, sender);
-        if (upload.error) return { message: upload.error };
-
-        const dadosUser = await getUser(sender);
-        dadosUser.tinder = {
-            nome: name,
-            foto: upload.url,
-            sexo: "Não especificado",
-            bio: "Sem bio."
-        };
-
-        await saveUser(sender, dadosUser);
-        return { message: `✅ Registro concluído com sucesso! Bem-vindo(a), ${name}.` };
-    } catch (e) {
-        console.error(e);
-        return { message: "❌ Erro ao registrar o usuário." };
+        return resultado;
     }
+    return `🌟 *Você entrou no ${Object.keys(eventosGlobais).find(k => eventosGlobais[k] === evento)}!* ${evento.inimigos ? 'Derrote inimigos para vencer!' : 'Aproveite o buff enquanto durar!'}`;
 }
 
-// Função para editar as informações do perfil do Tinder
-async function editarPerfil(sender, campo, valor) {
-    try {
-        const dadosUser = await getUser(sender);
-        if (!dadosUser || !dadosUser.tinder) return { message: "⚠️ Você não está registrado no Tinder." };
+// SISTEMA DE PETS
+const petTipos = {
+    'lobo': { atributos: { ataque: 20, defesa: 15 }, evoluções: ['lobo alfa', 'lobo espectral', 'lobo do vazio'] },
+    'falcão': { atributos: { agilidade: 25 }, evoluções: ['falcão flamejante', 'falcão celestial', 'falcão estelar'] },
+    'dragãozinho': { atributos: { ataque: 30, inteligencia: 20 }, evoluções: ['dragão jovem', 'dragão ancião', 'dragão cósmico'] },
+    'golem': { atributos: { defesa: 40 }, evoluções: ['golem de ferro', 'golem rúnico', 'golem eterno'] },
+};
 
-        switch (campo.toLowerCase()) {
-            case 'nome':
-                if (!valor) return { message: "⚠️ Nome não pode ser vazio." };
-                dadosUser.tinder.nome = valor;
-                break;
-            case 'sexo':
-                dadosUser.tinder.sexo = valor || "Não especificado";
-                break;
-            case 'bio':
-                dadosUser.tinder.bio = valor || "Sem bio.";
-                break;
-            default:
-                return { message: "⚠️ Campo inválido. Use: nome, sexo ou bio." };
-        }
-
-        await saveUser(sender, dadosUser);
-        return { message: `✅ ${campo.charAt(0).toUpperCase() + campo.slice(1)} atualizado com sucesso!` };
-    } catch (e) {
-        console.error(e);
-        return { message: "❌ Erro ao atualizar o perfil." };
-    }
+async function adotarPet(sender, tipo, nome) {
+    const user = await getUser(sender);
+    if (user.pet) return '⚠️ Você já possui um companheiro!';
+    if (!petTipos[tipo]) return '⚠️ Esse tipo de pet não existe nas eras!';
+    
+    user.pet = { tipo, nome, nivel: 1, experiencia: 0, atributos: { ...petTipos[tipo].atributos }, felicidade: 70, saude: 100, lealdade: 50 };
+    await saveUser(sender, user);
+    return `🐾 *Companheiro Adotado!* Você agora tem um ${tipo} chamado ${nome}!`;
 }
 
-// Função para exibir o perfil próprio do Tinder
-async function exibirMeuPerfil(sender) {
-    try {
-        const dadosUser = await getUser(sender);
-        if (!dadosUser || !dadosUser.tinder) return { message: "⚠️ Você não está registrado no Tinder." };
-
-        return {
-            foto: dadosUser.tinder.foto,
-            message: `👤 *Seu Perfil Tinder*\n📄 *Bio*: ${dadosUser.tinder.bio}\n💬 *Sexo*: ${dadosUser.tinder.sexo}\n\n📱 *WhatsApp*: wa.me/${dadosUser.id.split('@')[0]}`
-        };
-    } catch (e) {
-        console.error(e);
-        return { message: "❌ Erro ao exibir seu perfil." };
-    }
+async function evoluirPet(sender) {
+    const user = await getUser(sender);
+    if (!user.pet) return '⚠️ Você não tem um pet!';
+    if (user.pet.nivel >= petTipos[user.pet.tipo].evoluções.length + 1) return '⚠️ Seu pet alcançou o ápice da existência!';
+    
+    const xpNecessario = user.pet.nivel * 500;
+    if (user.pet.experiencia < xpNecessario) return `⚠️ Faltam ${xpNecessario - user.pet.experiencia} XP para evoluir!`;
+    
+    user.pet.nivel++;
+    user.pet.experiencia -= xpNecessario;
+    user.pet.tipo = petTipos[user.pet.tipo].evoluções[user.pet.nivel - 2] || user.pet.tipo;
+    Object.keys(user.pet.atributos).forEach(attr => user.pet.atributos[attr] += 15);
+    user.pet.lealdade += 10;
+    await saveUser(sender, user);
+    return `🐾 *Evolução Cósmica!* Seu ${user.pet.nome} tornou-se um ${user.pet.tipo} de nível ${user.pet.nivel}! Lealdade: ${user.pet.lealdade}.`;
 }
 
-// Função para exibir um perfil aleatório com Tinder
-async function exibirPerfilAleatorio(sender) {
-    try {
-        const dadosUser = await getUser(sender);
-        if (!dadosUser || !dadosUser.tinder) return { message: "⚠️ Você precisa estar cadastrado no Tinder para usar este comando." };
-
-        const arquivos = await fs.readdir(RpgPath);
-        if (arquivos.length === 0) return { message: "⚠️ Nenhum perfil encontrado." };
-
-        let perfilEncontrado = null;
-
-        for (const arquivo of arquivos) {
-            const userDados = JSON.parse(await fs.readFile(path.join(RpgPath, arquivo), 'utf-8'));
-            if (userDados.tinder) {
-                perfilEncontrado = userDados;
-                break;
-            }
-        }
-
-        if (!perfilEncontrado) return { message: "⚠️ Nenhum perfil com Tinder foi encontrado." };
-
-        return {
-            foto: perfilEncontrado.tinder.foto,
-            message: `👤 *Perfil de ${perfilEncontrado.tinder.nome}*\n📄 *Bio*: ${perfilEncontrado.tinder.bio}\n💬 *Sexo*: ${perfilEncontrado.tinder.sexo}\n\n📱 *WhatsApp*: wa.me/${perfilEncontrado.id.split('@')[0]}`
-        };
-    } catch (e) {
-        console.error(e);
-        return { message: "❌ Erro ao buscar um perfil aleatório." };
-    }
+async function treinarPet(sender) {
+    const user = await getUser(sender);
+    if (!user.pet) return '⚠️ Você não tem um pet!';
+    if (delays[sender]?.treinarPet > Date.now()) return `⏳ Aguarde ${Math.ceil((delays[sender].treinarPet - Date.now()) / 60000)} minutos para treinar novamente!`;
+    
+    user.pet.experiencia += 100 + user.atributos.carisma * 2;
+    user.pet.felicidade += 10;
+    user.pet.lealdade += 5;
+    delays[sender] = delays[sender] || {};
+    delays[sender].treinarPet = Date.now() + 60 * 60 * 1000; // 1h cooldown
+    await saveUser(sender, user);
+    return `🐾 *Treinamento Concluído!* Seu ${user.pet.nome} ganhou 100 + ${user.atributos.carisma * 2} XP! Felicidade: ${user.pet.felicidade}, Lealdade: ${user.pet.lealdade}.`;
 }
 
-// Função para verificar se o usuário tem Tinder antes de usar comandos
-async function verificarTinder(sender) {
-    const dadosUser = await getUser(sender);
-    return !!(dadosUser && dadosUser.tinder);
+// SISTEMA DE MAGIA
+const feitiços = {
+    'bola de fogo': { custo: 800, nivelMin: 1, mana: 30, efeito: 'Dano 80' },
+    'cura divina': { custo: 1000, nivelMin: 3, mana: 50, efeito: 'Cura 200 vida' },
+    'escudo arcano': { custo: 1500, nivelMin: 5, mana: 75, efeito: 'Defesa +40 por 20min' },
+    'tempestade elemental': { custo: 3000, nivelMin: 10, mana: 120, efeito: 'Dano 200 em área' },
+    'toque etereo': { custo: 5000, nivelMin: 15, mana: 150, efeito: 'Dano 300 + rouba 10 ether' },
+};
+
+// TRABALHAR NO EMPREGO
+async function trabalhar(sender) {
+    const user = await getUser(sender);
+    if (user.emprego === 'desempregado') return '⚠️ Você não tem emprego! Use !job [nome] pra escolher um.';
+    const emprego = empregos.find(e => e.nome === user.emprego);
+    if (delays[sender]?.trabalhar > Date.now()) return `⏳ Aguarde ${Math.ceil((delays[sender].trabalhar - Date.now()) / 60000)} minutos pra trabalhar novamente!`;
+    
+    const salario = Math.floor(Math.random() * (emprego.salarioMax - emprego.salarioMin + 1)) + emprego.salarioMin;
+    user.moedas.dinheiro += salario;
+    delays[sender] = delays[sender] || {};
+    delays[sender].trabalhar = Date.now() + emprego.delay * 1000;
+    await ganharXP(sender, salario / 10);
+    await saveUser(sender, user);
+    return `💼 *Trabalho Concluído!* Você ganhou ${salario} ${MOEDAS.dinheiro} como ${emprego.nome}!`;
 }
 
-// Função para alterar a foto do perfil no Tinder
-async function alterarFoto(sender, bufferFoto) {
-    try {
-        const dadosUser = await getUser(sender); // Busca os dados do usuário
-        if (!dadosUser || !dadosUser.tinder) {
-            return { message: "⚠️ Você não está registrado no Tinder." };
-        }
-
-        // Faz o upload da nova foto no GitHub
-        const upload = await uploadFoto(bufferFoto, sender);
-        if (upload.error) {
-            return { message: upload.error };
-        }
-
-        // Atualiza a URL da foto no perfil do Tinder
-        dadosUser.tinder.foto = upload.url;
-        await saveUser(sender, dadosUser); // Salva as alterações no arquivo do usuário
-
-        return { message: "✅ Foto de perfil atualizada com sucesso!" };
-    } catch (error) {
-        console.error(error);
-        return { message: "❌ Erro ao atualizar a foto de perfil." };
-    }
+// ESCOLHER EMPREGO
+async function escolherEmprego(sender, empregoNome) {
+    const user = await getUser(sender);
+    const emprego = empregos.find(e => normalizarTexto(e.nome) === normalizarTexto(empregoNome));
+    if (!emprego) return '⚠️ Emprego inválido! Veja opções com !jobs.';
+    if (user.experiencia < emprego.xpNecessaria) return `⚠️ Você precisa de ${emprego.xpNecessaria} XP pra esse emprego! Seu XP: ${user.experiencia}.`;
+    
+    user.emprego = emprego.nome;
+    user.habilidades = { ...user.habilidades, ...emprego.habilidades };
+    await saveUser(sender, user);
+    return `⚒️ *Emprego Escolhido!* Você agora é um ${emprego.nome}.`;
 }
 
+// LISTA DE EMPREGOS
+async function listarEmpregos() {
+    return `⚒️ *Empregos Disponíveis* ⚒️\n${empregos.map(e => `${e.nome} (XP: ${e.xpNecessaria}, Salário: ${e.salarioMin}-${e.salarioMax} ${MOEDAS.dinheiro})`).join('\n')}`;
+}
 
-// EXPORTS
-const objectExport = Object.assign(getUser, {
-    rg: rgUser,
-    del: delUser,
-    trabalhar: trabalhar,
-    empregos: listarEmpregos,
-    loja: GerarLoja,
-    comprar: comprarItem,
-    vender: venderItem,
-    itens: renderizarInventario,
-    me: renderizarInformacoesUsuario,
-    cassino: cassino,
-    acao: {
-        minerar: minerar,
-        cacar: realizarCaca,
-        assaltar: assaltar,
-        pescar: pescar
-    },
-    emprego: {
-        add: entrarEmprego,
-        del: sairEmprego
-    },
-    saldo: {
-        add: addSaldo,
-        del: delSaldo
-    },
-    banco: {
-        add: addSaldoBank,
-        del: delSaldoBank
-    },
-    inventario: {
-        add: addItem,
-        remove: removeItem
-    },
-    relacionamento: {
-        namorar: pedirNamoro,
-        aceitar: aceitarPedido,
-        recusar: recusarPedido,
-        divorciar: divorcio,
-        casar: pedirCasamento,
-        minhaDupla: mostrarDupla
-    },
-    pet: {
-        atualizar: atualizarAtributosPet,
-        adotar: adotarPet,
-        soltar: soltarPet,
-        alimentar: alimentarPet,
-        banho: darBanho,
-        tosar: tosarPet,
-        veterinario: levarAoVeterinario,
-        status: verPet,
-        brincar: brincarPet,
-        passear: passearPet,
-        carinho: fazerCarinho
-    },
-    tinder: {
-        registrar: registrarTinder,
-        editar: editarPerfil,
-        alterarFoto: alterarFoto,
-        meuPerfil: exibirMeuPerfil,
-        perfilAleatorio: exibirPerfilAleatorio,
-        verificar: verificarTinder
+// COMPRAR NA LOJA
+async function comprarLoja(sender, itemNome) {
+    const user = await getUser(sender);
+    const item = itensLoja.find(i => normalizarTexto(i.nome) === normalizarTexto(itemNome));
+    if (!item) return '⚠️ Item não encontrado na loja! Veja com !shop.';
+    if (user.moedas.dinheiro < item.valor) return `⚠️ Faltam ${item.valor - user.moedas.dinheiro} ${MOEDAS.dinheiro} pra comprar isso!`;
+    
+    user.moedas.dinheiro -= item.valor;
+    user.inventario[item.nome] = (user.inventario[item.nome] || 0) + 1;
+    await saveUser(sender, user);
+    return `🛒 *Compra Feita!* Você adquiriu ${item.nome} por ${item.valor} ${MOEDAS.dinheiro}.`;
+}
+
+// VENDER ITEM
+async function venderItem(sender, itemNome) {
+    const user = await getUser(sender);
+    const itemLoja = itensLoja.find(i => normalizarTexto(i.nome) === normalizarTexto(itemNome));
+    const itemMercado = itensMercadoNegro.find(i => normalizarTexto(i.nome) === normalizarTexto(itemNome));
+    const item = itemLoja || itemMercado;
+    if (!item || !user.inventario[item.nome]) return '⚠️ Você não tem esse item pra vender!';
+    
+    const valorVenda = item.venda || Math.floor(item.valor * 0.4);
+    user.moedas.dinheiro += valorVenda;
+    user.inventario[item.nome]--;
+    if (user.inventario[item.nome] === 0) delete user.inventario[item.nome];
+    await saveUser(sender, user);
+    return `💰 *Vendido!* Você ganhou ${valorVenda} ${MOEDAS.dinheiro} por ${item.nome}.`;
+}
+
+// EQUIPAR ITEM
+async function equiparItem(sender, itemNome) {
+    const user = await getUser(sender);
+    const item = [...itensLoja, ...itensMercadoNegro].find(i => normalizarTexto(i.nome) === normalizarTexto(itemNome));
+    if (!item || !user.inventario[item.nome]) return '⚠️ Você não tem esse item pra equipar!';
+    
+    const slot = item.tipo === 'arma' ? 'arma' : item.tipo === 'armadura' ? 'armadura' : item.tipo === 'acessorio' ? 'acessorio' : 'anel';
+    if (user.equipamento[slot]) {
+        user.inventario[user.equipamento[slot].nome] = (user.inventario[user.equipamento[slot].nome] || 0) + 1;
     }
+    user.equipamento[slot] = item;
+    user.inventario[item.nome]--;
+    if (user.inventario[item.nome] === 0) delete user.inventario[item.nome];
+    await saveUser(sender, user);
+    return `🗡️ *Equipado!* ${item.nome} agora está no slot de ${slot}.`;
+}
+
+// DEPOSITAR NO BANCO
+async function depositarBanco(sender, quantia) {
+    const user = await getUser(sender);
+    if (!quantia || isNaN(quantia) || quantia <= 0) return '⚠️ Quantia inválida! Use !dep 500, por exemplo.';
+    if (user.saldo.carteira < quantia) return `⚠️ Faltam ${quantia - user.saldo.carteira} ${MOEDAS.dinheiro} na carteira!`;
+    
+    user.saldo.carteira -= quantia;
+    user.saldo.banco += quantia;
+    await saveUser(sender, user);
+    return `🏦 *Depositado!* ${quantia} ${MOEDAS.dinheiro} foi pro banco. Saldo: ${user.saldo.banco} ${MOEDAS.dinheiro}.`;
+}
+
+// SACAR DO BANCO
+async function sacarBanco(sender, quantia) {
+    const user = await getUser(sender);
+    if (!quantia || isNaN(quantia) || quantia <= 0) return '⚠️ Quantia inválida! Use !sacar 500, por exemplo.';
+    if (user.saldo.banco < quantia) return `⚠️ Faltam ${quantia - user.saldo.banco} ${MOEDAS.dinheiro} no banco!`;
+    
+    user.saldo.banco -= quantia;
+    user.saldo.carteira += quantia;
+    await saveUser(sender, user);
+    return `🏦 *Sacado!* ${quantia} ${MOEDAS.dinheiro} foi pra carteira. Saldo: ${user.saldo.banco} ${MOEDAS.dinheiro}.`;
+}
+
+// TRANSFERIR DINHEIRO
+async function transferirDinheiro(sender, alvo, quantia) {
+    const user = await getUser(sender);
+    const alvoUser = await getUser(alvo);
+    if (!alvoUser) return '⚠️ Esse jogador não existe!';
+    if (!quantia || isNaN(quantia) || quantia <= 0) return '⚠️ Quantia inválida! Use !send @user 1000, por exemplo.';
+    if (user.saldo.carteira < quantia) return `⚠️ Faltam ${quantia - user.saldo.carteira} ${MOEDAS.dinheiro} na carteira!`;
+    
+    user.saldo.carteira -= quantia;
+    alvoUser.saldo.carteira += quantia;
+    await saveUser(sender, user);
+    await saveUser(alvo, alvoUser);
+    return `💸 *Transferido!* Você enviou ${quantia} ${MOEDAS.dinheiro} pra ${alvoUser.nome}.`;
+}
+
+// RANKING GLOBAL
+async function rankingGlobal() {
+    const users = await Promise.all((await fs.readdir(RpgPath)).map(f => getUser(f.split('.json')[0])));
+    const top = users.sort((a, b) => b.nivel - a.nivel).slice(0, 10);
+    return `🏆 *Ranking Global* 🏆\n${top.map((u, i) => `${i + 1}. ${u.nome} - Nv.${u.nivel} (${u.moedas.dinheiro} ${MOEDAS.dinheiro})`).join('\n')}`;
+}
+
+// APRENDER MAGIA
+async function aprenderMagia(sender, feitiçoNome) {
+    const user = await getUser(sender);
+    const feitiço = feitiços[normalizarTexto(feitiçoNome)];
+    if (!feitiço) return '⚠️ Feitiço inválido! Veja com !spells.';
+    if (user.moedas.dinheiro < feitiço.custo) return `⚠️ Faltam ${feitiço.custo - user.moedas.dinheiro} ${MOEDAS.dinheiro} pra aprender isso!`;
+    if (user.magia.nivel < feitiço.nivelMin) return `⚠️ Você precisa de nível ${feitiço.nivelMin} de magia! Seu nível: ${user.magia.nivel}.`;
+    if (user.magia.feitiços.includes(feitiçoNome)) return '⚠️ Você já sabe esse feitiço!';
+    
+    user.moedas.dinheiro -= feitiço.custo;
+    user.magia.feitiços.push(feitiçoNome);
+    await saveUser(sender, user);
+    return `✨ *Magia Aprendida!* ${feitiçoNome} agora é seu por ${feitiço.custo} ${MOEDAS.dinheiro}.`;
+}
+
+// USAR MAGIA
+async function usarMagia(sender, feitiçoNome) {
+    const user = await getUser(sender);
+    const feitiço = feitiços[normalizarTexto(feitiçoNome)];
+    if (!feitiço || !user.magia.feitiços.includes(feitiçoNome)) return '⚠️ Você não sabe esse feitiço!';
+    if (user.magia.mana < feitiço.mana) return `⚠️ Faltam ${feitiço.mana - user.magia.mana} de mana!`;
+    
+    user.magia.mana -= feitiço.mana;
+    await saveUser(sender, user);
+    return `🔮 *Magia Lançada!* ${feitiçoNome} usado! Efeito: ${feitiço.efeito}. Mana restante: ${user.magia.mana}.`;
+}
+
+// LISTA DE FEITIÇOS
+async function listarFeitiços() {
+    return `🔮 *Feitiços Disponíveis* 🔮\n${Object.entries(feitiços).map(([nome, f]) => `${nome} (Custo: ${f.custo} ${MOEDAS.dinheiro}, Mana: ${f.mana}, Nv.${f.nivelMin}) - ${f.efeito}`).join('\n')}`;
+}
+
+// ENTRAR EM FACÇÃO
+async function entrarFacção(sender, facçãoNome) {
+    const user = await getUser(sender);
+    const facções = ['ordem', 'caos', 'luz', 'trevas'];
+    if (!facções.includes(normalizarTexto(facçãoNome))) return '⚠️ Facção inválida! Opções: ordem, caos, luz, trevas.';
+    if (user.facção) return '⚠️ Você já pertence a uma facção!';
+    
+    user.facção = facçãoNome;
+    user.reputacao += 50;
+    await saveUser(sender, user);
+    return `⚔️ *Facção Escolhida!* Você agora serve à ${facçãoNome}. Reputação: +50.`;
+}
+
+// COMPRAR NO MERCADO NEGRO
+async function comprarMercadoNegro(sender, itemNome) {
+    const user = await getUser(sender);
+    const item = itensMercadoNegro.find(i => normalizarTexto(i.nome) === normalizarTexto(itemNome));
+    if (!item) return '⚠️ Item não encontrado no mercado negro! Veja com !blackmarket.';
+    const custo = Object.entries(item).find(([k]) => ['valor', 'almas', 'ether', 'runas', 'reliquias'].includes(k));
+    if (user.moedas[custo[0]] < custo[1]) return `⚠️ Faltam ${custo[1] - user.moedas[custo[0]]} ${MOEDAS[custo[0]]} pra comprar isso!`;
+    
+    user.moedas[custo[0]] -= custo[1];
+    user.inventario[item.nome] = (user.inventario[item.nome] || 0) + 1;
+    await saveUser(sender, user);
+    return `🌚 *Negócio Fechado!* Você adquiriu ${item.nome} por ${custo[1]} ${MOEDAS[custo[0]]}.`;
+}
+
+// LISTA DO MERCADO NEGRO
+async function listarMercadoNegro() {
+    return `🌚 *Mercado Negro* 🌚\n${itensMercadoNegro.map(i => `${i.nome} - ${i.valor ? `${i.valor} ${MOEDAS.dinheiro}` : Object.entries(i).find(([k]) => ['almas', 'ether', 'runas', 'reliquias'].includes(k)).map(([k, v]) => `${v} ${MOEDAS[k]}`).join('')}`).join('\n')}`;
+}
+
+// ORAR A UM DEUS
+async function orar(sender, deus) {
+    const user = await getUser(sender);
+    if (delays[sender]?.orar > Date.now()) return `⏳ Aguarde ${Math.ceil((delays[sender].orar - Date.now()) / 3600000)} horas pra orar novamente!`;
+    
+    const deuses = {
+        'zeus': { favor: 20, recompensa: { dinheiro: 1000 } },
+        'hades': { favor: 15, recompensa: { almas: 10 } },
+        'atena': { favor: 25, recompensa: { gemas: 15 } },
+        'poseidon': { favor: 20, recompensa: { essencia: 10 } },
+    };
+    const deusEscolhido = deuses[normalizarTexto(deus)];
+    if (!deusEscolhido) return '⚠️ Deus inválido! Opções: zeus, hades, atena, poseidon.';
+    
+    user.religiao.deus = deus;
+    user.religiao.favor += deusEscolhido.favor;
+    Object.entries(deusEscolhido.recompensa).forEach(([moeda, valor]) => user.moedas[moeda] += valor);
+    delays[sender] = delays[sender] || {};
+    delays[sender].orar = Date.now() + 24 * 60 * 60 * 1000; // 24h cooldown
+    await saveUser(sender, user);
+    return `🙏 *Oração Aceita!* ${deus} te abençoou com ${Object.entries(deusEscolhido.recompensa).map(([k, v]) => `${v} ${MOEDAS[k]}`).join(', ')} e +${deusEscolhido.favor} favor divino.`;
+}
+
+// CRIAR CARAVANA
+async function criarCaravana(sender, destino) {
+    const user = await getUser(sender);
+    if (user.caravana) return '⚠️ Você já tem uma caravana ativa!';
+    const caravanas = {
+        'montanhas': { custo: 5000, tempo: 24 * 60 * 60, recompensa: { gemas: 30, fragmentos: 15 } },
+        'deserto': { custo: 7000, tempo: 36 * 60 * 60, recompensa: { dinheiro: 10000, essencia: 20 } },
+        'floresta': { custo: 6000, tempo: 30 * 60 * 60, recompensa: { reliquias: 10, ether: 15 } },
+    };
+    const caravana = caravanas[normalizarTexto(destino)];
+    if (!caravana) return '⚠️ Destino inválido! Opções: montanhas, deserto, floresta.';
+    if (user.moedas.dinheiro < caravana.custo) return `⚠️ Faltam ${caravana.custo - user.moedas.dinheiro} ${MOEDAS.dinheiro} pra enviar a caravana!`;
+    
+    user.moedas.dinheiro -= caravana.custo;
+    user.caravana = { destino, inicio: Date.now() / 1000, fim: Date.now() / 1000 + caravana.tempo };
+    await saveUser(sender, user);
+    return `🚛 *Caravana Enviada!* Destino: ${destino}. Retorna em ${caravana.tempo / 3600}h.`;
+}
+
+// COLETAR CARAVANA
+async function coletarCaravana(sender) {
+    const user = await getUser(sender);
+    if (!user.caravana) return '⚠️ Você não tem uma caravana ativa!';
+    if (Date.now() / 1000 < user.caravana.fim) return `⏳ A caravana volta em ${Math.ceil((user.caravana.fim - Date.now() / 1000) / 3600)} horas!`;
+    
+    const caravanas = {
+        'montanhas': { recompensa: { gemas: 30, fragmentos: 15 } },
+        'deserto': { recompensa: { dinheiro: 10000, essencia: 20 } },
+        'floresta': { recompensa: { reliquias: 10, ether: 15 } },
+    };
+    const recompensa = caravanas[user.caravana.destino].recompensa;
+    Object.entries(recompensa).forEach(([moeda, valor]) => user.moedas[moeda] += valor);
+    user.conquistas.caravanasCompletadas++;
+    user.caravana = null;
+    await verificarConquistas(sender);
+    await saveUser(sender, user);
+    return `🚛 *Caravana Retornou!* Recompensas: ${Object.entries(recompensa).map(([k, v]) => `${v} ${MOEDAS[k]}`).join(', ')}.`;
+}
+
+// LISTA DA LOJA
+async function listarLoja() {
+    return `🛒 *Loja* 🛒\n${itensLoja.map(i => `${i.nome} - ${i.valor} ${MOEDAS.dinheiro}`).join('\n')}`;
+}
+
+// EXPORTS ATUALIZADOS
+module.exports = Object.assign(getUser, {
+    rg: registrar,
+    batalhar,
+    explorarMasmorra,
+    craftar,
+    melhorarForja,
+    melhorarAlquimia,
+    comprarPropriedade,
+    coletarProducao,
+    melhorarPropriedade,
+    criarGuilda,
+    guildaConvidar,
+    guildaAceitar,
+    guildaMissão,
+    declararGuerra,
+    guerrear,
+    desafiarArena,
+    fundarReino,
+    coletarImpostos,
+    melhorarReino,
+    abrirPortal,
+    explorarPortal,
+    eventos: { iniciarEventoGlobal, participarEvento },
+    adotarPet,
+    evoluirPet,
+    treinarPet,
+    aprenderMagia,
+    usarMagia,
+    entrarFacção,
+    comprarMercadoNegro,
+    orar,
+    criarCaravana,
+    coletarCaravana,
+    ganharXP,
+    distribuirPontos,
+    verificarConquistas,
+    trabalhar,
+    escolherEmprego,
+    listarEmpregos,
+    comprarLoja,
+    venderItem,
+    equiparItem,
+    depositarBanco,
+    sacarBanco,
+    transferirDinheiro,
+    rankingGlobal,
+    listarFeitiços,
+    listarMercadoNegro,
+    listarLoja,
 });
-
-
-
-module.exports = objectExport;

@@ -124,6 +124,10 @@ try {
  const reagir = async (emj) => { if (typeof emj === 'string') { await nazu.sendMessage(from, { react: { text: emj, key: info.key } }); } else if (Array.isArray(emj)) { for (const emjzin of emj) { await nazu.sendMessage(from, { react: { text: emjzin, key: info.key } }); await new Promise(res => setTimeout(res, 500)); } } }; nazu.react = reagir;
  
  const getFileBuffer = async (mediakey, MediaType) => {const stream = await downloadContentFromMessage(mediakey, MediaType);let buffer = Buffer.from([]);for await(const chunk of stream) {buffer = Buffer.concat([buffer, chunk]) };return buffer}
+ 
+ function normalizarTexto(texto) {
+    return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
  //FIM FUNÇÕES BASICAS
 
  //SISTEMA ANTI PORNOGRAFIA 🤫
@@ -1562,313 +1566,320 @@ case 'ranklesbica': case 'rankburra': case 'rankinteligente': case 'rankotaku': 
 };
 break;
 
-   case 'chute': case 'chutar': case 'tapa': case 'soco': case 'socar': case 'beijo': case 'beijar': case 'beijob': case 'beijarb': case 'abraco': case 'abracar': case 'mata': case 'matar': case 'tapar': case 'goza': case 'gozar': case 'mamar': case 'mamada': case 'cafune': case 'morder': case 'mordida': case 'lamber': case 'lambida': case 'explodir':
-    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-    if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
-    if(!menc_os2) return reply('Marque um usuário.');
-    let gamesData = fs.existsSync(__dirname + '/funcs/json/games.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/games.json')) : { games2: {} };
-    let GamezinData = fs.existsSync(__dirname + '/funcs/json/markgame.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/markgame.json')) : { ranks: {} };
-    let responseText = GamezinData[command].replaceAll('#nome#', `@${menc_os2.split('@')[0]}`) || `Voce acabou de dar um(a) ${command} no(a) @${menc_os2.split('@')[0]}`;
-    let media = gamesData.games2[command];
-    if (media?.image) {
-        await nazu.sendMessage(from, { image: media.image, caption: responseText, mentions: [menc_os2] });
-    } else if (media?.video) {
-        await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: [menc_os2], gifPlayback: true });
-    } else {
-        await nazu.sendMessage(from, { text: responseText, mentions: [menc_os2] });
-    }
-   break;
-   
-   
-   //COMANDOS DE JOGOS
-   case 'ttt':
-   case 'jogodavelha': {
-     if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
-     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
-     if (!tictactoe.hasActiveGame(from)) {
-       const opponent = menc_os2 || (AllgroupMembers.filter(m => m !== sender)[Math.floor(Math.random() * (AllgroupMembers.length - 1))]);
-       if (opponent === sender) return reply('❌ Você não pode jogar contra você mesmo!');
-       const result = tictactoe.startGame(from, sender, opponent);
-       if (result.success) {
-         await nazu.sendMessage(from, { text: result.message, mentions: result.mentions });
-       } else {
-         await reply(result.message);
-       };
-       return;
-     };
-     if (!q) return reply('❌ Digite uma posição de 1 a 9 para fazer sua jogada!');
-     const position = parseInt(q);
-     const result = tictactoe.makeMove(from, sender, position);
-     if (result.success) {
-       await nazu.sendMessage(from, { text: result.message, mentions: [sender] });
-     } else {
-       await reply(result.message);
-     };
-   };
-   break;
-  
-  
-  //RPG
-  case 'pix':case 'reg':case 'registrar':case 'delrg':case 'saldo':case 'banco':case 'depositar':case 'deposito':case 'sacar':case 'saque':case 'depoall':case 'saqueall':case 'trabalhar':case 'empregos':case 'trabalhos':case 'addemprego':case 'demissao':case 'delemprego':case 'loja':case 'comprar':case 'vender':case 'me':case 'inventario':case 'pescar':case 'minerar':case 'mina':case 'cacar':case 'assaltar':case 'namorar':case 'aceitar':case 'recusar':case 'divorcio':case 'casar':case 'minhadupla':case 'cassino':case 'apostar':case 'pet':
-    try {
-        if (!isGroup) return reply('Este comando só pode ser utilizado em grupos.');
-        if (!isModoRpg) return reply('Este comando só pode ser utilizado com o modo RPG ativo.');
-        if (!DadosRp && !['registrar', 'reg'].includes(command)) return reply('Você não está registrado.');
 
-        switch (command) {
-    
-        case 'cassino':
-        case 'apostar':
-    if (!q || isNaN(q)) {
-        return reply("⚠️ Use o comando no formato: !cassino [valor]. Exemplo: !cassino 150");
-    }
-    const aposta = Number(q);
-    const resultadoCassino = await rpg.cassino(sender, aposta);
-    return reply(resultadoCassino.message);
-    
-        
-        case 'pet':
-    if (!q) {
-        return reply(`⚠️ Use o formato: ${prefix}pet <ação> <dados opcionais>\n\nAções: adotar, soltar, alimentar, banho, tosar, veterinario, status, brincar, passear, carinho\nExemplos:\n${prefix}pet adotar cachorro Rex\n${prefix}pet alimentar\n${prefix}pet status`);
-    }
 
-    const [acao, ...dados] = q.trim().split(' ');
-    const comando = acao?.toLowerCase();
-    const resto = dados.join(' ').trim();
 
-    const precisaAtualizar = ['alimentar', 'banho', 'tosar', 'veterinario', 'status', 'brincar', 'passear', 'carinho'];
-    if (precisaAtualizar.includes(comando)) {
-        await rpg.pet.atualizar(sender);
-    }
 
-    const comandosDiretos = {
-        soltar: rpg.pet.soltar,
-        alimentar: rpg.pet.alimentar,
-        banho: rpg.pet.banho,
-        tosar: rpg.pet.tosar,
-        veterinario: rpg.pet.veterinario,
-        brincar: rpg.pet.brincar,
-        passear: rpg.pet.passear,
-        carinho: rpg.pet.carinho,
-        status: rpg.pet.status
-    };
 
-    if (comando === 'adotar') {
-        const partes = resto.split(' ');
-        if (partes.length < 2) {
-            return reply(`⚠️ Use o formato: ${prefix}pet adotar tipo nome\nExemplo: ${prefix}pet adotar cachorro Capivara Feliz`);
-        }
-        const tipo = partes.shift();
-        const nome = partes.join(' ');
-        const resultado = await rpg.pet.adotar(sender, nome, tipo);
-        return reply(resultado.message);
-    }
 
-    if (comandosDiretos[comando]) {
-        const resultado = await comandosDiretos[comando](sender);
-        return reply(resultado.message);
-    }
+//SITEMA DE RPG EM TESTE
+        case 'rg': // Registro
+            if (await rpg(sender)) return reply('⚠️ Já registrado!');
+            if (!args[0]) return reply('⚠️ Dê um nome! Ex: !rg Herói');
+            return reply(await rpg.rg(sender, args.join(' ')));
 
-    return reply(`⚠️ Ação inválida. Use: adotar, soltar, alimentar, banho, tosar, veterinario, status, brincar, passear, carinho`);
-    
-           case 'namorar':
-    if (!isGroup) return reply('💌 Este comando só pode ser utilizado em grupos.');
-    if (!menc_os2) return reply('💌 Marque a pessoa que deseja pedir em namoro.\nExemplo: !namorar @pessoa');
-    
-    const pedidoNamoro = await rpg.relacionamento.namorar(sender, menc_os2);
-    if (!pedidoNamoro) return reply('💔 Ocorreu um erro ao enviar o pedido de namoro.');
-    return reply(pedidoNamoro.message);
+        case 'fight': // Batalhar
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha inimigo! Ex: !fight goblin');
+            return reply(await rpg.batalhar(sender, normalizarTexto(args.join(' '))));
 
-    case 'aceitar':
-    const aceitar = await rpg.relacionamento.aceitar(sender);
-    if (!aceitar) return reply('💔 Ocorreu um erro ao aceitar o pedido.');
-    return reply(aceitar.message);
+        case 'dungeon': // Masmorra
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha masmorra! Ex: !dungeon caverna');
+            return reply(await rpg.explorarMasmorra(sender, normalizarTexto(args.join(' '))));
 
-    case 'recusar':
-    const recusar = await rpg.relacionamento.recusar(sender);
-    if (!recusar) return reply('💔 Ocorreu um erro ao recusar o pedido.');
-    return reply(recusar.message);
+        case 'craft': // Craftar
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha item! Ex: !craft espada');
+            return reply(await rpg.craftar(sender, normalizarTexto(args.join(' '))));
 
-    case 'divorcio':
-    if (!q || q !== '1') return reply('💔 Confirme o divórcio digitando: !divorcio 1');
-    const divorcio = await rpg.relacionamento.divorciar(sender, q);
-    if (!divorcio) return reply('💔 Ocorreu um erro ao realizar o divórcio.');
-    return reply(divorcio.message);
+        case 'upforge': // Melhorar Forja
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.melhorarForja(sender));
 
-    case 'casar':
-    const casar = await rpg.relacionamento.casar(sender);
-    if (!casar) return reply('💍 Ocorreu um erro ao fazer o pedido de casamento.');
-    return reply(casar.message);
+        case 'upalchemy': // Melhorar Alquimia
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.melhorarAlquimia(sender));
 
-    case 'minhadupla':
-    const dupla = await rpg.relacionamento.minhaDupla(sender);
-    if (!dupla) return reply('💔 Ocorreu um erro ao buscar informações da sua dupla.');
-    return reply(dupla.message);
-    
-            case 'registrar':
-            case 'reg':
-                if (DadosRp) return reply(`Você já está registrado como ${DadosRp.nome}.`);
-                if (!q) return reply(`Digite seu nome.\nExemplo: ${prefix}${command} João.`);
-                if (q.length > 15) return reply('O nome não pode ter mais de 15 caracteres.');
-                const registrar = await rpg.rg(sender, q);
-                if (!registrar) return reply('Erro ao registrar.');
-                return reply(`Bem-vindo(a), ${q}! Você foi registrado no RPG.`);
+        case 'buyprop': // Comprar Propriedade
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha propriedade! Ex: !buyprop casa');
+            return reply(await rpg.comprarPropriedade(sender, normalizarTexto(args[0])));
 
-            case 'delrg':
-                if (!q || q !== '1') return reply(`Confirme a exclusão do registro digitando: ${prefix}${command} 1`);
-                const deletarRegistro = await rpg.del(sender);
-                if (!deletarRegistro) return reply('Erro ao deletar registro.');
-                return reply('Seu registro foi deletado com sucesso.');
+        case 'collect': // Coletar Produção
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.coletarProducao(sender));
 
-            case 'saldo':
-            case 'banco':
-                const saldoMsg = `🏦 _*INFORMAÇÕES BANCÁRIAS*_ 🏦\n\nBanco: NazuBank\nNome: ${DadosRp.nome}\nSaldo no Banco: R$ ${DadosRp.saldo.banco}\nSaldo na Carteira: R$ ${DadosRp.saldo.carteira}`;
-                return reply(saldoMsg);
+        case 'upprop': // Melhorar Propriedade
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0] || !args[1]) return reply('⚠️ Escolha propriedade e upgrade! Ex: !upprop casa jardim');
+            return reply(await rpg.melhorarPropriedade(sender, normalizarTexto(args[0]), normalizarTexto(args[1])));
 
-            case 'depositar':
-            case 'deposito':
-                if (!q || !Number(q)) return reply(`Digite um valor válido.\nExemplo: ${prefix}${command} 50`);
-                if (DadosRp.saldo.carteira < Number(q)) return reply('Saldo insuficiente.');
-                if (!await rpg.saldo.del(sender, Number(q)) || !await rpg.banco.add(sender, Number(q))) 
-                    return reply('Erro ao depositar.');
-                return reply(`Você depositou R$${q}.`);
+        case 'guild': // Criar Guilda
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Dê um nome! Ex: !guild Legião');
+            return reply(await rpg.criarGuilda(sender, args.join(' ')));
 
-            case 'sacar':
-            case 'saque':
-                if (!q || !Number(q)) return reply(`Digite um valor válido.\nExemplo: ${prefix}${command} 50`);
-                if (DadosRp.saldo.banco < Number(q)) return reply('Saldo insuficiente no banco.');
-                if (!await rpg.banco.del(sender, Number(q)) || !await rpg.saldo.add(sender, Number(q)))
-                    return reply('Erro ao sacar.');
-                return reply(`Você sacou R$${q}.`);
+        case 'invite': // Convidar pra Guilda
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha jogador! Ex: !invite @user');
+            return reply(await rpg.guildaConvidar(sender, args[0].replace('@', '')));
 
-            case 'depoall':
-                if (!await rpg.banco.add(sender, DadosRp.saldo.carteira) || !await rpg.saldo.del(sender, DadosRp.saldo.carteira))
-                    return reply('Erro ao depositar tudo.');
-                return reply(`Você depositou todo o saldo da carteira no banco.`);
+        case 'join': // Aceitar Convite de Guilda
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha guilda! Ex: !join Legião');
+            return reply(await rpg.guildaAceitar(sender, normalizarTexto(args.join(' '))));
 
-            case 'saqueall':
-                if (!await rpg.saldo.add(sender, DadosRp.saldo.banco) || !await rpg.banco.del(sender, DadosRp.saldo.banco))
-                    return reply('Erro ao sacar tudo.');
-                return reply(`Você sacou todo o saldo do banco para a carteira.`);
+        case 'gquest': // Missão da Guilda
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha missão! Ex: !gquest caça');
+            return reply(await rpg.guildaMissão(sender, normalizarTexto(args.join(' '))));
 
-            case 'pix':
-            case 'transferir':
-                if (!q) return reply(`Digite o usuário e valor no formato: ${prefix}${command} @usuario/valor.`);
-                let destinatario, valor;
-                if (q.includes("@")) {
-                   [destinatario, valor] = q.replace(/ /g, '').split('/');
-                   destinatario = destinatario.split("@")[1] + "@s.whatsapp.net"; // Converte para JID
-                } else {
-                   if (!menc_os2) return reply('Marque quem deseja enviar o pix.');
-                   destinatario = menc_os2;
-                   valor = q;
-                };
-                if (!destinatario) return reply('Está faltando o destinatário para a transferência.');
-                if (!valor || isNaN(valor)) return reply(`O valor informado é inválido.\nExemplo: ${prefix}${command} @usuario/200.`);
-                if (DadosRp.saldo.banco < Number(valor)) return reply('Saldo insuficiente para transferência.');
-                const userDestino = await rpg(destinatario);
-                if (!userDestino) return reply('Usuário não registrado no RPG.');
-                const addSaldo = await rpg.banco.add(destinatario, Number(valor));
-                const debitarSaldo = await rpg.banco.del(sender, Number(valor));
-                if (!addSaldo || !debitarSaldo) return reply('Erro ao realizar transferência.');
-                return reply(`*🚀 TRANSFERÊNCIA REALIZADA 🚀*\n\nDe: ${DadosRp.nome}\nPara: ${userDestino.nome}\nValor: R$${valor}\n\nObrigado por utilizar nossos serviços.`);
+        case 'war': // Declarar Guerra
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha guilda! Ex: !war Império');
+            return reply(await rpg.declararGuerra(sender, args.join(' ')));
 
-            
-            case 'assaltar':
-                if (!menc_os2) return reply(`Marque quem deseja assaltar.\nExemplo: ${prefix}${command} @usuario`);
-                const alvo = menc_os2;
-                if (alvo === sender) return reply('Você não pode se assaltar.');
-                const resultadoAssalto = await rpg.acao.assaltar(sender, alvo);
-                if (!resultadoAssalto) return reply('Erro ao realizar o assalto.');
-                return reply(resultadoAssalto.message);
+        case 'battle': // Guerrear
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha inimigo! Ex: !battle goblin');
+            return reply(await rpg.guerrear(sender, normalizarTexto(args.join(' '))));
 
-            case 'trabalhar':
-                if (!DadosRp.emprego || DadosRp.emprego === 'desempregado') return reply('Você precisa ter um emprego.');
-                const trabalho = await rpg.trabalhar(sender);
-                if (!trabalho) return reply('Erro ao trabalhar.');
-                return reply(trabalho.message);
+        case 'pvp': // Desafiar na Arena
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha oponente! Ex: !pvp @user');
+            return reply(await rpg.desafiarArena(sender, args[0].replace('@', '')));
 
-            case 'empregos':
-                const empregos = await rpg.empregos(sender);
-                if (!empregos) return reply('Erro ao listar empregos.');
-                textEmpregos = `✨ _*EMPREGOS DA NAZUCITY*_ ✨\n- ✅ Empregos que você pode entrar\n- ❌ Empregos que você precisa de mais experiência de trabalho para entrar\n`;
-                for(emprego of empregos.disponiveis) {
-                textEmpregos += `\n- ✅ ${emprego}`;
-                };
-                textEmpregos += '\n';
-                for(emprego of empregos.bloqueados) {
-                textEmpregos += `\n- ❌ ${emprego}`;
-                };
-                textEmpregos += `\n\n> Para entrar nos empregos digite ${prefix}addemprego [Nome do emprego]\n> Exemplo: ${prefix}addemprego policial`;
-                return reply(textEmpregos);
+        case 'kingdom': // Fundar Reino
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Dê um nome! Ex: !kingdom Valhalla');
+            return reply(await rpg.fundarReino(sender, args.join(' ')));
 
-            case 'addemprego':
-                if (DadosRp.emprego && DadosRp.emprego !== 'desempregado') 
-                    return reply('Você já tem um emprego. Demita-se primeiro.');
-                const addEmprego = await rpg.emprego.add(sender, q.toLowerCase());
-                if (!addEmprego) return reply('Erro ao entrar no emprego.');
-                return reply(addEmprego.message);
+        case 'tax': // Coletar Impostos
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.coletarImpostos(sender));
 
-            case 'demissao':
-                if (!DadosRp.emprego || DadosRp.emprego === 'desempregado') 
-                    return reply('Você não tem emprego para se demitir.');
-                const demissao = await rpg.emprego.del(sender);
-                if (!demissao) return reply('Erro ao se demitir.');
-                return reply(demissao.message);
+        case 'upkingdom': // Melhorar Reino
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha upgrade! Ex: !upkingdom muralhas');
+            return reply(await rpg.melhorarReino(sender, normalizarTexto(args[0])));
 
-            case 'loja':
-                const loja = await rpg.loja();
-                if (!loja) return reply('Erro ao acessar a loja.');
-                return reply(loja.message.replaceAll('#prefix#', prefix));
+        case 'portal': // Abrir Portal
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha destino! Ex: !portal sombras');
+            return reply(await rpg.abrirPortal(sender, normalizarTexto(args.join(' '))));
 
-            case 'comprar':
-  if (!q) return reply('Digite o nome do item que deseja comprar.');
-  const [itemz, quantidadez] = q.split('/');
-  const compra = quantidadez ? await rpg.comprar(sender, itemz, Number(quantidadez)) : await rpg.comprar(sender, itemz);
-  if (!compra) return reply('Erro ao comprar item.');
-  return reply(compra.message.replaceAll('#prefix#', prefix));
+        case 'explore': // Explorar Portal
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.explorarPortal(sender));
 
-            case 'vender':
-                if (!q) return reply(`Digite o item e a quantidade no formato: item/quantidade.`);
-                const [item, quantidade] = q.split('/').map(v => v.trim());
-                if (!item || !quantidade || isNaN(quantidade)) return reply('Formato inválido. Exemplo: item/1');
-                const venda = await rpg.vender(sender, item, parseInt(quantidade));
-                if (!venda) return reply('Erro ao vender item.');
-                return reply(venda.message);
+        case 'event': // Iniciar Evento Global
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.eventos.iniciarEventoGlobal());
 
-            case 'me':
-                const informacoes = await rpg.me(sender);
-                if (!informacoes) return reply('Erro ao buscar informações.');
-                return reply(informacoes.message);
+        case 'joinvent': // Participar de Evento
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha inimigo! Ex: !joinvent goblin');
+            return reply(await rpg.eventos.participarEvento(sender, normalizarTexto(args.join(' '))));
 
-            case 'inventario':
-                const inventario = await rpg.itens(sender);
-                if (!inventario) return reply('Erro ao buscar inventário.');
-                return reply(inventario.message);
+        case 'pet': // Adotar Pet
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0] || !args[1]) return reply('⚠️ Escolha tipo e nome! Ex: !pet lobo Fenrir');
+            return reply(await rpg.adotarPet(sender, normalizarTexto(args[0]), args.slice(1).join(' ')));
 
-            case 'pescar':
-                const pesca = await rpg.acao.pescar(sender);
-                if (!pesca) return reply('Erro ao pescar.');
-                return reply(pesca.message);
+        case 'evopet': // Evoluir Pet
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.evoluirPet(sender));
 
-            case 'minerar':
-                const mineracao = await rpg.acao.minerar(sender);
-                if (!mineracao) return reply('Erro ao minerar.');
-                return reply(mineracao.message);
+        case 'train': // Treinar Pet
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.treinarPet(sender));
 
-            case 'cacar':
-                const caca = await rpg.acao.cacar(sender);
-                if (!caca) return reply('Erro ao caçar.');
-                return reply(caca.message);
+        case 'learn': // Aprender Magia
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha feitiço! Ex: !learn fogo');
+            return reply(await rpg.aprenderMagia(sender, normalizarTexto(args.join(' '))));
 
-            default:
-                return reply('Comando inválido ou não implementado no RPG.');
-        }
-    } catch (e) {
-        console.error(e);
-        return reply('Ocorreu um erro ao executar o comando RPG.');
-    }
-break;
+        case 'cast': // Usar Magia
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha feitiço! Ex: !cast fogo');
+            return reply(await rpg.usarMagia(sender, normalizarTexto(args.join(' '))));
+
+        case 'faction': // Entrar em Facção
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha facção! Ex: !faction ordem');
+            return reply(await rpg.entrarFacção(sender, normalizarTexto(args.join(' '))));
+
+        case 'black': // Comprar no Mercado Negro
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha item! Ex: !black adaga');
+            return reply(await rpg.comprarMercadoNegro(sender, normalizarTexto(args.join(' '))));
+
+        case 'pray': // Orar
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha deus! Ex: !pray zeus');
+            return reply(await rpg.orar(sender, normalizarTexto(args.join(' '))));
+
+        case 'caravan': // Criar Caravana
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha destino! Ex: !caravan montanhas');
+            return reply(await rpg.criarCaravana(sender, args.join(' ')));
+
+        case 'getcaravan': // Coletar Caravana
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.coletarCaravana(sender));
+
+        case 'xp': // Ganhar XP
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Dê uma quantia! Ex: !xp 100');
+            return reply(await rpg.ganharXP(sender, parseInt(args[0])));
+
+        case 'stats': // Distribuir Pontos
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0] || !args[1]) return reply('⚠️ Escolha atributo e pontos! Ex: !stats força 5');
+            return reply(await rpg.distribuirPontos(sender, normalizarTexto(args[0]), parseInt(args[1])));
+
+        case 'achieve': // Verificar Conquistas
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.verificarConquistas(sender) || '⚠️ Sem novas conquistas!');
+
+        case 'work': // Trabalhar
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.trabalhar(sender));
+
+        case 'job': // Escolher Emprego
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha emprego! Ex: !job ferreiro');
+            return reply(await rpg.escolherEmprego(sender, normalizarTexto(args.join(' '))));
+
+        case 'jobs': // Lista de Empregos
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.listarEmpregos());
+
+        case 'buy': // Comprar na Loja
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha item! Ex: !buy espada');
+            return reply(await rpg.comprarLoja(sender, normalizarTexto(args.join(' '))));
+
+        case 'sell': // Vender Item
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha item! Ex: !sell potion');
+            return reply(await rpg.venderItem(sender, normalizarTexto(args.join(' '))));
+
+        case 'equip': // Equipar Item
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Escolha item! Ex: !equip espada');
+            return reply(await rpg.equiparItem(sender, normalizarTexto(args.join(' '))));
+
+        case 'inv': // Inventário
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            const user = await rpg(sender);
+            return reply(`🎒 *Inventário de ${user.nome}*\n${Object.entries(user.inventario).map(([item, qtd]) => `${item}: ${qtd}`).join('\n') || 'Vazio!'}`);
+
+        case 'dep': // Depositar no Banco
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Dê uma quantia! Ex: !dep 500');
+            return reply(await rpg.depositarBanco(sender, parseInt(args[0])));
+
+        case 'withdraw': // Sacar do Banco
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0]) return reply('⚠️ Dê uma quantia! Ex: !withdraw 500');
+            return reply(await rpg.sacarBanco(sender, parseInt(args[0])));
+
+        case 'send': // Transferir Dinheiro
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            if (!args[0] || !args[1]) return reply('⚠️ Escolha jogador e quantia! Ex: !send @user 1000');
+            return reply(await rpg.transferirDinheiro(sender, args[0].replace('@', ''), parseInt(args[1])));
+
+        case 'rank': // Ranking Global
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.rankingGlobal());
+
+        case 'spells': // Lista de Feitiços
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.listarFeitiços());
+
+        case 'shop': // Lista da Loja
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.listarLoja());
+
+        case 'blackmarket': // Lista do Mercado Negro
+            if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
+            return reply(await rpg.listarMercadoNegro());
+
+        case 'me': // Perfil
+            const user = await rpg(sender);
+            if (!user) return reply('⚠️ Registre-se com !rg!');
+            return reply(`
+🌌 *${user.nome} - Nv.${user.nivel}* 🌌
+📊 *Stats*: F:${user.atributos.forca} | A:${user.atributos.agilidade} | I:${user.atributos.inteligencia} | V:${user.atributos.vitalidade} | S:${user.atributos.sorte} | C:${user.atributos.carisma} | R:${user.atributos.resistencia}
+💰 *Moedas*: ${Object.entries(user.moedas).map(([k, v]) => `${v}${rpg.MOEDAS[k]}`).join(' ')}
+🏦 *Saldo*: B:${user.saldo.banco} C:${user.saldo.carteira}
+🗡️ *Equip*: ${user.equipamento.arma?.nome || 'N/A'} | ${user.equipamento.armadura?.nome || 'N/A'} | ${user.equipamento.acessorio?.nome || 'N/A'} | ${user.equipamento.anel?.nome || 'N/A'}
+⚒️ *Ofícios*: F:${user.forja.nivel} (+${user.forja.bonus}%) | A:${user.alquimia.nivel} (+${user.alquimia.bonus}%)
+🏰 *Reino*: ${user.reino ? `${user.reino.nome} (Nv.${user.reino.nivel})` : 'Nenhum'}
+🐾 *Pet*: ${user.pet ? `${user.pet.nome} (${user.pet.tipo}, Nv.${user.pet.nivel})` : 'Nenhum'}
+⚜️ *Guilda*: ${user.guilda ? user.guilda.nome : 'Nenhuma'}
+🏅 *Títulos*: ${user.titulos.length > 0 ? user.titulos.join(', ') : 'Nenhum'}
+📈 *XP*: ${user.experiencia}/${user.nivel * 400 + Math.pow(user.nivel, 2) * 200}
+            `);
+
+        case 'helprpgtest': // Ajuda
+            return reply(`
+🌌 *RPG V2 - Comandos* 🌌
+!rg [nome] - Registro
+!fight [inimigo] - Lutar
+!dungeon [nome] - Masmorra
+!craft [item] - Forjar
+!upforge - Melhorar forja
+!upalchemy - Melhorar alquimia
+!buyprop [nome] - Comprar propriedade
+!collect - Coletar produção
+!upprop [nome] [upgrade] - Melhorar propriedade
+!guild [nome] - Criar guilda
+!invite [@user] - Convidar pra guilda
+!join [nome] - Entrar na guilda
+!gquest [tipo] - Missão da guilda
+!war [guilda] - Declarar guerra
+!battle [inimigo] - Guerrear
+!pvp [@user] - Desafiar na arena
+!kingdom [nome] - Criar reino
+!tax - Coletar impostos
+!upkingdom [upgrade] - Melhorar reino
+!portal [destino] - Abrir portal
+!explore - Explorar portal
+!event - Iniciar evento
+!joinvent [inimigo] - Participar evento
+!pet [tipo] [nome] - Adotar pet
+!evopet - Evoluir pet
+!train - Treinar pet
+!learn [feitiço] - Aprender magia
+!cast [feitiço] - Usar magia
+!faction [nome] - Entrar em facção
+!black [item] - Comprar no mercado negro
+!pray [deus] - Orar
+!caravan [destino] - Enviar caravana
+!getcaravan - Coletar caravana
+!xp [quantia] - Ganhar XP
+!stats [atributo] [pontos] - Distribuir pontos
+!achieve - Ver conquistas
+!work - Trabalhar
+!job [nome] - Escolher emprego
+!jobs - Lista de empregos
+!buy [item] - Comprar na loja
+!sell [item] - Vender item
+!equip [item] - Equipar item
+!inv - Ver inventário
+!dep [quantia] - Depositar
+!withdraw [quantia] - Sacar
+!send [@user] [quantia] - Transferir
+!rank - Ranking
+!spells - Lista de feitiços
+!shop - Lista da loja
+!blackmarket - Lista do mercado negro
+!me - Perfil
+!help - Esta lista
+            `);
   
  default:
  if(isCmd) await nazu.react('❌');
