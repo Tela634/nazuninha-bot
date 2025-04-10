@@ -1773,8 +1773,8 @@ break;
 
         case 'inv': // Inventário
             if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
-            const user = await rpg(sender);
-            return reply(`🎒 *Inventário de ${user.nome}*\n${Object.entries(user.inventario).map(([item, qtd]) => `${item}: ${qtd}`).join('\n') || 'Vazio!'}`);
+            const user2 = await rpg(sender);
+            return reply(`🎒 *Inventário de ${user2.nome}*\n${Object.entries(user2.inventario).map(([item, qtd]) => `${item}: ${qtd}`).join('\n') || 'Vazio!'}`);
 
         case 'dep': // Depositar no Banco
             if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
