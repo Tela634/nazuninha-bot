@@ -1622,8 +1622,8 @@ break;
 
         case 'invite': // Convidar pra Guilda
             if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
-            if (!args[0]) return reply('⚠️ Escolha jogador! Ex: !invite @user');
-            return reply(await rpg.guildaConvidar(sender, args[0].replace('@', '')));
+            if (!menc_os2) return reply('⚠️ Escolha jogador! Ex: !invite @user');
+            return reply(await rpg.guildaConvidar(sender, menc_os2));
 
         case 'join': // Aceitar Convite de Guilda
             if (!await rpg(sender)) return reply('⚠️ Registre-se com !rg!');
