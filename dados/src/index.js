@@ -233,8 +233,8 @@ try {
     nazu.react('🤖');
     bahz = (await axios.post("https://api.cognima.com.br/api/ia/chat?key=CognimaTeamFreeKey", { 
       message: q, 
-      chat_id: `cognima_${sender.split('@')[0]}`, 
-      model_name: "cognima" 
+      chat_id: `cognimai_${sender.split('@')[0]}`, 
+      model_name: "cognimai" 
     })).data;
     await reply(bahz.reply);
   } catch (e) {
