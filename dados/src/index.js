@@ -1812,7 +1812,7 @@ break;
     if (!user) return reply('⚠️ Registre-se com !rg!');
     return reply(`
 ✨ *${user.nome}* ──── Nv.${user.nivel} ✨
-━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━
 ⚔️ *ATRIBUTOS* ⚔️
 🔹 Força: ${user.atributos.forca} 
 🔸 Agilidade: ${user.atributos.agilidade} 
@@ -1823,9 +1823,9 @@ break;
 🔹 Resistência: ${user.atributos.resistencia}
 
 💰 *ECONOMIA* 💰
-🪙 ${Object.entries(user.moedas).map(([k, v]) => `${v}${rpg.MOEDAS[k]}`).join('  ')}
 💳 Banco: ${user.saldo.banco}
 💵 Carteira: ${user.saldo.carteira}
+🪙 Moedas: ${Object.entries(user.moedas).map(([k, v]) => `${rpg.MOEDAS[k]} - ${v}`).join(', ')}
 
 🎮 *EQUIPAMENTOS* 🛡️
 🗡️ Arma: ${user.equipamento.arma?.nome || 'Nenhuma'}
@@ -1845,9 +1845,8 @@ break;
 🏆 *CONQUISTAS* 🎖️
 📜 Títulos: ${user.titulos.length > 0 ? user.titulos.join(', ') : 'Nenhum'}
 📊 XP: ${user.experiencia}/${user.nivel * 400 + Math.pow(user.nivel, 2) * 200}
-━━━━━━━━━━━━━━━━━━━━
-✨ *Boa jornada, ${user.nome}!* ✨
-    `);
+━━━━━━━━━━━━━━━━━
+✨ *Boa jornada, ${user.nome}!* ✨`);
 
         case 'helprpgtest': // Ajuda
             return reply(`
