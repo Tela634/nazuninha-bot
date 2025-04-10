@@ -1076,10 +1076,9 @@ case 'ping':
    case 'welcomeimg': {
   if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
   if (!isGroupAdmin) return reply('❌ Apenas administradores podem configurar a foto de boas-vindas.');
-  if (q !== 'gif' && !isQuotedImage && !isImage) return reply('❌ Marque uma imagem ou envie uma imagem com o comando!');
+  if (!isQuotedImage && !isImage) return reply('❌ Marque uma imagem ou envie uma imagem com o comando!');
 
   try {
-    if (q !== 'gif') {
       const imgMessage = isQuotedImage
         ? info.message.extendedTextMessage.contextInfo.quotedMessage.imageMessage
         : info.message.imageMessage;
@@ -1088,12 +1087,7 @@ case 'ping':
       if (!uploadResult) throw new Error('Falha ao fazer upload da imagem');
       if (!groupData.welcome) groupData.welcome = {};
       groupData.welcome.image = uploadResult;
-    } else if (q === 'gif') {
-      if (!groupData.welcome) groupData.welcome = {};
-      groupData.welcome.image = 'gif';
-    }
-
-    fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
+      fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
     await reply('✅ Foto de boas-vindas configurada com sucesso!');
   } catch (error) {
     console.error(error);
@@ -1523,57 +1517,49 @@ break;
     return reply(resultadoCassino.message);
     
         
-        case 'adotar':
-    if (!q || q.split('/').length < 2) {
-        return reply("⚠️ Use o formato: !adotar Nome/Tipo (Ex: !adotar Rex/cachorro)");
+        case 'pet':
+    if (!q) {
+        return reply(`⚠️ Use o formato: ${prefix}pet <ação> <dados opcionais>\n\nAções: adotar, soltar, alimentar, banho, tosar, veterinario, status, brincar, passear, carinho\nExemplos:\n${prefix}pet adotar cachorro Rex\n${prefix}pet alimentar\n${prefix}pet status`);
     }
-    const [nome, tipo] = q.split('/');
-    const resultadoAdocao = await rpg.pet.adotar(sender, nome, tipo);
-    return reply(resultadoAdocao.message);
 
-case 'soltar':
-    const resultadoSoltar = await rpg.pet.soltar(sender);
-    return reply(resultadoSoltar.message);
+    const [acao, ...dados] = q.trim().split(' ');
+    const comando = acao?.toLowerCase();
+    const resto = dados.join(' ').trim();
 
-case 'alimentar':
-    await rpg.pet.atualizar(sender);
-    const resultadoAlimentar = await rpg.pet.alimentar(sender);
-    return reply(resultadoAlimentar.message);
+    const precisaAtualizar = ['alimentar', 'banho', 'tosar', 'veterinario', 'status', 'brincar', 'passear', 'carinho'];
+    if (precisaAtualizar.includes(comando)) {
+        await rpg.pet.atualizar(sender);
+    }
 
-case 'banho':
-    await rpg.pet.atualizar(sender);
-    const resultadoBanho = await rpg.pet.banho(sender);
-    return reply(resultadoBanho.message);
+    const comandosDiretos = {
+        soltar: rpg.pet.soltar,
+        alimentar: rpg.pet.alimentar,
+        banho: rpg.pet.banho,
+        tosar: rpg.pet.tosar,
+        veterinario: rpg.pet.veterinario,
+        brincar: rpg.pet.brincar,
+        passear: rpg.pet.passear,
+        carinho: rpg.pet.carinho,
+        status: rpg.pet.status
+    };
 
-case 'tosar':
-    await rpg.pet.atualizar(sender);
-    const resultadoTosa = await rpg.pet.tosar(sender);
-    return reply(resultadoTosa.message);
+    if (comando === 'adotar') {
+        const partes = resto.split(' ');
+        if (partes.length < 2) {
+            return reply(`⚠️ Use o formato: ${prefix}pet adotar tipo nome\nExemplo: ${prefix}pet adotar cachorro Capivara Feliz`);
+        }
+        const tipo = partes.shift();
+        const nome = partes.join(' ');
+        const resultado = await rpg.pet.adotar(sender, nome, tipo);
+        return reply(resultado.message);
+    }
 
-case 'veterinario':
-    await rpg.pet.atualizar(sender);
-    const resultadoVeterinario = await rpg.pet.veterinario(sender);
-    return reply(resultadoVeterinario.message);
+    if (comandosDiretos[comando]) {
+        const resultado = await comandosDiretos[comando](sender);
+        return reply(resultado.message);
+    }
 
-case 'meupet':
-    await rpg.pet.atualizar(sender);
-    const statusPet = await rpg.pet.status(sender);
-    return reply(statusPet.message);
-    
-    case 'brincar':
-    await rpg.pet.atualizar(sender);
-    const resultadoBrincar = await rpg.pet.brincar(sender);
-    return reply(resultadoBrincar.message);
-
-case 'passear':
-    await rpg.pet.atualizar(sender);
-    const resultadoPassear = await rpg.pet.passear(sender);
-    return reply(resultadoPassear.message);
-
-case 'carinho':
-    await rpg.pet.atualizar(sender);
-    const resultadoCarinho = await rpg.pet.carinho(sender);
-    return reply(resultadoCarinho.message);
+    return reply(`⚠️ Ação inválida. Use: adotar, soltar, alimentar, banho, tosar, veterinario, status, brincar, passear, carinho`);
     
            case 'namorar':
     if (!isGroup) return reply('💌 Este comando só pode ser utilizado em grupos.');

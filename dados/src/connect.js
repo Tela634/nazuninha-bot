@@ -108,13 +108,7 @@ async function startNazu() {
      const welcomeText = textBv.replaceAll('#numerodele#', `@${sender.split('@')[0]}`).replaceAll('#nomedogp#', GroupMetadata.subject).replaceAll('#desc#', GroupMetadata.desc || '').replaceAll('#membros#', GroupMetadata.participants.length);
 
      if(jsonGp.welcome && jsonGp.welcome.image) {
-       if(jsonGp.welcome.image === 'gif') {
-       bah = JSON.parse(fs.readFileSync(__dirname+'/../database/pushname.json'));
-       const buffer = (await axios.get(`https://api.cognima.com.br/api/welcome-gif?key=CognimaTeamFreeKey&name=${bah[sender] ? bah[sender] : 'user'}`, { responseType: 'arraybuffer' })).data;
-       await nazu.sendMessage(from, { video: buffer, gifPlayback: true, caption: welcomeText, mentions: [sender] });
-       } else {
        await nazu.sendMessage(from, {image: { url: jsonGp.welcome.image },caption: welcomeText,mentions: [sender]});
-       };
      } else {
        await nazu.sendMessage(from, {text: welcomeText,mentions: [sender]});
      };
@@ -138,7 +132,6 @@ async function startNazu() {
     for (const info of m.messages) {
     if(!info.message) return;
     if(m.type == "append") return;  
-    fs.existsSync(__dirname+'/../database/pushname.json') || fs.writeFileSync(__dirname+'/../database/pushname.json', JSON.stringify({})); bah = JSON.parse(fs.readFileSync(__dirname+'/../database/pushname.json')); bah[info.key.remoteJid.endsWith('@g.us') ? (info.key.participant.includes(':') ? info.key.participant.split(':')[0] + '@s.whatsapp.net' : info.key.participant) : info.key.remoteJid] = info.pushName || 'user'; fs.writeFileSync(__dirname+'/../database/pushname.json', JSON.stringify(bah));
     const indexModulePath = __dirname + '/index.js';
     delete require.cache[require.resolve(indexModulePath)];
     const indexModule = require(indexModulePath);
@@ -160,31 +153,42 @@ async function startNazu() {
      if(aviso) await nazu.sendMessage(numerodono+'@s.whatsapp.net', {text: 'Bot conectado ✅'});
    };
    
-   if (connection === 'close') {
-     const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
-     console.log(`⚠️ Conexão fechada, motivo: ${reason}`);
-     if (reason === DisconnectReason.loggedOut || reason === 401) {
-       console.log('🗑️ Sessão inválida, excluindo autenticação...');
-       execSync(`rm -rf ${AUTH_DIR}`);
-      } else if(reason == 408) {
-       console.log('A sessão sofreu um timeout, recarregando...');
-      } else if(reason == 411) {
-       console.log('O arquivo de sessão parece incorreto, estou tentando recarregar...');
-      } else if(reason == 428) {
-       console.log('Não foi possível manter a conexão com o WhatsApp, tentando de novo...');
-      } else if(reason == 440) {
-       console.log('Existem muitas sessões do WhatsApp conectadas no meu número, feche-as...');
-      } else if(reason == 500) {
-       console.log('A sessão parece mal configurada, estarei tentando reconectar...');
-      } else if(reason == 503) {
-       console.log('Erro desconhecido...');
-      } else if(reason == 515) {
-       console.log('Meu código será reinicializado para estabilizar a conexão...');
-      };
-      await nazu.end();
-      console.log(`🔄 Tentando reconectar...`);
-      startNazu();
-     };
+if (connection === 'close') {
+  const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
+  console.log(`⚠️  Conexão fechada, motivo: ${reason || 'desconhecido'}`);
+  const errorMessages = {
+    401: '🗑️  Sessão inválida, excluindo autenticação...',
+    403: '🔒  Acesso negado ao WhatsApp Web',
+    404: '🔍  Sessão não encontrada',
+    406: '📵  Dispositivo não conectado à internet',
+    408: '⏳  A sessão sofreu um timeout, recarregando...',
+    410: '🔄  Sessão expirada, recriando conexão...',
+    411: '📁  O arquivo de sessão parece incorreto, estou tentando recarregar...',
+    412: '📱  Versão muito antiga do WhatsApp',
+    420: '🐌  Muitas tentativas, reduzindo velocidade de conexão...',
+    428: '📶  Não foi possível manter a conexão com o WhatsApp, tentando de novo...',
+    429: '🛑  Muitas requisições, aguardando antes de reconectar...',
+    440: '👥  Existem muitas sessões do WhatsApp conectadas no meu número, feche-as...',
+    500: '⚙️  A sessão parece mal configurada, estarei tentando reconectar...',
+    502: '🌐  Problema no servidor intermediário',
+    503: '❓  Erro desconhecido...',
+    515: '🔄  Meu código será reinicializado para estabilizar a conexão...',
+    521: '🚧  Servidor em manutenção',
+    540: '⏱️  Tempo de resposta excedido'
+  };
+  if (reason === DisconnectReason.loggedOut || reason === 401) {
+    console.log(errorMessages[401]);
+    execSync(`rm -rf ${AUTH_DIR}`);
+  } else if (errorMessages[reason]) {
+    console.log(errorMessages[reason]);
+  } else {
+    console.log(`⚠️  Código de erro não reconhecido (${reason}), tentando reconectar...`);
+  };
+
+  await nazu.end();
+  console.log(`🔄  Tentando reconectar...`);
+  startNazu();
+};
    if(connection == 'connecting') {
      console.log('Atualizando a sessão para garantir o funcionamento correto do sistema.');
    };
