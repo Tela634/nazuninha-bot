@@ -46,7 +46,12 @@ fi
 # Verifica se há mais de 2 arquivos na pasta QR Code
 if [ -d "$qr_code_dir" ] && [ "$(ls -1 "$qr_code_dir" 2>/dev/null | wc -l)" -gt 2 ]; then
     mensagem "📡 QR Code já detectado! Iniciando conexão automática..."
-    node "$connect_file"
+    while true; do
+        node --expose-gc "$connect_file" || {
+            aviso "⚠ O bot caiu! Reiniciando em 1 segundo..."
+            sleep 1
+        }
+    done
     exit 0
 fi
 
@@ -61,20 +66,20 @@ read conexao
 case "$conexao" in
     1)
         mensagem "📡 Iniciando conexão por QR Code..."
-        while : 
-        do
-        node "$connect_file"
-        sleep 1
-        printf "- O ︎bot caiu! Iniciando novamente, aguarde...\n"
+        while true; do
+            node --expose-gc "$connect_file" || {
+                aviso "⚠ O bot caiu! Reiniciando em 1 segundo..."
+                sleep 1
+            }
         done
         ;;
     2)
         mensagem "🔑 Iniciando conexão por Código..."
-        while : 
-        do
-        node "$connect_file" --code
-        sleep 1
-        printf "- O ︎bot caiu! Iniciando novamente, aguarde...\n"
+        while true; do
+            node --expose-gc "$connect_file" --code || {
+                aviso "⚠ O bot caiu! Reiniciando em 1 segundo..."
+                sleep 1
+            }
         done
         ;;
     *)

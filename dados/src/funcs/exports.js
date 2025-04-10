@@ -20,7 +20,7 @@ const styleText = require(__dirname+'/utils/gerarnick.js');
 const emojiMix = require(__dirname+'/utils/emojimix.js');
 const upload = require(__dirname+'/utils/upload.js');
 const { sendSticker } = require(__dirname+'/utils/sticker.js');
-const ai = async (text, model) => (await require(__dirname + '/utils/ai.js')(text, model)).replaceAll('**', '*');
+const clearMemory = require(__dirname+'/utils/clear.js');
 
 //jogos 
 const tictactoe = require(__dirname+'/games/tictactoe.js');
@@ -31,4 +31,4 @@ const toolsJson = JSON.parse(fs.readFileSync(__dirname+'/json/tools.json', 'utf-
 const vabJson = JSON.parse(fs.readFileSync(__dirname+'/json/vab.json', 'utf-8'));
 
 //exports
-module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, toolsJson, vabJson, ai, apkMod };
+module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, toolsJson, vabJson, apkMod };

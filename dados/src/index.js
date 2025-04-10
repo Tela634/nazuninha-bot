@@ -6,7 +6,7 @@
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { exec, spawn, execSync } = require('child_process');
-const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, toolsJson, vabJson, ai, apkMod }  = require(__dirname+'/funcs/exports.js');
+const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, toolsJson, vabJson, apkMod }  = require(__dirname+'/funcs/exports.js');
 const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa, menuRpg } = require(__dirname+'/menus/index.js');
 const axios = require('axios');
 const pathz = require('path');
@@ -186,25 +186,146 @@ try {
  
  switch(command) {
   //INTELIGENCIA ARTIFICIAL
-  case 'simi': try {
-  if(!q) return reply('🤔 Cadê o texto?')
-  datasimi = await axios.post(`https://api.simsimi.vn/v1/simtalk`, "text="+q+"&lc=pt", {headers: {'content-type': "application/x-www-form-urlencoded"}});
-  await reply(datasimi.data.message);
-  } catch(e) {
-  console.error(e);
-  await reply(`Ocorreu um erro`);
-  };
-  break;
   
   case 'nazu': case 'nazuninha': case 'ai': 
   try {
     if (!q) return reply('Cade a pergunta meu amor?');
     nazu.react('💞');
-    let bahz = (await axios.post("https://api.cognima.com.br/api/ia/chat?key=CognimaTeamFreeKey", { message: q, chat_id: `nazuninha_${sender.split('@')[0]}`, model_name: "nazuninha", })).data;
+    bahz = (await axios.post("https://api.cognima.com.br/api/ia/chat?key=CognimaTeamFreeKey", { message: q, chat_id: `nazuninha_${sender.split('@')[0]}`, model_name: "nazuninha", })).data;
     await reply(bahz.reply);
   } catch (e) {
     console.error(e);
     await reply('Ocorreu um erro em meus sistemas internos meu bem 😞');
+  }
+  break;
+  
+  case 'gpt': case 'gpt4': case 'chatgpt':
+  try {
+    if (!q) return reply('Cade a pergunta?');
+    nazu.react('🧠');
+    bahz = (await axios.post("https://api.cognima.com.br/api/ia/chat?key=CognimaTeamFreeKey", { message: q, chat_id: `gpt_${sender.split('@')[0]}`, model_name: "gpt", })).data;
+    await reply(bahz.reply);
+  } catch (e) {
+    console.error(e);
+    await reply('❌ Ocorreu um erro em meus sistemas internos ❌');
+  }
+  break;
+  
+  case 'llama': case 'llama3': case 'llamachat':
+  try {
+    if (!q) return reply('Cadê a pergunta?');
+    nazu.react('🧠');
+    bahz = (await axios.post("https://api.cognima.com.br/api/ia/chat?key=CognimaTeamFreeKey", { 
+      message: q, 
+      chat_id: `llama_${sender.split('@')[0]}`, 
+      model_name: "llama" 
+    })).data;
+    await reply(bahz.reply);
+  } catch (e) {
+    console.error(e);
+    await reply('❌ Ocorreu um erro em meus sistemas internos ❌');
+  }
+  break;
+  
+  case 'cognimai': case 'cog':
+  try {
+    if (!q) return reply('Cadê a pergunta?');
+    nazu.react('🤖');
+    bahz = (await axios.post("https://api.cognima.com.br/api/ia/chat?key=CognimaTeamFreeKey", { 
+      message: q, 
+      chat_id: `cognima_${sender.split('@')[0]}`, 
+      model_name: "cognima" 
+    })).data;
+    await reply(bahz.reply);
+  } catch (e) {
+    console.error(e);
+    await reply('❌ Ocorreu um erro nos servidores da CognimaAI ❌');
+  }
+  break;
+  
+  case 'qwen': case 'qwen2': case 'qwenchat':
+  try {
+    if (!q) return reply('Cadê a pergunta?');
+    nazu.react('🌠');
+    bahz = (await axios.post("https://api.cognima.com.br/api/ia/chat?key=CognimaTeamFreeKey", { 
+      message: q, 
+      chat_id: `qwen_${sender.split('@')[0]}`, 
+      model_name: "qwen"
+    })).data;
+    await reply(bahz.reply);
+  } catch (e) {
+    console.error(e);
+    await reply('❌ Erro no modelo Qwen (Alibaba Cloud) ❌');
+  }
+  break;
+  
+  case 'gemma': case 'gemma2': case 'gecko':
+  try {
+    if (!q) return reply('Cadê a pergunta?');
+    nazu.react('💎');
+    bahz = (await axios.post("https://api.cognima.com.br/api/ia/chat?key=CognimaTeamFreeKey", { 
+      message: q, 
+      chat_id: `gemma_${sender.split('@')[0]}`, 
+      model_name: "gemma"
+    })).data;
+    await reply(bahz.reply);
+  } catch (e) {
+    console.error(e);
+    await reply('❌ Falha no Gemma (Google DeepMind) ❌');
+  }
+  break;
+  
+  case 'imagine': case 'img':
+  try {
+    const modelos = [
+      "cognimai-realism",
+      "cognimai-anime", 
+      "cognimai-3d",
+      "cognimai-cablyai",
+      "cognimai-turbo",
+      "cognimai-pro",
+      "cognimai"
+    ];
+    if (!q) {
+      let ajuda = `🖼️ *GERADOR DE IMAGENS* 🖼️\n\n`;
+      ajuda += `⚠️ Use: *${prefix}imagine modelo/prompt*\n\n`;
+      ajuda += `📝 *Modelos disponíveis:*\n`;
+      ajuda += `• realism (Padrão)\n`;
+      ajuda += `• anime\n`;
+      ajuda += `• 3d\n`;
+      ajuda += `• cablyai\n`;
+      ajuda += `• turbo\n`;
+      ajuda += `• pro\n\n`;
+      ajuda += `Exemplo: *${prefix}imagine anime/gato samurai*`;
+      return reply(ajuda);
+    };
+    nazu.react('🔄');
+    const [inputModelo, ...promptArray] = q.split('/');
+    const prompt = promptArray.join('/').trim() || inputModelo.trim();
+    const modeloEscolhido = inputModelo.trim().toLowerCase();
+    const modelosParaTestar = modeloEscolhido && modelos.includes(`cognimai-${modeloEscolhido}`)
+      ? [`cognimai-${modeloEscolhido}`]
+      : modelos;
+    for (const model of modelosParaTestar) {
+      try {
+        const url = `https://api.cognima.com.br/api/ia/image/generate?key=CognimaTeamFreeKey&prompt=${encodeURIComponent(prompt)}&model_name=${model}`;
+        await nazu.sendMessage(from, {
+          image: { url },
+          caption: `🎨 Modelo: ${model.replace('cognimai-', '') || 'padrão'}\n📌 Prompt: ${prompt}`
+        });
+        nazu.react('✅');
+        return;
+      } catch (e) {
+        console.log(`❌ ${model} falhou, tentando próximo...`);
+      }
+    }
+
+    await reply('❌ Todos os modelos falharam. Tente um prompt diferente.');
+    nazu.react('❌');
+
+  } catch (e) {
+    console.error('Erro grave:', e);
+    reply('⚠️ ERRO: O servidor de imagens está sobrecarregado. Tente mais tarde.');
   }
   break;
   
@@ -230,17 +351,6 @@ try {
   await reply('erro.');
   };
   break
-  
-  case 'gemini': try {
-  if(!q) return reply('Cade a pergunta?');
-  nazu.react('💞');
-  bahz = await ai(q, 'gemini');
-  await reply(bahz);
-  } catch(e) {
-  console.error(e);
-  await reply('Ocorreu um erro em meus sistemas internos 😞');
-  };
-  break;
   
   
   //FERRAMENTAS
