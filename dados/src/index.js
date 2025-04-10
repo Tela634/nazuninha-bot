@@ -1810,38 +1810,43 @@ break;
         case 'me': // Perfil
     const user = await rpg(sender);
     if (!user) return reply('⚠️ Registre-se com !rg!');
-    
     return reply(`
-🌌 *${user.nome}* — *Nível ${user.nivel}* 🌌
+✨ *${user.nome}* ──── Nv.${user.nivel} ✨
+━━━━━━━━━━━━━━━━━━━━
+⚔️ *ATRIBUTOS* ⚔️
+🔹 Força: ${user.atributos.forca} 
+🔸 Agilidade: ${user.atributos.agilidade} 
+🔹 Inteligência: ${user.atributos.inteligencia} 
+🔸 Vitalidade: ${user.atributos.vitalidade} 
+🔹 Sorte: ${user.atributos.sorte} 
+🔸 Carisma: ${user.atributos.carisma} 
+🔹 Resistência: ${user.atributos.resistencia}
 
-📊 *Atributos*:
-› Força: ${user.atributos.forca}
-› Agilidade: ${user.atributos.agilidade}
-› Inteligência: ${user.atributos.inteligencia}
-› Vitalidade: ${user.atributos.vitalidade}
-› Sorte: ${user.atributos.sorte}
-› Carisma: ${user.atributos.carisma}
-› Resistência: ${user.atributos.resistencia}
+💰 *ECONOMIA* 💰
+🪙 ${Object.entries(user.moedas).map(([k, v]) => `${v}${rpg.MOEDAS[k]}`).join('  ')}
+💳 Banco: ${user.saldo.banco}
+💵 Carteira: ${user.saldo.carteira}
 
-💰 *Moedas*: 
-${Object.entries(user.moedas).map(([k, v]) => `› ${v}${rpg.MOEDAS[k]}`).join('\n')}
+🎮 *EQUIPAMENTOS* 🛡️
+🗡️ Arma: ${user.equipamento.arma?.nome || 'Nenhuma'}
+🛡️ Armadura: ${user.equipamento.armadura?.nome || 'Nenhuma'}
+💍 Acessório: ${user.equipamento.acessorio?.nome || 'Nenhum'}
+💎 Anel: ${user.equipamento.anel?.nome || 'Nenhum'}
 
-🏦 *Saldo*:
-› Banco: ${user.saldo.banco}
-› Carteira: ${user.saldo.carteira}
+🔨 *OFÍCIOS* 🧪
+⚒️ Forja: Nv.${user.forja.nivel} (+${user.forja.bonus}%)
+🧪 Alquimia: Nv.${user.alquimia.nivel} (+${user.alquimia.bonus}%)
 
-🗡️ *Equipamentos*:
-› Arma: ${user.equipamento.arma?.nome || 'N/A'}
-› Armadura: ${user.equipamento.armadura?.nome || 'N/A'}
-› Acessório: ${user.equipamento.acessorio?.nome || 'N/A'}
-› Anel: ${user.equipamento.anel?.nome || 'N/A'}
+🏰 *SOCIAL* 🌐
+🏰 Reino: ${user.reino ? `${user.reino.nome} (Nv.${user.reino.nivel})` : 'Nenhum'}
+⚜️ Guilda: ${user.guilda ? user.guilda.nome : 'Nenhuma'}
+🐾 Pet: ${user.pet ? `${user.pet.nome} (${user.pet.tipo}, Nv.${user.pet.nivel})` : 'Nenhum'}
 
-⚒️ *Ofícios*:
-› Forja: Nível ${user.forja.nivel} (+${user.forja.bonus}%)
-› Alquimia: Nível ${user.alquimia.nivel} (+${user.alquimia.bonus}%)
-
-🏰 *Reino*: 
-${user.reino ? `› ${user.reino.nome}` : '› Nenhum'}
+🏆 *CONQUISTAS* 🎖️
+📜 Títulos: ${user.titulos.length > 0 ? user.titulos.join(', ') : 'Nenhum'}
+📊 XP: ${user.experiencia}/${user.nivel * 400 + Math.pow(user.nivel, 2) * 200}
+━━━━━━━━━━━━━━━━━━━━
+✨ *Boa jornada, ${user.nome}!* ✨
     `);
 
         case 'helprpgtest': // Ajuda
