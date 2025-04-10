@@ -19,7 +19,7 @@ versao=$(jq -r .version package.json 2>/dev/null || echo "Desconhecida")
 # Caminho dos arquivos necessários
 config="./dados/src/config.json"
 node_modules="./node_modules"
-qr_code_dir="./dados/database/qr-code"
+qr_code_dir="./dados/database/qr-code/default"
 connect_file="./dados/src/connect.js"
 
 # Exibe o cabeçalho
