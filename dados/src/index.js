@@ -1808,21 +1808,41 @@ break;
             return reply(await rpg.listarMercadoNegro());
 
         case 'me': // Perfil
-            const user = await rpg(sender);
-            if (!user) return reply('⚠️ Registre-se com !rg!');
-            return reply(`
-🌌 *${user.nome} - Nv.${user.nivel}* 🌌
-📊 *Stats*: F:${user.atributos.forca} | A:${user.atributos.agilidade} | I:${user.atributos.inteligencia} | V:${user.atributos.vitalidade} | S:${user.atributos.sorte} | C:${user.atributos.carisma} | R:${user.atributos.resistencia}
-💰 *Moedas*: ${Object.entries(user.moedas).map(([k, v]) => `${v}${rpg.MOEDAS[k]}`).join(' ')}
-🏦 *Saldo*: B:${user.saldo.banco} C:${user.saldo.carteira}
-🗡️ *Equip*: ${user.equipamento.arma?.nome || 'N/A'} | ${user.equipamento.armadura?.nome || 'N/A'} | ${user.equipamento.acessorio?.nome || 'N/A'} | ${user.equipamento.anel?.nome || 'N/A'}
-⚒️ *Ofícios*: F:${user.forja.nivel} (+${user.forja.bonus}%) | A:${user.alquimia.nivel} (+${user.alquimia.bonus}%)
-🏰 *Reino*: ${user.reino ? `${user.reino.nome} (Nv.${user.reino.nivel})` : 'Nenhum'}
-🐾 *Pet*: ${user.pet ? `${user.pet.nome} (${user.pet.tipo}, Nv.${user.pet.nivel})` : 'Nenhum'}
-⚜️ *Guilda*: ${user.guilda ? user.guilda.nome : 'Nenhuma'}
-🏅 *Títulos*: ${user.titulos.length > 0 ? user.titulos.join(', ') : 'Nenhum'}
-📈 *XP*: ${user.experiencia}/${user.nivel * 400 + Math.pow(user.nivel, 2) * 200}
-            `);
+    const user = await rpg(sender);
+    if (!user) return reply('⚠️ Registre-se com !rg!');
+    
+    return reply(`
+🌌 *${user.nome}* — *Nível ${user.nivel}* 🌌
+
+📊 *Atributos*:
+› Força: ${user.atributos.forca}
+› Agilidade: ${user.atributos.agilidade}
+› Inteligência: ${user.atributos.inteligencia}
+› Vitalidade: ${user.atributos.vitalidade}
+› Sorte: ${user.atributos.sorte}
+› Carisma: ${user.atributos.carisma}
+› Resistência: ${user.atributos.resistencia}
+
+💰 *Moedas*: 
+${Object.entries(user.moedas).map(([k, v]) => `› ${v}${rpg.MOEDAS[k]}`).join('\n')}
+
+🏦 *Saldo*:
+› Banco: ${user.saldo.banco}
+› Carteira: ${user.saldo.carteira}
+
+🗡️ *Equipamentos*:
+› Arma: ${user.equipamento.arma?.nome || 'N/A'}
+› Armadura: ${user.equipamento.armadura?.nome || 'N/A'}
+› Acessório: ${user.equipamento.acessorio?.nome || 'N/A'}
+› Anel: ${user.equipamento.anel?.nome || 'N/A'}
+
+⚒️ *Ofícios*:
+› Forja: Nível ${user.forja.nivel} (+${user.forja.bonus}%)
+› Alquimia: Nível ${user.alquimia.nivel} (+${user.alquimia.bonus}%)
+
+🏰 *Reino*: 
+${user.reino ? `› ${user.reino.nome}` : '› Nenhum'}
+    `);
 
         case 'helprpgtest': // Ajuda
             return reply(`
