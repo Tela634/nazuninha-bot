@@ -15,6 +15,8 @@ async function menuMembros(prefix, botName = "MeuBot", userName = "Usuário") {
 │    → Criar figurinha de mídia
 │ *${prefix}qc*
 │    → Criar figurinha com citação
+│ *${prefix}brat*
+│    → Criar figurinha estilo brat
 ╰──────────────╯
 
 ╭─🌷 *OUTROS COMANDOS* 🌷

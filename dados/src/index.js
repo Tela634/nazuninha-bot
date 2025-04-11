@@ -866,6 +866,12 @@ case 'ping':
   };
   break;
   
+  case 'brat': {
+  if(!q) return reply(t.b.formatoEspecifico('Texto', `${prefix}${command} Nazu é a melhor 🥵`));
+  await sendSticker(nazu, from, { sticker: {url: `https://api.cognima.com.br/api/image/brat?key=CognimaTeamFreeKey&texto=${encodeURIComponent(q)}`}, author: 'Hiudy', packname: 'By:', type: 'image'}, { quoted: info });
+  };
+  break;
+  
   case 'st':case 'stk':case 'sticker':case 's': {
     var RSM = info.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     var boij2 = RSM?.imageMessage || info.message?.imageMessage || RSM?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || RSM?.viewOnceMessage?.message?.imageMessage;
