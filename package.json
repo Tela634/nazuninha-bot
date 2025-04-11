@@ -29,8 +29,6 @@
     "qrcode-terminal": "latest",
     "yt-search": "latest",
     "ruhend-scraper": "latest",
-    "hercai": "latest",
-    "os": "latest",
-    "swiftly": "latest"
+    "hercai": "latest"
   }
 }

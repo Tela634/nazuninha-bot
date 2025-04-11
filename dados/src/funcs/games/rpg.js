@@ -398,7 +398,7 @@ async function guildaMissão(sender, tipo) {
 // SISTEMA DE GUERRA ENTRE GUILDAS
 async function declararGuerra(sender, guildaAlvoNome) {
     const user = await getUser(sender);
-    const alvo = Object.values(await Promise.all(fs.readdir(RpgPath).map(f => getUser(f.split('.json')[0])))).find(u => u.guilda?.nome === guildaAlvoNome);
+    const alvo = (await Promise.all(fs.readdir(RpgPath).map(f => getUser(f.split('.json')[0])))).find(u => u.guilda?.nome === guildaAlvoNome);
     if (!user.guilda || user.guilda.lider !== sender) return '⚠️ Apenas o líder pode clamar guerra!';
     if (!alvo || !alvo.guilda) return '⚠️ Essa guilda não existe nas eras!';
     if (guerrasAtivas[user.guilda.nome]) return '⚠️ Sua guilda já está em conflito!';

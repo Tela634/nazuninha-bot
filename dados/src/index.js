@@ -7,7 +7,6 @@
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { exec, spawn, execSync } = require('child_process');
 const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, toolsJson, vabJson, apkMod }  = require(__dirname+'/funcs/exports.js');
-const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa, menuRpg } = require(__dirname+'/menus/index.js');
 const axios = require('axios');
 const pathz = require('path');
 const fs = require('fs');
@@ -17,6 +16,10 @@ async function NazuninhaBotExec(nazu, info) {
 const { numerodono, nomedono, nomebot, prefixo, prefixo: prefix, debug } = JSON.parse(fs.readFileSync(__dirname+'/config.json'));
 
 try {
+ const settingsz = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
+ const template = settingsz.template || 'nazu-default';
+ const { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa, menuRpg } = require(`${__dirname}/templates/${template}/menus/index.js`);
+ const t = require(`${__dirname}/templates/${template}/texts/index.js`);
  const from = info.key.remoteJid;
  const isGroup = from.endsWith('@g.us');
  const sender = isGroup ? info.key.participant.includes(':') ? info.key.participant.split(':')[0] +'@s.whatsapp.net': info.key.participant : info.key.remoteJid;
@@ -780,30 +783,7 @@ break;
     fs.readFile(__dirname + '/index.js', 'utf8', async (err, data) => {
       if (err) throw err;
       const comandos = [...data.matchAll(/case [`'"](\w+)[`'"]/g)].map(m => m[1]);
-      const categorias = [{ name: 'Sub Menus', files: ['/menus/menu.js'] },{ name: 'Downloads', files: ['/menus/menudown.js'] },{ name: 'Funções de adm', files: ['/menus/menuadm.js'] },{ name: 'Brincadeiras', files: ['/menus/menubn.js'] },{ name: 'Funções de dono', files: ['/menus/menudono.js'] },{ name: 'Funções Gerais', files: ['/menus/menumemb.js'] },{ name: 'Ferramentas', files: ['/menus/ferramentas.js'] },{ name: 'Figurinhas', files: ['/menus/menufig.js'] },{ name: 'Inteligencia artificial', files: ['/menus/menuia.js'] }];
-      let comandosPorCategoria = {};
-      let totalComandosCategoria = 0;
-      const countComandos = (filePath) => new Promise((resolve, reject) => {
-        fs.readFile(__dirname + filePath, 'utf8', (err, data) => {
-          if (err) return reject(err);
-          const count = (data.match(/{prefix}/g) || []).length;
-          resolve(count);
-        });
-      });
-      for (const categoria of categorias) {
-        let comandosCategoria = 0;
-        for (const file of categoria.files) {
-          try {
-            comandosCategoria += await countComandos(file);
-          } catch (error) {
-            console.error(`Erro ao contar comandos em ${file}:`, error);
-          }
-        }
-        comandosPorCategoria[categoria.name] = comandosCategoria;
-        totalComandosCategoria += comandosCategoria;
-      };
-      const comandosSemCategoria = comandos.length - totalComandosCategoria;
-      await nazu.sendMessage(from, {image: {url: `https://api.cognima.com.br/api/banner/counter?key=CognimaTeamFreeKey&num=${String(comandos.length)}&theme=miku`}, caption: `╭〔 🤖 *Meus Comandos* 〕╮\n` + `┣ 📌 Total: *${comandos.length}* comandos\n` + `┣ 📌 Comandos por Categoria:\n┣\n` + Object.keys(comandosPorCategoria).map(categoria => `┣ 📌 ${categoria}: *${comandosPorCategoria[categoria]}* comandos`).join('\n') + `\n┣ 📌 Sem categoria: *${comandosSemCategoria}* comandos\n` + `╰━━━━━━━━━━━━━━━╯`}, { quoted: info });
+      await nazu.sendMessage(from, {image: {url: `https://api.cognima.com.br/api/banner/counter?key=CognimaTeamFreeKey&num=${String(comandos.length)}&theme=miku`}, caption: `╭〔 🤖 *Meus Comandos* 〕╮\n`+`┣ 📌 Total: *${comandos.length}* comandos\n`+`╰━━━━━━━━━━━━━━━╯`}, { quoted: info });
     });
   break;
 

@@ -1,5 +1,5 @@
 package-lock.json
 *.bak
-*.bak
-*.bak
-package-lock.json
+node_modules
+.gitignore
+bot.zip
