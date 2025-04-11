@@ -1,34 +1,42 @@
-async function menuDono(prefix) {
+async function menuDono(prefix, botName = "MeuBot", userName = "Usuário") {
   return `
-╭━━━━━━━━━━━━━━╮
-┃ 🌸 *MENU DO DONO* 🌸
-╰━━━━━━━━━━━━━━╯
+╭─🌸 *${botName}*
+│ Oii, *${userName}*
+╰───────────────
 
-╭──────────────╮
-│  📂 *Configurar Bot* 
+╭─🌷 *CONFIGURAR BOT* 🌷
+│ Escolha sua opção: 
 ├──────────────┤
-│ *${prefix}prefixo* 
-│ *${prefix}numerodono* 
-│ *${prefix}nomedono* 
-│ *${prefix}nomebot* 
-│ *${prefix}fotomenu* 
-│ *${prefix}videomenu* 
+│ *${prefix}prefixo*
+│    → Mudar prefixo do bot
+│ *${prefix}numerodono*
+│    → Definir número do dono
+│ *${prefix}nomedono*
+│    → Alterar nome do dono
+│ *${prefix}nomebot*
+│    → Mudar nome do bot
+│ *${prefix}fotomenu*
+│    → Configurar foto do menu
+│ *${prefix}videomenu*
+│    → Configurar vídeo do menu
 ╰──────────────╯
 
-╭──────────────╮
-│  📂 *Funções de dono* 
+╭─🌷 *FUNÇÕES DE DONO* 🌷
+│ Escolha sua opção: 
 ├──────────────┤
 │ *${prefix}seradm*
+│    → Tornar-se admin
 │ *${prefix}sermembro*
+│    → Tornar-se membro
 │ *${prefix}bangp*
+│    → Banir grupo
 │ *${prefix}unbangp*
+│    → Desbanir grupo
 │ *${prefix}addpremium*
+│    → Adicionar usuário premium
 │ *${prefix}delpremium*
+│    → Remover usuário premium
 ╰──────────────╯
-
-╭━━━━━━━━━━━━━━╮
-┃ 🌸 *Explore e Divirta-se!* 🌸
-╰━━━━━━━━━━━━━━╯
 `;
 }
 

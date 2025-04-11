@@ -1,22 +1,22 @@
-async function menuMembros(prefix) {
+async function menuMembros(prefix, botName = "MeuBot", userName = "Usuário") {
   return `
-╭━━━━━━━━━━━━━━╮
-┃⚒️ *MENU DE FERRAMENTAS*
-╰━━━━━━━━━━━━━━╯
+╭─🌸 *${botName}*
+│ Oii, *${userName}*
+╰───────────────
 
-╭──────────────╮
-│  📚 *Comandos Disponíveis*
+╭─🌷 *FERRAMENTAS* 🌷─
+│ Escolha sua opção: 
 ├──────────────┤
 │ *${prefix}gerarnick* ou *${prefix}nick*
+│    → Criar nicks personalizados
 │ *${prefix}ssweb*
+│    → Capturar tela de sites
 │ *${prefix}upload*
+│    → Fazer upload de arquivos
 │ *${prefix}encurtalink*
+│    → Encurtar links
 ╰──────────────╯
-
-╭━━━━━━━━━━━━━━╮
-┃ 🌟 *Divirta-se e Explore!* 🌟
-╰━━━━━━━━━━━━━━╯
 `;
-}
+};
 
 module.exports = menuMembros;

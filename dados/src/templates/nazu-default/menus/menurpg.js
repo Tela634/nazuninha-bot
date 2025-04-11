@@ -1,27 +1,15 @@
-const menurpg = (prefix) => {
+const menurpg = (prefix, botName = "MeuBot", userName = "Usuário") => {
   return `
-╭━━━━━━━━━━━━━━╮
-┃🌟 *COMANDOS DE RPG*
-╰━━━━━━━━━━━━━━╯
+╭─🌸 *${botName}*
+│ Oii, *${userName}*
+╰───────────────
 
-╭──────────────╮
-│  📂 *Comandos disponíveis* 
+╭─🌷 *RPG (EM BREVE)* 🌷─
+│ Escolha sua opção:
 ├──────────────┤
-│ *${prefix}rpgclasses*
-│ *${prefix}rpgregistrar*
-│ *${prefix}rpgstatus*
-│ *${prefix}rpgdungeons*
-│ *${prefix}rpgentrar*
-│ *${prefix}rpgatacar*
-│ *${prefix}rpgskill*
-│ *${prefix}rpgfugir*
-│ *${prefix}rpgloja*
-│ *${prefix}rpgcomprar*
-│ *${prefix}rpgusar*
-│ *${prefix}rpgequipar*
-│ *${prefix}rpgtop*
+│ Em breve!
 ╰──────────────╯
-`
+`;
 }
 
 module.exports = menurpg;

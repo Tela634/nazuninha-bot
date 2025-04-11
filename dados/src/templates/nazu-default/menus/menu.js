@@ -1,42 +1,30 @@
-async function menu(prefix) {
+async function menu(prefix, botName = "MeuBot", userName = "Usuário") {
   return `
-╭━━━━━━━━━━━━━━╮
-┃ 🌸 *MENU PRINCIPAL* 🌸
-╰━━━━━━━━━━━━━━╯
+╭─🌸 *${botName}*
+│ Oii, *${userName}*
+╰───────────────
 
-╭──────────────╮
-│  📂 *Submenus disponíveis* 
+╭──🌷 *SUBMENUS* 🌷──
+│ Escolha sua opção: 
 ├──────────────┤
-│🤖 *${prefix}menuia*
-│  ➥ _Inteligência Artificial_
-│      _e geração de conteúdo_
-│📥 *${prefix}menudown*
-│  ➥ _Baixe músicas, vídeos, fotos_
-│      _e muito mais!_
-│🛠️ *${prefix}menuadm*
-│  ➥ _Comandos de administração_
-│      _e ativações do grupo_
-│🎭 *${prefix}menubrincadeiras*
-│  ➥ _Comandos de brincadeiras_
-│      _e interações divertidas!_
-│👑 *${prefix}menudono*
-│  ➥ _Comandos exclusivos_
-│      _para o dono do bot_
-│🌟 *${prefix}menumembros*
-│  ➥ _Comandos disponíveis_
-│      _para todos os membros_
-│⚒️ *${prefix}ferramentas*
-│  ➥ _Algumas funções úteis_
-│      _e funcionais_
-│💫 *${prefix}menufig*
-│  ➥ _Criar, baixar e modificar_
-│      _suas figurinhas_
+│ 🤖 *${prefix}menuia*
+│    → inteligência artificial
+│ 📥 *${prefix}menudown*
+│    → Baixar vídeos e músicas
+│ 🛠️ *${prefix}menuadm*
+│    → Gerenciar o grupo
+│ 🎭 *${prefix}menubn*
+│    → Jogos e brincadeiras
+│ 👑 *${prefix}menudono*
+│    → Comandos do dono
+│ 🌟 *${prefix}menumemb*
+│    → Para todos os membros
+│ ⚒️ *${prefix}ferramentas*
+│    → Ferramentas úteis
+│ 💫 *${prefix}menufig*
+│    → Criar figurinhas
 ╰──────────────╯
-
-╭━━━━━━━━━━━━━━╮
-┃ 🌸 *Explore e Divirta-se!* 🌸
-╰━━━━━━━━━━━━━━╯
 `;
-}
+};
 
 module.exports = menu;

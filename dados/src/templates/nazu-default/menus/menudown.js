@@ -1,33 +1,39 @@
-async function menudown(prefix) {
+async function menudown(prefix, botName = "MeuBot", userName = "Usuário") {
   return `
-╭━━━━━━━━━━━━━━╮
-┃📥 *MENU DE DOWNLOADS*
-╰━━━━━━━━━━━━━━╯
+╭─🌸 *${botName}*
+│ Oii, *${userName}*
+╰───────────────
 
-╭──────────────╮
-│  🔍 *Comandos de Pesquisas* 
+╭──🌷 *PESQUISAS* 🌷──
+│ Escolha sua opção:
 ├──────────────┤
 │ *${prefix}play*
+│    → Baixar música do YouTube
 │ *${prefix}play2*
+│    → Baixar música (alternativo)
 │ *${prefix}playvid*
+│    → Baixar vídeo do YouTube
 │ *${prefix}playvid2*
+│    → Baixar vídeo (alternativo)
 │ *${prefix}assistir*
+│    → Pesquisar vídeos para assistir
 │ *${prefix}mcplugin*
+│    → Buscar plugins de Minecraft
 │ *${prefix}apkmod* ou *${prefix}mod*
+│    → Buscar APKs modificados
 ╰──────────────╯
 
-╭──────────────╮
-│  📲 *Comandos de Downloads* 
+╭──🌷 *DOWNLOADS* 🌷──
+│ Escolha sua opção:
 ├──────────────┤
 │ *${prefix}tiktok* ou *${prefix}ttk*
+│    → Baixar vídeos do TikTok
 │ *${prefix}pinterest* ou *${prefix}pin*
+│    → Baixar do Pinterest
 │ *${prefix}instagram* ou *${prefix}ig*
+│    → Baixar do Instagram
 ╰──────────────╯
-
-╭━━━━━━━━━━━━━━╮
-┃ 📥 *Aproveite os downloads!*
-╰━━━━━━━━━━━━━━╯
 `;
-};
+}
 
 module.exports = menudown;

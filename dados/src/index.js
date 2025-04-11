@@ -196,7 +196,7 @@ try {
   
   case 'nazu': case 'nazuninha': case 'ai': 
   try {
-    if (!q) return reply('Cade a pergunta meu amor?');
+    if (!q) return reply(t.b.digitarPrompt());
     nazu.react('💞');
     bahz = (await axios.post("https://api.cognima.com.br/api/ia/chat?key=CognimaTeamFreeKey", { message: q, chat_id: `nazuninha_${sender.split('@')[0]}`, model_name: "nazuninha", })).data;
     await reply(bahz.reply);
