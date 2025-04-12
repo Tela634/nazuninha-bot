@@ -22,7 +22,7 @@
   "author": "Hiudy",
   "license": "ISC",
   "dependencies": {
-    "baileys": "latest",
+    "baileys": "npm:@fizzxydev/baileys-pro@latest",
     "linkedom": "latest",
     "fluent-ffmpeg": "latest",
     "node-webpmux": "latest",
