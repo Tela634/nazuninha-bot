@@ -541,7 +541,7 @@ break;
     for (const urlz of datinha.urls) {
         bahzz.push({type: datinha.type, data: { url: urlz }});
     };
-    await nazu.sendAlbum(from, bahzz, { caption: "✅", quoted: info });
+    await nazu.sendAlbum(from, bahzz, { quoted: info });
     if (datinha.audio) await nazu.sendMessage(from, { audio: { url: datinha.audio }, mimetype: 'audio/mp4' }, { quoted: info });
    } catch (e) {
     console.error(e);
@@ -555,7 +555,9 @@ break;
     nazu.react(['📌']);
     const datinha = await igdl.dl(q);
     if (!datinha.ok) return reply(datinha.msg);
-    await Promise.all(datinha.data.map(urlz => nazu.sendMessage(from, { [urlz.type]: urlz.buff }, { quoted: info })));
+    let bahzz = [];
+    await Promise.all(datinha.data.map(urlz => bahzz.push({type: urlz.type, data: urlz.buff})));
+    await nazu.sendAlbum(from, bahzz, { quoted: info });
   } catch (e) {
     console.error(e);
     reply(t.b.erro());
