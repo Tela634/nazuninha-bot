@@ -126,6 +126,8 @@ try {
  
  const reagir = async (emj) => { if (typeof emj === 'string') { await nazu.sendMessage(from, { react: { text: emj, key: info.key } }); } else if (Array.isArray(emj)) { for (const emjzin of emj) { await nazu.sendMessage(from, { react: { text: emjzin, key: info.key } }); await new Promise(res => setTimeout(res, 500)); } } }; nazu.react = reagir;
  
+ const sendAlbumMessage=async(jid,medias,options)=>(/* Created By Hiudy */options={...options},caption=options.text||options.caption||"",album=baileys.generateWAMessageFromContent(jid,{albumMessage:{expectedImageCount:medias.filter(media=>media.type==="image").length,expectedVideoCount:medias.filter(media=>media.type==="video").length,...(options.quoted?{contextInfo:{remoteJid:options.quoted.key.remoteJid,fromMe:options.quoted.key.fromMe,stanzaId:options.quoted.key.id,participant:options.quoted.key.participant||options.quoted.key.remoteJid,quotedMessage:options.quoted.message}}:{})}},{quoted:info}),await nazu.relayMessage(album.key.remoteJid,album.message,{messageId:album.key.id}),await Promise.all(medias.map(async media=>{const{type,data}=media,img=await baileys.generateWAMessage(album.key.remoteJid,{[type]:data,...(media===medias[0]?{caption}:{})},{upload:nazu.waUploadToServer});img.message.messageContextInfo={messageAssociation:{associationType:1,parentMessageKey:album.key}};await nazu.relayMessage(img.key.remoteJid,img.message,{messageId:img.key.id})})),album); nazu.sendAlbum = sendAlbumMessage;
+ 
  const getFileBuffer = async (mediakey, MediaType) => {const stream = await downloadContentFromMessage(mediakey, MediaType);let buffer = Buffer.from([]);for await(const chunk of stream) {buffer = Buffer.concat([buffer, chunk]) };return buffer}
  
  function normalizarTexto(texto) {
