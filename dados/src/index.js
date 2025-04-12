@@ -537,9 +537,11 @@ break;
     let isTikTokUrl = /^https?:\/\/(?:www\.|m\.|vm\.|t\.)?tiktok\.com\//.test(q);
     let datinha = await (isTikTokUrl ? tiktok.dl(q) : tiktok.search(q));
     if (!datinha.ok) return reply(datinha.msg);
+    let bahzz = [];
     for (const urlz of datinha.urls) {
-        await nazu.sendMessage(from, { [datinha.type]: { url: urlz }, mimetype: datinha.mime }, { quoted: info });
-    }
+        bahzz.push({type: datinha.type, data: { url: urlz }});
+    };
+    await nazu.sendAlbum(from, bahzz, { caption: "✅", quoted: info });
     if (datinha.audio) await nazu.sendMessage(from, { audio: { url: datinha.audio }, mimetype: 'audio/mp4' }, { quoted: info });
    } catch (e) {
     console.error(e);
