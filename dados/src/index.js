@@ -638,7 +638,7 @@ break;
   case 'blockcmdg':
   if (!isOwner) return reply(t.b.dono());
   try {
-    const cmdToBlock = q?.toLowerCase();
+    const cmdToBlock = q?.toLowerCase().split(' ')[0];
     const reason = q?.split(' ').slice(1).join(' ') || 'Sem motivo informado';
     if (!cmdToBlock) return reply('❌ Informe o comando a bloquear! Ex.: !blockcmd sticker');
     let globalBlocks = {};
@@ -660,7 +660,7 @@ break;
   case 'unblockcmdg':
   if (!isOwner) return reply(t.b.dono());
   try {
-    const cmdToUnblock = q?.toLowerCase();
+    const cmdToUnblock = q?.toLowerCase().split(' ')[0];
     if (!cmdToUnblock) return reply('❌ Informe o comando a desbloquear! Ex.: !unblockcmd sticker');
     const blockFile = __dirname + '/../database/globalBlocks.json';
     if (!fs.existsSync(blockFile)) return reply('❌ Nenhum comando bloqueado!');
