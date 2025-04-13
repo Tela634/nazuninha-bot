@@ -826,6 +826,38 @@ break;
     }
   break;
 
+  case 'statusgp': case 'dadosgp': try {
+    if (!isGroup) return reply(t.b.grupo());
+    const groupInfo = await nazu.groupMetadata(from);
+    const totalMembers = groupInfo.participants.length;
+    const totalAdmins = groupAdmins.length;
+    const groupCreated = groupInfo.creation ? new Date(groupInfo.creation * 1000).toLocaleDateString('pt-BR') : 'Desconhecida';
+    let totalMessages = 0;
+    let totalCommands = 0;
+    let totalStickers = 0;
+    if (groupData.contador && Array.isArray(groupData.contador)) {
+      groupData.contador.forEach(user => {
+        totalMessages += (user.msg || 0);
+        totalCommands += (user.cmd || 0);
+        totalStickers += (user.figu || 0);
+      });
+    };
+    const settings = [
+      `🔞 Antiporn: ${isAntiPorn ? 'Ativado' : 'Desativado'}`,
+      `🔗 Antilink: ${isAntiLinkGp ? 'Ativado' : 'Desativado'}`,
+      `🎲 Modo Brincadeira: ${isModoBn ? 'Ativado' : 'Desativado'}`,
+      `🧙 Modo RPG: ${isModoRpg ? 'Ativado' : 'Desativado'}`,
+      `👑 Apenas Admins: ${isOnlyAdmin ? 'Ativado' : 'Desativado'}`
+    ].join('\n');
+    const statsMessage = `\n📊 *Estatísticas do Grupo: ${groupName}* 📊\n\n👥 *Total de Membros*: ${totalMembers}\n👑 *Administradores*: ${totalAdmins}\n📅 *Criado em*: ${groupCreated}\n💬 *Mensagens Totais*: ${totalMessages}\n⚒️ *Comandos Usados*: ${totalCommands}\n🎨 *Figurinhas Enviadas*: ${totalStickers}\n\n⚙️ *Configurações*:\n${settings}\n\n✨ *Bot*: ${nomebot} by ${nomedono} ✨`;
+    await nazu.sendMessage(from, { text: statsMessage }, { quoted: info });
+    await nazu.react('✅');
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  }
+break;
+
 case 'ping':
   try {
     const timestamp = Date.now();
