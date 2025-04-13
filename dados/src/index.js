@@ -176,7 +176,7 @@ try {
         };
     };
     if (tictactoe.hasActiveGame(from) && budy2) {
-        if (['tttend', 'rv', 'fimjogo'].includes(command)) {
+        if (['tttend', 'rv', 'fimjogo'].includes(budy2)) {
             if (!isGroupAdmin) return reply(t.b.admin());
             const result = tictactoe.endGame(from);
             await reply(result.message);
@@ -1009,22 +1009,22 @@ case 'ping':
   break;
   
   //COMANDOS DE ADM
-  case 'tttend': case 'rv': case 'fimjogo': {
-     if (!isGroup) return reply(t.b.grupo());
-     if (!isGroupAdmin) return reply(t.b.admin());
-     const result = tictactoe.endGame(from);
-     await reply(result.message);
-   };
- break;
-   
   case 'deletar': case 'delete': case 'del':  case 'd': try {
   if(!isGroupAdmins && !isPremium) return reply(t.b.admin());
-  if(!menc_prt) return reply("Marque a mensagem do usuário que deseja apagar, do bot ou de alguém...")
-  await nazu.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.message.extendedTextMessage.contextInfo.stanzaId, participant: menc_prt}});
-  } catch(e) {
-  console.error(e);
-  reply(t.b.erro());
-  };
+  if(!menc_prt) return reply(t.b.marcarMensagem());
+  let stanzaId, participant;
+    if (info.message.extendedTextMessage) {
+        stanzaId = info.message.extendedTextMessage.contextInfo.stanzaId;
+        participant = info.message.extendedTextMessage.contextInfo.participant || menc_prt;
+    } else if (info.message.viewOnceMessage) {
+        stanzaId = info.key.id;
+        participant = info.key.participant || menc_prt;
+    };
+    try {
+        await nazu.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: stanzaId, participant: participant } });
+    } catch (error) {
+        reply(t.b.erro());
+    };
   break
 
   case 'banir':

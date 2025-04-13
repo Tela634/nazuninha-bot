@@ -178,6 +178,16 @@ const formatoEspecificoArray = [
   (necessarios, exemplo) => `💬 Tem que conter:\n🔮 ${necessarios}\n🌰 Assim ó: ${exemplo}`
 ];
 
+const marcarMensagemArray = [
+  (tipo) => `💬 Ops! Você precisa marcar ${tipo} pra eu poder ajudar!`,
+  (tipo) => `🔍 Cadê a mensagem? Marca ${tipo} que eu cuido do resto~`,
+  (tipo) => `📩 Esse comando precisa de ${tipo} marcado, tá bem?`,
+  (tipo) => `✨ Marca ${tipo} que eu faço a mágica acontecer!`,
+  (tipo) => `🤔 Quer que eu trabalhe em quê? Marca ${tipo} pra mim!`,
+  (tipo) => `🛑 Sem ${tipo} marcado, sem diversão... marca aí!`,
+  (tipo) => `👀 Tá faltando ${tipo} marcado... qual será?`
+];
+
 function random(arr, ...args) {
   const item = arr[Math.floor(Math.random() * arr.length)];
   return typeof item === 'function' ? item(...args) : item;
@@ -205,4 +215,5 @@ module.exports = {
   digitarNick: () => random(digitarNickArray),
   digitarPrompt: () => random(digitarPromptArray),
   formatoEspecifico: (necessarios, exemplo) => random(formatoEspecificoArray, necessarios, exemplo),
+  marcarMensagem: (tipo = "uma mensagem") => random(marcarMensagemArray, tipo),
 };
