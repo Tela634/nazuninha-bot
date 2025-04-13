@@ -825,7 +825,93 @@ break;
     await reply(t.b.erro());
     }
   break;
-
+ 
+ case 'meustatus':
+  try {
+    let groupMessages = 0;
+    let groupCommands = 0;
+    let groupStickers = 0;
+    if (isGroup && groupData.contador && Array.isArray(groupData.contador)) {
+      const userData = groupData.contador.find(u => u.id === sender);
+      if (userData) {
+        groupMessages = userData.msg || 0;
+        groupCommands = userData.cmd || 0;
+        groupStickers = userData.figu || 0;
+      };
+    };
+    let totalMessages = 0;
+    let totalCommands = 0;
+    let totalStickers = 0;
+    const groupFiles = fs.readdirSync(__dirname + '/../database/grupos').filter(file => file.endsWith('.json'));
+    for (const file of groupFiles) {
+      try {
+        const groupData = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${file}`));
+        if (groupData.contador && Array.isArray(groupData.contador)) {
+          const userData = groupData.contador.find(u => u.id === sender);
+          if (userData) {
+            totalMessages += (userData.msg || 0);
+            totalCommands += (userData.cmd || 0);
+            totalStickers += (userData.figu || 0);
+          };
+        };
+      } catch (e) {
+        console.error(`Erro ao ler ${file}:`, e);
+      };
+    };
+    const userName = pushname || sender.split('@')[0];
+    const userStatus = isOwner ? 'Dono' : isPremium ? 'Premium' : isGroupAdmin ? 'Admin' : 'Membro';
+    let profilePic = null;
+    try {
+      profilePic = await nazu.profilePictureUrl(sender, 'image');
+    } catch (e) {};
+    const statusMessage = `📊 *Meu Status - ${userName}* 📊\n\n👤 *Nome*: ${userName}\n📱 *Número*: @${sender.split('@')[0]}\n⭐ *Status*: ${userStatus}\n\n${isGroup ? `\n📌 *No Grupo: ${groupName}*\n💬 Mensagens: ${groupMessages}\n⚒️ Comandos: ${groupCommands}\n🎨 Figurinhas: ${groupStickers}\n` : ''}\n\n🌐 *Geral (Todos os Grupos)*\n💬 Mensagens: ${totalMessages}\n⚒️ Comandos: ${totalCommands}\n🎨 Figurinhas: ${totalStickers}\n\n✨ *Bot*: ${nomebot} by ${nomedono} ✨`;
+    if (profilePic) {
+      await nazu.sendMessage(from, { image: { url: profilePic }, caption: statusMessage, mentions: [sender] }, { quoted: info });
+    } else {
+      await nazu.sendMessage(from, { text: statusMessage, mentions: [sender] }, { quoted: info });
+    }:
+    await nazu.react('✅');
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  };
+  break;
+  
+  case 'statusbot':
+  try {
+    const uptime = process.uptime();
+    const uptimeStr = `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m ${Math.floor(uptime % 60)}s`;
+    const groups = await nazu.groupFetchAllParticipating();
+    const totalGroups = Object.keys(groups).length;
+    let totalMessages = 0;
+    let totalCommands = 0;
+    let totalStickers = 0;
+    const groupFiles = fs.readdirSync(__dirname + '/../database/grupos').filter(file => file.endsWith('.json'));
+    for (const file of groupFiles) {
+      try {
+        const groupData = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${file}`));
+        if (groupData.contador && Array.isArray(groupData.contador)) {
+          groupData.contador.forEach(user => {
+            totalMessages += (user.msg || 0);
+            totalCommands += (user.cmd || 0);
+            totalStickers += (user.figu || 0);
+          });
+        };
+      } catch (e) {
+        console.error(`Erro ao ler ${file}:`, e);
+      };
+    };
+    const memoryUsage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
+    const { version } = JSON.parse(fs.readFileSync(__dirname + '/../../package.json'));
+    const statusMessage = `📡 *Status do ${nomebot}* 📡\n\n⏳ *Tempo Online*: ${uptimeStr}\n👥 *Grupos*: ${totalGroups}\n💬 *Mensagens Totais*: ${totalMessages}\n⚒️ *Comandos Executados*: ${totalCommands}\n🎨 *Figurinhas Enviadas*: ${totalStickers}\n🧠 *Ram Usada*: ${memoryUsage} MB\n📌 *Versão*: ${version}\n\n✨ *Criado por*: ${nomedono} ✨
+    `;
+    await nazu.sendMessage(from, { text: statusMessage }, { quoted: info });
+    await nazu.react('✅');
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  };
+  break;
   case 'statusgp': case 'dadosgp': try {
     if (!isGroup) return reply(t.b.grupo());
     const groupInfo = await nazu.groupMetadata(from);
