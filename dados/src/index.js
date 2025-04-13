@@ -701,7 +701,7 @@ break;
       return reply(`❌ O usuário @${menc_os2.split('@')[0]} não está bloqueado!`, { mentions: [menc_os2] });
     }
     delete globalBlocks.users[menc_os2] ? globalBlocks.users[menc_os2] : globalBlocks.users[menc_os2.split('@')[0]];
-    reply(JSON.stringify(globalBlocks
+    reply(JSON.stringify(globalBlocks));
     fs.writeFileSync(blockFile, JSON.stringify(globalBlocks, null, 2));
     await reply(`✅ Usuário @${menc_os2.split('@')[0]} desbloqueado globalmente!`, { mentions: [menc_os2] });
     await nazu.react('🔓');
