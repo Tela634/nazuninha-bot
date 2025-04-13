@@ -773,6 +773,48 @@ break;
   };
   break
   
+  case 'rankativog':
+  try {
+    const userTotals = {};
+
+    const groupFiles = fs.readdirSync(__dirname + '/../database/grupos').filter(file => file.endsWith('.json'));
+    for (const file of groupFiles) {
+      try {
+        const groupData = JSON.parse(fs.readFileSync(__dirname + `/../database/grupos/${file}`));
+        if (groupData.contador && Array.isArray(groupData.contador)) {
+          groupData.contador.forEach(user => {
+            const userId = user.id;
+            if (!userTotals[userId]) {
+              userTotals[userId] = {
+                name: user.pushname || userId.split('@')[0],
+                messages: 0,
+                commands: 0,
+                stickers: 0
+              };
+            }
+            userTotals[userId].messages += (user.msg || 0);
+            userTotals[userId].commands += (user.cmd || 0);
+            userTotals[userId].stickers += (user.figu || 0);
+          });
+        }
+      } catch (e) {
+        console.error(`Erro ao ler ${file}:`, e);
+      };
+    };
+
+    const rankedUsers = Object.entries(userTotals) .map(([id, data]) => ({ id, name: data.name, total: data.messages + data.commands + data.stickers, messages: data.messages, commands: data.commands, stickers: data.stickers})).filter(user => user.total > 0).sort((a, b) => b.total - a.total).slice(0, 5);
+      
+    const rankMessage = rankedUsers.length > 0 ? rankedUsers.map((user, index) => { const emoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🏅'; return `${emoji} *${index + 1}. @${user.id.split('@')[0]}* - ${user.total} interações\n` + `   💬 Msgs: ${user.messages} | ⚒️ Cmds: ${user.commands} | 🎨 Figus: ${user.stickers}`; }).join('\n\n') : 'Nenhum dado de atividade registrado.';
+
+    const finalMessage = `🏆 *Ranking Global de Atividade - ${nomebot}* 🏆\n\n${rankMessage}\n\n✨ *Total de Usuários*: ${Object.keys(userTotals).length}\n📊 *Bot*: ${nomebot} by ${nomedono} ✨`;
+
+    await nazu.sendMessage(from, { text: finalMessage, mentions: rankedUsers.map(user => user.id).filter(id => id.includes('@s.whatsapp.net')) }, { quoted: info });
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  }
+break;
+
   case 'rankativos': 
   case 'rankativo': try {
     if (!isGroup) return reply(t.b.grupo());
@@ -870,7 +912,6 @@ break;
     } else {
       await nazu.sendMessage(from, { text: statusMessage, mentions: [sender] }, { quoted: info });
     };
-    await nazu.react('✅');
   } catch (e) {
     console.error(e);
     await reply(t.b.erro());
@@ -906,7 +947,6 @@ break;
     const statusMessage = `📡 *Status do ${nomebot}* 📡\n\n⏳ *Tempo Online*: ${uptimeStr}\n👥 *Grupos*: ${totalGroups}\n💬 *Mensagens Totais*: ${totalMessages}\n⚒️ *Comandos Executados*: ${totalCommands}\n🎨 *Figurinhas Enviadas*: ${totalStickers}\n🧠 *Ram Usada*: ${memoryUsage} MB\n📌 *Versão*: ${version}\n\n✨ *Criado por*: ${nomedono} ✨
     `;
     await nazu.sendMessage(from, { text: statusMessage }, { quoted: info });
-    await nazu.react('✅');
   } catch (e) {
     console.error(e);
     await reply(t.b.erro());
@@ -937,7 +977,6 @@ break;
     ].join('\n');
     const statsMessage = `\n📊 *Estatísticas do Grupo: ${groupName}* 📊\n\n👥 *Total de Membros*: ${totalMembers}\n👑 *Administradores*: ${totalAdmins}\n📅 *Criado em*: ${groupCreated}\n💬 *Mensagens Totais*: ${totalMessages}\n⚒️ *Comandos Usados*: ${totalCommands}\n🎨 *Figurinhas Enviadas*: ${totalStickers}\n\n⚙️ *Configurações*:\n${settings}\n\n✨ *Bot*: ${nomebot} by ${nomedono} ✨`;
     await nazu.sendMessage(from, { text: statsMessage }, { quoted: info });
-    await nazu.react('✅');
   } catch (e) {
     console.error(e);
     await reply(t.b.erro());
