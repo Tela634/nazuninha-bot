@@ -700,6 +700,8 @@ break;
     if (!globalBlocks.users || (!globalBlocks.users[menc_os2] && !globalBlocks.users[menc_os2.split('@')[0]])) {
       return reply(`❌ O usuário @${menc_os2.split('@')[0]} não está bloqueado!`, { mentions: [menc_os2] });
     }
+    reply(menc_os2);
+    reply(menc_os2.split('@')[0]);
     delete globalBlocks.users[menc_os2] ? globalBlocks.users[menc_os2] : globalBlocks.users[menc_os2.split('@')[0]];
     reply(JSON.stringify(globalBlocks));
     fs.writeFileSync(blockFile, JSON.stringify(globalBlocks, null, 2));
