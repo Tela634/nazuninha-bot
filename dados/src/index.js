@@ -206,10 +206,10 @@ let globalBlocks = { commands: {}, users: {} };
 if (fs.existsSync(__dirname + '/../database/globalBlocks.json')) {
   globalBlocks = JSON.parse(fs.readFileSync(__dirname + '/../database/globalBlocks.json'));
 };
-if (globalBlocks.users && (globalBlocks.users[sender.split('@')[0]] || globalBlocks.users[sender])) {
+if (globalBlocks.users && (globalBlocks.users[sender.split('@')[0]] || globalBlocks.users[sender]) && isCmd) {
   return reply(`🚫 Você está bloqueado globalmente!\nMotivo: ${globalBlocks.users[sender] ? globalBlocks.users[sender].reason : globalBlocks.users[sender.split('@')[0]].reason}`);
 };
-if (globalBlocks.commands && globalBlocks.commands[command]) {
+if (isCmd && globalBlocks.commands && globalBlocks.commands[command]) {
   return reply(`🚫 O comando *${command}* está bloqueado globalmente!\nMotivo: ${globalBlocks.commands[command].reason}`);
 };
 
