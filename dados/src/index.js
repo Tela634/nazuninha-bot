@@ -1836,12 +1836,12 @@ await reply(t.b.erro());
 };
 break;
 
-case 'chute': case 'chutar': case 'tapa': case 'soco': case 'socar': case 'beijo': case 'beijar': case 'beijob': case 'beijarb': case 'abraco': case 'abracar': case 'mata': case 'matar': case 'tapar': case 'goza': case 'gozar': case 'mamar': case 'mamada': case 'cafune': case 'morder': case 'mordida': case 'lamber': case 'lambida': case 'explodir':
-    if (!isGroup) return reply('❌ Este comando só pode ser usado em grupos.');
+case 'chute': case 'chutar': case 'tapa': case 'soco': case 'socar': case 'beijo': case 'beijar': case 'beijob': case 'beijarb': case 'abraco': case 'abracar': case 'mata': case 'matar': case 'tapar': case 'goza': case 'gozar': case 'mamar': case 'mamada': case 'cafune': case 'morder': case 'mordida': case 'lamber': case 'lambida': case 'explodir': try {
+    if (!isGroup) return reply(t.b.grupo());
     if (!isModoBn) return reply('❌ O modo brincadeira não está ativo nesse grupo.');
     if(!menc_os2) return reply('Marque um usuário.');
-    let gamesData = fs.existsSync(__dirname + '/.funcs/.json/.games.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.games.json')) : { games2: {} };
-    let GamezinData = fs.existsSync(__dirname + '/.funcs/.json/.markgame.json') ? JSON.parse(fs.readFileSync(__dirname + '/.funcs/.json/.markgame.json')) : { ranks: {} };
+    let gamesData = fs.existsSync(__dirname + '/funcs/json/games.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/games.json')) : { games2: {} };
+    let GamezinData = fs.existsSync(__dirname + '/funcs/json/markgame.json') ? JSON.parse(fs.readFileSync(__dirname + '/funcs/json/markgame.json')) : { ranks: {} };
     let responseText = GamezinData[command].replaceAll('#nome#', `@${menc_os2.split('@')[0]}`) || `Voce acabou de dar um(a) ${command} no(a) @${menc_os2.split('@')[0]}`;
     let media = gamesData.games2[command];
     if (media?.image) {
@@ -1850,7 +1850,11 @@ case 'chute': case 'chutar': case 'tapa': case 'soco': case 'socar': case 'beijo
         await nazu.sendMessage(from, { video: media.video, caption: responseText, mentions: [menc_os2], gifPlayback: true });
     } else {
         await nazu.sendMessage(from, { text: responseText, mentions: [menc_os2] });
-    }
+    };
+} catch(e) {
+console.error(e);
+await reply(t.b.erro());
+};
    break;
 
 
