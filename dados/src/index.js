@@ -45,7 +45,7 @@ try {
  const menc_prt = info.message?.extendedTextMessage?.contextInfo?.participant;
  const menc_jid = args?.join(" ").replace("@", "") + "@s.whatsapp.net";
  const menc_jid2 = info.message?.extendedTextMessage?.contextInfo?.mentionedJid;
- let menc_os2 = q.includes("@") ? menc_jid : menc_prt;
+ const menc_os2 = q.includes("@") ? menc_jid : menc_prt;
  const sender_ou_n = q.includes("@") ? menc_jid : menc_prt ? menc_prt : sender;
 
  var isCmd = body.trim().startsWith(prefix);
@@ -682,17 +682,17 @@ break;
   if (!isOwner) return reply(t.b.dono());
   try {
     reason = q ? q.includes('@') ? q.includes(' ') ? q.split(' ').slice(1).join(' ') : "Não informado" : q : 'Não informado';
-    menc_os2 = q.includes(' ') ? menc_os2.split(' ')[0] : menc_os2;
-    if(!menc_os2) return reply(t.b.marcarAlguem());
+    menc_os3 = menc_os2.includes(' ') ? menc_os2.split(' ')[0] : menc_os2;
+    if(!menc_os3) return reply(t.b.marcarAlguem());
     let globalBlocks = {};
     const blockFile = __dirname + '/../database/globalBlocks.json';
     if (fs.existsSync(blockFile)) {
       globalBlocks = JSON.parse(fs.readFileSync(blockFile));
     }
     globalBlocks.users = globalBlocks.users || {};
-    globalBlocks.users[menc_os2] = { reason, timestamp: Date.now() };
+    globalBlocks.users[menc_os3] = { reason, timestamp: Date.now() };
     fs.writeFileSync(blockFile, JSON.stringify(globalBlocks, null, 2));
-    await reply(`✅ Usuário @${menc_os2.split('@')[0]} bloqueado globalmente!\nMotivo: ${reason}`, { mentions: [menc_os2] });
+    await reply(`✅ Usuário @${menc_os3.split('@')[0]} bloqueado globalmente!\nMotivo: ${reason}`, { mentions: [menc_os3] });
     await nazu.react('🔒');
   } catch (e) {
     console.error(e);
@@ -1310,11 +1310,11 @@ case 'ping':
   try {
     if (!menc_os2) return reply(t.b.marcarAlguem());
     reason = q  ? q.includes('@')  ? q.includes(' ') ? q.split(' ').slice(1).join(' ')  : "Não informado" : q : 'Não informado';
-    menc_os2 = q.includes(' ') ? menc_os2.split(' ')[0] : menc_os2;
+    menc_os3 = menc_os2.includes(' ') ? menc_os2.split(' ')[0] : menc_os2;
     groupData.blockedUsers = groupData.blockedUsers || {};
-    groupData.blockedUsers[menc_os2] = { reason, timestamp: Date.now() };
+    groupData.blockedUsers[menc_os3] = { reason, timestamp: Date.now() };
     fs.writeFileSync(groupFile, JSON.stringify(groupData, null, 2));
-    await reply(`✅ Usuário @${menc_os2.split('@')[0]} bloqueado no grupo!\nMotivo: ${reason}`, { mentions: [menc_os2] });
+    await reply(`✅ Usuário @${menc_os3.split('@')[0]} bloqueado no grupo!\nMotivo: ${reason}`, { mentions: [menc_os3] });
   } catch (e) {
     console.error(e);
     await reply(t.b.erro());
