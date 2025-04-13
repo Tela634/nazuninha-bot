@@ -45,7 +45,7 @@ try {
  const menc_prt = info.message?.extendedTextMessage?.contextInfo?.participant;
  const menc_jid = args?.join(" ").replace("@", "") + "@s.whatsapp.net";
  const menc_jid2 = info.message?.extendedTextMessage?.contextInfo?.mentionedJid;
- const menc_os2 = q.includes("@") ? menc_jid : menc_prt;
+ let menc_os2 = q.includes("@") ? menc_jid : menc_prt;
  const sender_ou_n = q.includes("@") ? menc_jid : menc_prt ? menc_prt : sender;
 
  var isCmd = body.trim().startsWith(prefix);
