@@ -37,6 +37,12 @@ async function menuadm(prefix, botName = "MeuBot", userName = "Usuário") {
 │    → Mudar descrição
 │ *${prefix}tttend* ou *${prefix}rv*
 │    → Encerrar votação
+│ *${prefix}blockuser [usuário] [motivo?]*
+│    → Bloquear usuário no grupo
+│ *${prefix}unblockuser [usuário]*
+│    → Desbloquear usuário no grupo
+│ *${prefix}listblocksgp*
+│    → Listar bloqueios do grupo
 ╰──────────────╯
 
 ╭──🌷 *ATIVAÇÕES* 🌷──

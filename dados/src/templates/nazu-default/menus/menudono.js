@@ -36,6 +36,16 @@ async function menuDono(prefix, botName = "MeuBot", userName = "Usuário") {
 │    → Adicionar usuário premium
 │ *${prefix}delpremium*
 │    → Remover usuário premium
+│ *${prefix}blockcmdg [comando] [motivo?]*
+│    → Bloquear comando globalmente
+│ *${prefix}unblockcmdg [comando]*
+│    → Desbloquear comando global
+│ *${prefix}blockuserg [usuário] [motivo?]*
+│    → Bloquear usuário globalmente
+│ *${prefix}unblockuserg [usuário]*
+│    → Desbloquear usuário global
+│ *${prefix}listblocks*
+│    → Listar bloqueios globais
 ╰──────────────╯
 `;
 }

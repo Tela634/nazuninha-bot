@@ -4,7 +4,7 @@ async function menuMembros(prefix, botName = "MeuBot", userName = "Usuário") {
 │ Oii, *${userName}*
 ╰───────────────
 
-╭──🌷 *COMANDOS GERAIS* 🌷──
+╭🌷 *COMANDOS GERAIS* 🌷
 │ Escolha sua opção:
 ├──────────────┤
 │ *${prefix}mention*

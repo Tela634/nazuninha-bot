@@ -103,8 +103,7 @@ try {
  //FIM DO CONTADOR
  
  //FUNÇÕES BASICAS
- async function reply(text) {
-    const result = await nazu.sendMessage(from, {text: text.trim()}, {sendEphemeral: true, contextInfo: { forwardingScore: 50, isForwarded: true, externalAdReply: { showAdAttribution: true }}, quoted: info})}; nazu.reply=reply;
+ async function reply(text, aA = { mentions: [] }) {const result = await nazu.sendMessage(from, {text: text.trim(), mentions: aA.mentions}, {sendEphemeral: true, contextInfo: { forwardingScore: 50, isForwarded: true, externalAdReply: { showAdAttribution: true }}, quoted: info})}; nazu.reply=reply;
  
  const reagir = async (emj) => { if (typeof emj === 'string') { await nazu.sendMessage(from, { react: { text: emj, key: info.key } }); } else if (Array.isArray(emj)) { for (const emjzin of emj) { await nazu.sendMessage(from, { react: { text: emjzin, key: info.key } }); await new Promise(res => setTimeout(res, 500)); } } }; nazu.react = reagir;
  
@@ -194,6 +193,24 @@ try {
         };
         return;
     };
+};
+
+
+//VERIFICAR USUÁRIOS BLOQUEADOS (GRUPO)
+if (isGroup && groupData.blockedUsers && groupData.blockedUsers[sender]) {
+  return reply(`🚫 Você está bloqueado de usar o bot neste grupo!\nMotivo: ${groupData.blockedUsers[sender].reason}`);
+};
+
+//VERIFICAR BLOQUEIOS (GLOBAL)
+let globalBlocks = { commands: {}, users: {} };
+if (fs.existsSync(__dirname + '/../database/globalBlocks.json')) {
+  globalBlocks = JSON.parse(fs.readFileSync(__dirname + '/../database/globalBlocks.json'));
+};
+if (globalBlocks.users && globalBlocks.users[sender]) {
+  return reply(`🚫 Você está bloqueado globalmente!\nMotivo: ${globalBlocks.users[sender].reason}`);
+};
+if (globalBlocks.commands && globalBlocks.commands[command]) {
+  return reply(`🚫 O comando *${command}* está bloqueado globalmente!\nMotivo: ${globalBlocks.commands[command].reason}`);
 };
 
  switch(command) {
@@ -618,6 +635,107 @@ break;
    
    
   //COMANDOS DE DONO BB
+  case 'blockcmdg':
+  if (!isOwner) return reply(t.b.dono());
+  try {
+    const cmdToBlock = q?.toLowerCase();
+    const reason = q?.split(' ').slice(1).join(' ') || 'Sem motivo informado';
+    if (!cmdToBlock) return reply('❌ Informe o comando a bloquear! Ex.: !blockcmd sticker');
+    let globalBlocks = {};
+    const blockFile = __dirname + '/../database/globalBlocks.json';
+    if (fs.existsSync(blockFile)) {
+      globalBlocks = JSON.parse(fs.readFileSync(blockFile));
+    }
+    globalBlocks.commands = globalBlocks.commands || {};
+    globalBlocks.commands[cmdToBlock] = { reason, timestamp: Date.now() };
+    fs.writeFileSync(blockFile, JSON.stringify(globalBlocks, null, 2));
+    await reply(`✅ Comando *${cmdToBlock}* bloqueado globalmente!\nMotivo: ${reason}`);
+    await nazu.react('🔒');
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  }
+  break;
+
+  case 'unblockcmdg':
+  if (!isOwner) return reply(t.b.dono());
+  try {
+    const cmdToUnblock = q?.toLowerCase();
+    if (!cmdToUnblock) return reply('❌ Informe o comando a desbloquear! Ex.: !unblockcmd sticker');
+    const blockFile = __dirname + '/../database/globalBlocks.json';
+    if (!fs.existsSync(blockFile)) return reply('❌ Nenhum comando bloqueado!');
+    let globalBlocks = JSON.parse(fs.readFileSync(blockFile));
+    if (!globalBlocks.commands || !globalBlocks.commands[cmdToUnblock]) {
+      return reply(`❌ O comando *${cmdToUnblock}* não está bloqueado!`);
+    }
+    delete globalBlocks.commands[cmdToUnblock];
+    fs.writeFileSync(blockFile, JSON.stringify(globalBlocks, null, 2));
+    await reply(`✅ Comando *${cmdToUnblock}* desbloqueado globalmente!`);
+    await nazu.react('🔓');
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  }
+  break;
+
+  case 'blockuserg':
+  if (!isOwner) return reply(t.b.dono());
+  try {
+    reason = q ? q.includes('@') ? q.includes(' ') ? q.split(' ').slice(1).join(' ') : "Não informado" : q : 'Não informado';
+    if(!menc_os2) return reply(t.b.marcarAlguem());
+    let globalBlocks = {};
+    const blockFile = __dirname + '/../database/globalBlocks.json';
+    if (fs.existsSync(blockFile)) {
+      globalBlocks = JSON.parse(fs.readFileSync(blockFile));
+    }
+    globalBlocks.users = globalBlocks.users || {};
+    globalBlocks.users[menc_os2] = { reason, timestamp: Date.now() };
+    fs.writeFileSync(blockFile, JSON.stringify(globalBlocks, null, 2));
+    await reply(`✅ Usuário @${menc_os2.split('@')[0]} bloqueado globalmente!\nMotivo: ${reason}`, { mentions: [menc_os2] });
+    await nazu.react('🔒');
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  }
+  break;
+
+  case 'unblockuserg':
+  if (!isOwner) return reply(t.b.dono());
+  try {
+    if(!menc_os2) return reply(t.b.marcarAlguem());
+    const blockFile = __dirname + '/../database/globalBlocks.json';
+    if (!fs.existsSync(blockFile)) return reply('❌ Nenhum usuário bloqueado!');
+    let globalBlocks = JSON.parse(fs.readFileSync(blockFile));
+    if (!globalBlocks.users || !globalBlocks.users[menc_os2]) {
+      return reply(`❌ O usuário @${userToUnblock.split('@')[0]} não está bloqueado!`, { mentions: [menc_os2] });
+    }
+    delete globalBlocks.users[menc_os2];
+    fs.writeFileSync(blockFile, JSON.stringify(globalBlocks, null, 2));
+    await reply(`✅ Usuário @${menc_os2.split('@')[0]} desbloqueado globalmente!`, { mentions: [menc_os2] });
+    await nazu.react('🔓');
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  }
+  break;
+
+  case 'listblocks':
+  if (!isOwner) return reply(t.b.dono());
+  try {
+    const blockFile = __dirname + '/../database/globalBlocks.json';
+    if (!fs.existsSync(blockFile)) return reply('❌ Nenhum bloqueio registrado!');    
+    const globalBlocks = JSON.parse(fs.readFileSync(blockFile));
+    const blockedCommands = globalBlocks.commands ? Object.entries(globalBlocks.commands).map(([cmd, data]) => `🔧 *${cmd}* - Motivo: ${data.reason}`).join('\n') : 'Nenhum comando bloqueado.';
+    const blockedUsers = globalBlocks.users ? Object.entries(globalBlocks.users).map(([user, data]) => {const userId = user.split('@')[0]; return `👤 *${userId}* - Motivo: ${data.reason}`;}).join('\n') : 'Nenhum usuário bloqueado.';
+    const message = `🔒 *Bloqueios Globais - ${nomebot}* 🔒\n\n📜 *Comandos Bloqueados*:\n${blockedCommands}\n\n👥 *Usuários Bloqueados*:\n${blockedUsers}`;    
+    await reply(message);
+    await nazu.react('✅');
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  }
+  break;
+
   case 'seradm': try {
   if(!isOwner) return reply(t.b.dono());
   await nazu.groupParticipantsUpdate(from, [sender], "promote");
@@ -952,6 +1070,7 @@ break;
     await reply(t.b.erro());
   };
   break;
+  
   case 'statusgp': case 'dadosgp': try {
     if (!isGroup) return reply(t.b.grupo());
     const groupInfo = await nazu.groupMetadata(from);
@@ -1183,6 +1302,50 @@ case 'ping':
         reply(t.b.erro());
     };
   break
+
+ case 'blockuser':
+  if (!isGroup) return reply(t.b.grupo());
+  if (!isGroupAdmin) return reply(t.b.admin());
+  try {
+    if (!menc_os2) return reply(t.b.marcarAlguem());
+    reason = q  ? q.includes('@')  ? q.includes(' ') ? q.split(' ').slice(1).join(' ')  : "Não informado" : q : 'Não informado';
+    groupData.blockedUsers = groupData.blockedUsers || {};
+    groupData.blockedUsers[menc_os2] = { reason, timestamp: Date.now() };
+    fs.writeFileSync(groupFile, JSON.stringify(groupData, null, 2));
+    await reply(`✅ Usuário @${menc_os2.split('@')[0]} bloqueado no grupo!\nMotivo: ${reason}`, { mentions: [menc_os2] });
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  };
+  break;
+
+  case 'unblockuser':
+  if (!isGroup) return reply(t.b.grupo());
+  if (!isGroupAdmin) return reply(t.b.admin());
+  try {
+    if (!menc_os2) return reply(t.b.marcarAlguem());
+    if (!groupData.blockedUsers || !groupData.blockedUsers[menc_os2]) return reply(`❌ O usuário @${menc_os2.split('@')[0]} não está bloqueado no grupo!`, { mentions: [menc_os2] });
+    delete groupData.blockedUsers[menc_os2];
+    fs.writeFileSync(groupFile, JSON.stringify(groupData, null, 2));
+    await reply(`✅ Usuário @${menc_os2.split('@')[0]} desbloqueado no grupo!`, { mentions: [menc_os2] });
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  }
+  break;
+
+  case 'listblocksgp':
+  if (!isGroup) return reply(t.b.grupo());
+  if (!isGroupAdmin) return reply(t.b.admin());
+  try {
+    const blockedUsers = groupData.blockedUsers ? Object.entries(groupData.blockedUsers).map(([user, data]) => `👤 *${user.split('@')[0]}* - Motivo: ${data.reason}`).join('\n') : 'Nenhum usuário bloqueado no grupo.';
+    const message = `🔒 *Usuários Bloqueados no Grupo - ${groupName}* 🔒\n\n${blockedUsers}`;
+    await reply(message);
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  }
+  break;
 
   case 'banir':
   case 'ban':
