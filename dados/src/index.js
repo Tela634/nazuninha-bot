@@ -67,6 +67,7 @@ try {
  if(!!banGpIds[from] && !isOwner && !isPremium) return;
  
  //INFOS DE GRUPO
+  const groupFile = __dirname + `/../database/grupos/${from}.json`;
   const groupMetadata = !isGroup ? {} : await nazu.groupMetadata(from);
   const groupName = isGroup && groupMetadata.subject ? groupMetadata.subject : '';
   const AllgroupMembers = !isGroup ? [] : groupMetadata.participants.map(p => p.id);
