@@ -198,7 +198,7 @@ try {
 
 //VERIFICAR USUÁRIOS BLOQUEADOS (GRUPO)
 if (isGroup && groupData.blockedUsers && (groupData.blockedUsers[sender] || groupData.blockedUsers[sender.split('@')[0]])) {
-  return reply(`🚫 Você está bloqueado de usar o bot neste grupo!\nMotivo: ${groupData.blockedUsers[sender].reason}`);
+  return reply(`🚫 Você está bloqueado de usar o bot neste grupo!\nMotivo: ${groupData.blockedUsers[sender] ? groupData.blockedUsers[sender].reason : groupData.blockedUsers[sender.split('@')[0]].reason}`);
 };
 
 //VERIFICAR BLOQUEIOS (GLOBAL)
@@ -207,7 +207,7 @@ if (fs.existsSync(__dirname + '/../database/globalBlocks.json')) {
   globalBlocks = JSON.parse(fs.readFileSync(__dirname + '/../database/globalBlocks.json'));
 };
 if (globalBlocks.users && (globalBlocks.users[sender.split('@')[0]] || globalBlocks.users[sender])) {
-  return reply(`🚫 Você está bloqueado globalmente!\nMotivo: ${globalBlocks.users[sender].reason}`);
+  return reply(`🚫 Você está bloqueado globalmente!\nMotivo: ${globalBlocks.users[sender] ? globalBlocks.users[sender].reason : globalBlocks.users[sender.split('@')[0]].reason}`);
 };
 if (globalBlocks.commands && globalBlocks.commands[command]) {
   return reply(`🚫 O comando *${command}* está bloqueado globalmente!\nMotivo: ${globalBlocks.commands[command].reason}`);
