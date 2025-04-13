@@ -869,7 +869,7 @@ break;
       await nazu.sendMessage(from, { image: { url: profilePic }, caption: statusMessage, mentions: [sender] }, { quoted: info });
     } else {
       await nazu.sendMessage(from, { text: statusMessage, mentions: [sender] }, { quoted: info });
-    }:
+    };
     await nazu.react('✅');
   } catch (e) {
     console.error(e);
