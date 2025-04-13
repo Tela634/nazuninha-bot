@@ -99,25 +99,7 @@ try {
  //FIM
  
  //CONTADOR DE MENSAGEM 🤓
- if(isGroup) {
- if(!groupData.contador) groupData.contador = [];
-  if(JSON.stringify(groupData.contador).includes(sender)) {
-  const i2 = groupData.contador.map(i => i.id).indexOf(sender);
-  if(isCmd && groupData.contador[i2].cmd) {groupData.contador[i2].cmd++} else if(type=="stickerMessage" && groupData.contador[i2].figu) {groupData.contador[i2].figu++} else if(groupData.contador[i2].msg) {groupData.contador[i2].msg++};
-  if (pushname && groupData.contador[i2].pushname !== pushname) {
-    groupData.contador[i2].pushname = pushname;
-  }
-  fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
- } else {
-  groupData.contador.push({
-    id: sender,
-    msg: isCmd ? 0 : 1,
-    cmd: isCmd ? 1 : 0,
-    figu: type == "stickerMessage" ? 1 : 0,
-    pushname: pushname || 'Unknown User'
-  });
-  fs.writeFileSync(__dirname + `/../database/grupos/${from}.json`, JSON.stringify(groupData, null, 2));
- }};
+ if(isGroup){/*Created By Hiudy*/groupData.contador=groupData.contador||[];const a=groupData.contador.findIndex(b=>b.id===sender);if(a!==-1){const c=groupData.contador[a];isCmd?c.cmd=(c.cmd||0)+1:type=="stickerMessage"?c.figu=(c.figu||0)+1:c.msg=(c.msg||0)+1;pushname&&c.pushname!==pushname&&(c.pushname=pushname)}else{groupData.contador.push({id:sender,msg:isCmd?0:1,cmd:isCmd?1:0,figu:type=="stickerMessage"?1:0,pushname:pushname||'Unknown User'})}try{fs.writeFileSync(`${__dirname}/../database/grupos/${from}.json`,JSON.stringify(groupData,null,2))}catch{}};
  //FIM DO CONTADOR
  
  //FUNÇÕES BASICAS
@@ -138,10 +120,7 @@ try {
  //SISTEMA ANTI PORNOGRAFIA 🤫
  if (isGroup && isAntiPorn && (isImage || isVisuU || isVisuU2)) { const midiaz = info.message?.imageMessage || info.message?.viewOnceMessageV2?.message?.imageMessage || info.message?.viewOnceMessage?.message?.imageMessage || info.message?.videoMessage || info.message?.stickerMessage || info.message?.viewOnceMessageV2?.message?.videoMessage || info.message?.viewOnceMessage?.message?.videoMessage; if (midiaz) { try { const stream = await getFileBuffer(midiaz, "image"); const mediaURL = await upload(stream, true); if (mediaURL) { const apiResponse = await axios.get(`https://nsfw-demo.sashido.io/api/image/classify?url=${mediaURL}`); const { Porn, Hentai } = apiResponse.data.reduce((acc, item) => ({...acc,[item.className]: item.probability}), {}); let userMessage = ''; let actionTaken = false; if (Porn > 0.80 || Hentai > 0.80) { if(!isGroupAdmin) { await nazu.sendMessage(from, { delete: info.key }); userMessage = `🚫 @${sender.split('@')[0]} foi removido por compartilhar conteúdo impróprio.\n\n🚫 Esta mídia contém conteúdo adulto (${apiResponse.data[0].className}) com uma probabilidade de ${apiResponse.data[0].probability.toFixed(2)} e foi removida!`; await nazu.groupParticipantsUpdate(from, [sender], "remove"); actionTaken = true; } else { await nazu.sendMessage(from, { delete: info.key }); await reply('Conteudo adulto detectado, porem como você é um administrador não irei banir.'); } } if (actionTaken) { await nazu.sendMessage(from, { text: userMessage, mentions: [sender] }, { quoted: info }); }; } } catch (error) { } } };
  //FIM 🤫
- 
- //SISTEMA ANTI MENÇÕES 
- if(type == "STATUS_MENTION_MESSAGE") reply('bah');
- 
+
  //DEFINIÇÕES DE ISQUOTED
  const content = JSON.stringify(info.message);
  const isQuotedMsg = type === 'extendedTextMessage' && content.includes('conversation')
@@ -185,17 +164,43 @@ try {
  //FIM DOS LOGS
  
  //JOGO DA VELHA
- if(isGroup && tictactoe.hasActiveGame(from) && isModoBn) {
-   const position = parseInt(q);
-   const result = tictactoe.makeMove(from, sender, position);
-   if (result.success) {
-     await nazu.sendMessage(from, { text: result.message, mentions: [sender] });
-   };
- };
- 
- //RPG
- const DadosRp = await rpg(sender);
- 
+ if (isGroup) {
+    if (tictactoe.hasPendingInvitation(from) && budy2) {
+        const normalizedResponse = budy2.toLowerCase().trim();
+        const result = tictactoe.processInvitationResponse(from, sender, normalizedResponse);
+        if (result.success) {
+            await nazu.sendMessage(from, { 
+                text: result.message, 
+                mentions: result.mentions || [] 
+            });
+        } else {
+            reply(result.message);
+        };
+        return;
+    };
+    if (tictactoe.hasActiveGame(from) && budy2) {
+        if (['tttend', 'rv', 'fimjogo'].includes(command)) {
+            if (!isGroupAdmin) return reply(t.b.admin());
+            const result = tictactoe.endGame(from);
+            await reply(result.message);
+            return;
+        };
+        const position = parseInt(budy2.trim());
+        if (!isNaN(position)) {
+            const result = tictactoe.makeMove(from, sender, position);
+            if (result.success) {
+                await nazu.sendMessage(from, { 
+                    text: result.message, 
+                    mentions: result.mentions || [sender] 
+                });
+            } else {
+                reply(result.message);
+            };
+        };
+        return;
+    };
+};
+
  switch(command) {
   //INTELIGENCIA ARTIFICIAL
   
@@ -1539,6 +1544,19 @@ break;
   }
   break;
     
+    
+    //JOGO DA VELHA
+    case 'ttt': case 'jogodavelha': {
+    if (!isGroup) return reply(t.b.grupo());
+    if (!menc_os2) return reply(t.b.marcarAlguem());
+    const result = tictactoe.invitePlayer(from, sender, menc_os2);
+    await nazu.sendMessage(from, {
+        text: result.message,
+        mentions: result.mentions
+    });
+    break;
+   };
+   
     //COMANDOS DE BRINCADEIRAS
    
    case 'eununca': try {
