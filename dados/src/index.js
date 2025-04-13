@@ -1010,7 +1010,7 @@ case 'ping':
   
   //COMANDOS DE ADM
   case 'deletar': case 'delete': case 'del':  case 'd':
-  if(!isGroupAdmins && !isPremium) return reply(t.b.admin());
+  if(!isGroupAdmin) return reply(t.b.admin());
   if(!menc_prt) return reply(t.b.marcarMensagem());
   let stanzaId, participant;
     if (info.message.extendedTextMessage) {
