@@ -700,10 +700,11 @@ break;
     if (!globalBlocks.users || (!globalBlocks.users[menc_os2] && !globalBlocks.users[menc_os2.split('@')[0]])) {
       return reply(`❌ O usuário @${menc_os2.split('@')[0]} não está bloqueado!`, { mentions: [menc_os2] });
     }
-    reply(menc_os2);
-    reply(menc_os2.split('@')[0]);
-    delete globalBlocks.users[menc_os2] ? globalBlocks.users[menc_os2] : globalBlocks.users[menc_os2.split('@')[0]];
-    reply(JSON.stringify(globalBlocks));
+    if (globalBlocks.users[menc_os2]) {
+    delete globalBlocks.users[menc_os2];
+    } else if (globalBlocks.users[menc_os2.split('@')[0]]) {
+    delete globalBlocks.users[menc_os2.split('@')[0]];
+    }
     fs.writeFileSync(blockFile, JSON.stringify(globalBlocks, null, 2));
     await reply(`✅ Usuário @${menc_os2.split('@')[0]} desbloqueado globalmente!`, { mentions: [menc_os2] });
     await nazu.react('🔓');
@@ -1319,7 +1320,9 @@ case 'ping':
   try {
     if (!menc_os2) return reply(t.b.marcarAlguem());
     if (!groupData.blockedUsers || (!groupData.blockedUsers[menc_os2] && !groupData.blockedUsers[menc_os2.split('@')[0]])) return reply(`❌ O usuário @${menc_os2.split('@')[0]} não está bloqueado no grupo!`, { mentions: [menc_os2] });
-    delete groupData.blockedUsers[menc_os2] ? groupData.blockedUsers[menc_os2] : groupData.blockedUsers[menc_os2.split('@')[0]];
+    if (!delete groupData.blockedUsers[menc_os2]) {
+    delete groupData.blockedUsers[menc_os2.split('@')[0]];
+    }
     fs.writeFileSync(groupFile, JSON.stringify(groupData, null, 2));
     await reply(`✅ Usuário @${menc_os2.split('@')[0]} desbloqueado no grupo!`, { mentions: [menc_os2] });
   } catch (e) {
