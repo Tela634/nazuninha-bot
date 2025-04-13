@@ -682,6 +682,7 @@ break;
   if (!isOwner) return reply(t.b.dono());
   try {
     reason = q ? q.includes('@') ? q.includes(' ') ? q.split(' ').slice(1).join(' ') : "Não informado" : q : 'Não informado';
+    menc_os2 = q.includes(' ') ? menc_os2.split(' ')[0] : menc_os2;
     if(!menc_os2) return reply(t.b.marcarAlguem());
     let globalBlocks = {};
     const blockFile = __dirname + '/../database/globalBlocks.json';
@@ -1309,6 +1310,7 @@ case 'ping':
   try {
     if (!menc_os2) return reply(t.b.marcarAlguem());
     reason = q  ? q.includes('@')  ? q.includes(' ') ? q.split(' ').slice(1).join(' ')  : "Não informado" : q : 'Não informado';
+    menc_os2 = q.includes(' ') ? menc_os2.split(' ')[0] : menc_os2;
     groupData.blockedUsers = groupData.blockedUsers || {};
     groupData.blockedUsers[menc_os2] = { reason, timestamp: Date.now() };
     fs.writeFileSync(groupFile, JSON.stringify(groupData, null, 2));
