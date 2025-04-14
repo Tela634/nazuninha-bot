@@ -42,7 +42,7 @@ const ask = (question) => new Promise(resolve => {
 class ConnectionManager {
   constructor() {
     this.activeConnections = new Map();
-    this.baseAuthDir = path.join('dados', 'database', 'qr-code');
+    this.baseAuthDir = __dirname+'/../database/qr-code';
   }
 
   async createConnection(id = 'default') {
