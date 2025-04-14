@@ -54,6 +54,7 @@ class ConnectionManager {
 
       // Configuração do store
       const storePath = path.join(__dirname, '..', 'database', 'stores', id);
+      await store.writeToFile(storePath);
       store.readFromFile(storePath);
       setInterval(() => store.writeToFile(storePath), 10000);
 
