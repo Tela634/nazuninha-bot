@@ -30,7 +30,7 @@ const menus = {
  * @returns {boolean} - True se todos os menus estão válidos
  */
 function validateMenus() {
-  const invalidMenus = Object.entries(menus).filter(([name, menu]) => !menu || typeof menu !== 'object').map(([name]) => name);
+  const invalidMenus = Object.entries(menus).filter(([name, menu]) => !menu || typeof menu !== 'function').map(([name]) => name);
 
   if (invalidMenus.length) {
     console.warn(`[${new Date().toISOString()}] Menus inválidos detectados: ${invalidMenus.join(', ')}`);
