@@ -52,12 +52,6 @@ class ConnectionManager {
       const { version } = await fetchLatestBaileysVersion();
       const store = makeInMemoryStore({});
 
-      // Configuração do store
-      const storePath = path.join(__dirname, '..', 'database', 'stores', id);
-      await store.writeToFile(storePath);
-      store.readFromFile(storePath);
-      setInterval(() => store.writeToFile(storePath), 10000);
-
       const socket = makeWASocket({
         version,
         auth: {
