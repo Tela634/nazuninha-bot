@@ -204,12 +204,7 @@ class ConnectionManager {
 
   async start() {
     try {
-      const existingConnections = await fs.readdir(this.baseAuthDir)
-        .then(dirs => dirs.filter(dir => fs.statSync(path.join(this.baseAuthDir, dir)).isDirectory()))
-        .catch(() => []);
-      
-      const existingConnections2 = await fs.readdir(this.baseAuthDir);
-      console.log(existingConnections2);
+      const existingConnections = await fs.readdir(this.baseAuthDir);
       
       if (process.argv.includes('--add-number')) {
         const id = await ask('Digite um ID único para a nova conexão: ');
