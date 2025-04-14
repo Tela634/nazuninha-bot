@@ -1,189 +1,165 @@
-#!/bin/sh
+#!/bin/bash
 
-# Função para exibir mensagens formatadas
-mensagem() {
-    echo "\033[1;32m$1\033[0m"
+# Nazuna Configurador
+# Criado por Hiudy
+# Mantenha os créditos, por favor! <3
+
+# Configurações iniciais
+set -e
+CONFIG_FILE="./dados/src/config.json"
+VERSION=$(jq -r .version package.json 2>/dev/null || echo "Desconhecida")
+
+# Funções utilitárias
+print_message() {
+    printf "\033[1;32m%s\033[0m\n" "$1"
 }
 
-aviso() {
-    echo "\033[1;31m$1\033[0m"
+print_warning() {
+    printf "\033[1;31m%s\033[0m\n" "$1"
 }
 
-separador() {
-    echo "\033[1;34m============================================\033[0m"
+print_separator() {
+    printf "\033[1;34m============================================\033[0m\n"
 }
 
-# Verifica se o script foi executado com --install
-if [ "$1" = "--install" ]; then
-    separador
-    mensagem "📦 Instalando dependências..."
+validate_input() {
+    local input=$1
+    local field=$2
+    case $field in
+        prefixo)
+            [[ ${#input} -eq 1 ]] || return 1
+            ;;
+        numero)
+            [[ $input =~ ^[0-9]{10,15}$ ]] || return 1
+            ;;
+    esac
+    return 0
+}
+
+# Função para ler entrada com valor padrão
+read_input() {
+    local prompt=$1
+    local default=$2
+    local var_name=$3
+    local validate=$4
+
+    while true; do
+        printf "%s (Atual: %s): " "$prompt" "${default:-Não definido}"
+        read -r input
+        input=${input:-$default}
+
+        if [ -n "$validate" ]; then
+            if validate_input "$input" "$validate"; then
+                break
+            else
+                print_warning "Entrada inválida para $validate!"
+                continue
+            fi
+        fi
+        break
+    done
+
+    eval "$var_name='$input'"
+}
+
+# Função para confirmar sim/não
+confirm() {
+    local prompt=$1
+    local default=$2
+    local response
+
+    printf "%s (S/n): " "$prompt"
+    read -r response
+    response=$(echo "${response:-$default}" | tr '[:upper:]' '[:lower:]')
+    [[ -z "$response" || "$response" = "s" ]]
+}
+
+# Instalação de dependências
+install_dependencies() {
+    print_separator
+    print_message "📦 Instalando dependências..."
     npm install --no-bin-links --force
-    mensagem "✔ Instalação concluída! Rode 'npm start' para iniciar o bot."
+    print_message "✔ Instalação concluída! Rode 'npm start' para iniciar o bot."
+}
+
+# Verifica opção --install
+if [ "$1" = "--install" ]; then
+    install_dependencies
     exit 0
 fi
 
-# Obtém a versão do package.json
-versao=$(jq -r .version package.json 2>/dev/null || echo "Desconhecida")
+# Carrega configuração existente
+declare -A config=(
+    [nomedono]=""
+    [numerodono]=""
+    [nomebot]=""
+    [prefixo]=""
+    [aviso]="false"
+    [debug]="false"
+    [enablePanel]="false"
+)
 
-# Caminho do arquivo de configuração
-arquivo="./dados/src/config.json"
-
-# Carrega os valores atuais do JSON (se existir)
-if [ -f "$arquivo" ]; then
-    nomedono=$(jq -r .nomedono "$arquivo")
-    numerodono=$(jq -r .numerodono "$arquivo")
-    nomebot=$(jq -r .nomebot "$arquivo")
-    prefixo=$(jq -r .prefixo "$arquivo")
-    aviso=$(jq -r .aviso "$arquivo")
-    debug=$(jq -r .debug "$arquivo")
-    enablePanel=$(jq -r .enablePanel "$arquivo")
-    panelPort=$(jq -r .panelPort "$arquivo")
-else
-    nomedono=""
-    numerodono=""
-    nomebot=""
-    prefixo=""
-    aviso="false"
-    debug="false"
-    enablePanel="false"
-    panelPort="2012"
+if [ -f "$CONFIG_FILE" ]; then
+    for key in "nomedono" "numerodono" "nomebot" "prefixo"; do
+        config[$key]=$(jq -r ".$key" "$CONFIG_FILE" 2>/dev/null || echo "${config[$key]}")
+    done
 fi
 
-# Exibe o cabeçalho
-separador
-mensagem "   🔧 Configurador da Nazuna 🔧        "
-mensagem "   🚀 Criado por Hiudy - Versão: $versao 🚀"
-separador
-echo ""
+# Cabeçalho
+print_separator
+print_message "🔧 Configurador da Nazuna - v$VERSION"
+print_message "🚀 Criado por Hiudy"
+print_separator
+echo
 
 # Termos de uso
-aviso "⚠ ATENÇÃO! Antes de continuar, leia atentamente os termos:"
-echo "\033[1;33m1.\033[0m Nunca remover os créditos do criador do Bot."
-echo "\033[1;33m2.\033[0m Nunca vender os arquivos deste projeto."
-echo "\033[1;33m3.\033[0m Usar o Bot de forma ética e responsável."
-echo ""
+print_warning "⚠ TERMOS DE USO:"
+cat << EOF
+1. Não remova os créditos do criador
+2. Não venda este projeto
+3. Use de forma ética e responsável
+EOF
+echo
 
-# Pergunta se o usuário aceita os termos
-echo "Você concorda com os termos acima? (sim/não)"
-read concorda
-
-# Converte a resposta para minúsculas
-concorda=$(echo "$concorda" | tr '[:upper:]' '[:lower:]')
-
-# Verifica a resposta
-if [ "$concorda" != "sim" ]; then
-    aviso "❌ Instalação cancelada. Você precisa concordar com os termos para continuar."
+if ! confirm "Você concorda com os termos?" "n"; then
+    print_warning "❌ Instalação cancelada. É necessário aceitar os termos."
     exit 1
 fi
 
-mensagem "✔ Termos aceitos! Continuando a configuração..."
-echo ""
+print_message "✔ Termos aceitos!"
+echo
 
-# Perguntas ao usuário (com valores padrão)
-echo "👤 Qual seu nome? (Atual: $nomedono)"
-read nome
-nome=${nome:-$nomedono}
-mensagem "✔ Nome registrado: $nome"
+# Coleta de configurações
+read_input "👤 Qual seu nome?" "${config[nomedono]}" "config[nomedono]"
+read_input "📞 Qual seu número (somente dígitos, 10-15)?" "${config[numerodono]}" "config[numerodono]" "numero"
+read_input "🤖 Qual o nome do bot?" "${config[nomebot]}" "config[nomebot]"
+read_input "⚙️ Qual o prefixo (1 caractere)?" "${config[prefixo]}" "config[prefixo]" "prefixo"
 
-echo "📞 Qual seu número (número dono)? (Atual: $numerodono)"
-read numero
-numero=${numero:-$numerodono}
-mensagem "✔ Número registrado: $numero"
-
-echo "🤖 Qual o nome do seu Bot? (Atual: $nomebot)"
-read nomebotnovo
-nomebot=${nomebotnovo:-$nomebot}
-mensagem "✔ Nome do Bot registrado: $nomebot"
-
-echo "⚙️  Qual o prefixo do Bot (1 caractere)? (Atual: $prefixo)"
-read prefixonovo
-prefixo=${prefixonovo:-$prefixo}
-mensagem "✔ Prefixo registrado: $prefixo"
-
-# Pergunta se o usuário deseja receber o aviso quando o bot ligar
-echo "📲 Você deseja receber uma notificação quando o bot ligar? (S/n)"
-read aviso_ao_ligar
-
-# Converte a resposta para minúsculas
-aviso_ao_ligar=$(echo "$aviso_ao_ligar" | tr '[:upper:]' '[:lower:]')
-
-# Define o valor para "aviso" como true ou false
-if [ -z "$aviso_ao_ligar" ] || [ "$aviso_ao_ligar" = "s" ]; then
-    aviso="true"
-else
-    aviso="false"
-fi
-
-# Pergunta se o usuário quer enviar os bugs ao criador
-echo "🛠️ Você deseja enviar os bugs que ocorrerem para o criador do bot? (S/n)"
-read envia_bugs
-
-# Converte a resposta para minúsculas
-envia_bugs=$(echo "$envia_bugs" | tr '[:upper:]' '[:lower:]')
-
-# Define o valor para "debug" como true ou false
-if [ -z "$envia_bugs" ] || [ "$envia_bugs" = "s" ]; then
-    debug="true"
-else
-    debug="false"
-fi
-
-# Pergunta se o usuário quer ativar o painel web
-echo "🌐 Você deseja ativar o painel web do bot? (S/n)"
-read ativar_painel
-
-# Converte a resposta para minúsculas
-ativar_painel=$(echo "$ativar_painel" | tr '[:upper:]' '[:lower:]')
-
-# Define o valor para "enablePanel" como true ou false
-if [ -z "$ativar_painel" ] || [ "$ativar_painel" = "s" ]; then
-    enablePanel="true"
-    # Se o painel estiver ativado, pergunta a porta
-    echo "🔌 Em qual porta você deseja que o painel rode? (Atual: $panelPort)"
-    read porta_painel
-    panelPort=${porta_painel:-$panelPort}
-    mensagem "✔ Porta do painel registrada: $panelPort"
-else
-    enablePanel="false"
-fi
-
-# Cria o diretório caso não exista
-mkdir -p "$(dirname "$arquivo")"
-
-# Adiciona a configuração ao arquivo JSON
-cat > "$arquivo" <<EOL
+# Salva configuração
+mkdir -p "$(dirname "$CONFIG_FILE")"
+cat > "$CONFIG_FILE" << EOF
 {
-  "nomedono": "$nome",
-  "numerodono": "$numero",
-  "nomebot": "$nomebot",
-  "prefixo": "$prefixo",
-  "aviso": $aviso,
-  "debug": $debug,
-  "enablePanel": $enablePanel,
-  "panelPort": $panelPort
+  "nomedono": "${config[nomedono]}",
+  "numerodono": "${config[numerodono]}",
+  "nomebot": "${config[nomebot]}",
+  "prefixo": "${config[prefixo]}",
+  "aviso": ${config[aviso]},
+  "debug": ${config[debug]},
+  "enablePanel": ${config[enablePanel]}
 }
-EOL
+EOF
 
-# Mensagem final
-separador
-mensagem "🎉 Configuração concluída com sucesso!"
-separador
+# Finalização
+print_separator
+print_message "🎉 Configuração concluída com sucesso!"
+print_separator
 
-# Pergunta sobre a instalação dos módulos
-echo "Deseja instalar as dependências agora? (S/n)"
-read instalar
-
-# Se pressionar apenas Enter, assume "s"
-instalar=$(echo "$instalar" | tr '[:upper:]' '[:lower:]')
-if [ -z "$instalar" ] || [ "$instalar" = "s" ]; then
-    mensagem "📦 Instalando dependências..."
-    npm install --no-bin-links --force
-    mensagem "✔ Instalação concluída! Rode 'npm start' para iniciar o bot."
+if confirm "📦 Instalar dependências agora?" "s"; then
+    install_dependencies
 else
-    mensagem "⚡ Instalação dos módulos pulada. Para instalar depois, rode:"
-    mensagem "   npm run config:install"
+    print_message "⚡ Para instalar depois, use: npm run config:install"
 fi
 
-separador
-mensagem "    🚀 Criado por Hiudy - Versão: $versao 🚀"
-separador
+print_separator
+print_message "🚀 Nazuna pronta para uso! - v$VERSION"
+print_separator

@@ -1,36 +1,98 @@
 /*
  *****NÃO MEXA EM NADA AQUI SE NÃO SOUBER O QUE TA FAZENDO*****
 */
-//Criador: hiudy
-//Versão: 0.0.1
-//Esse arquivo contem direitos autorais, caso meus creditos sejam tirados poderei tomar medidas jurídicas.
-const fs = require('fs');
+// Sistema Principal de Exportação de Módulos
+// Criador: Hiudy
+// Versão: 0.0.1
+// Esse arquivo contém direitos autorais. Caso meus créditos sejam removidos, poderei tomar medidas jurídicas.
 
-//downloads
-const youtube = require(__dirname+'/downloads/youtube.js');
-const tiktok = require(__dirname+'/downloads/tiktok.js');
-const pinterest = require(__dirname+'/downloads/pinterest.js');
-const igdl = require(__dirname+'/downloads/igdl.js');
-const google = require(__dirname+'/downloads/google.js');
-const mcPlugin = require(__dirname+'/downloads/mcplugins.js');
-const FilmesDL = require(__dirname+'/downloads/filmes.js');
-const apkMod = require(__dirname+'/downloads/apkmod.js');
+const fs = require('fs').promises;
+const path = require('path');
 
-//utils
-const reportError = require(__dirname+'/utils/debug.js');
-const styleText = require(__dirname+'/utils/gerarnick.js');
-const emojiMix = require(__dirname+'/utils/emojimix.js');
-const upload = require(__dirname+'/utils/upload.js');
-const { sendSticker } = require(__dirname+'/utils/sticker.js');
-const clearMemory = require(__dirname+'/utils/clear.js');
+/**
+ * Carrega um módulo com tratamento de erro
+ * @param {string} modulePath - Caminho do módulo
+ * @param {string} moduleName - Nome do módulo para logging
+ * @returns {Object|undefined} - Módulo carregado ou undefined em caso de erro
+ */
+function loadModule(modulePath, moduleName) {
+  try {
+    return require(modulePath);
+  } catch (error) {
+    console.error(`[${new Date().toISOString()}] Erro ao carregar módulo ${moduleName}:`, error.message);
+    return undefined;
+  }
+}
 
-//jogos 
-const tictactoe = require(__dirname+'/games/tictactoe.js');
-const rpg = require(__dirname+'/games/rpg.js');
+/**
+ * Carrega um arquivo JSON com tratamento de erro
+ * @param {string} filePath - Caminho do arquivo JSON
+ * @param {string} fileName - Nome do arquivo para logging
+ * @returns {Object|undefined} - Conteúdo do JSON ou undefined em caso de erro
+ */
+async function loadJson(filePath, fileName) {
+  try {
+    const data = await fs.readFile(filePath, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error(`[${new Date().toISOString()}] Erro ao carregar JSON ${fileName}:`, error.message);
+    return undefined;
+  }
+}
 
-//Json
-const toolsJson = JSON.parse(fs.readFileSync(__dirname+'/json/tools.json', 'utf-8'));
-const vabJson = JSON.parse(fs.readFileSync(__dirname+'/json/vab.json', 'utf-8'));
+// Diretórios base
+const downloadsDir = path.join(__dirname, 'downloads');
+const utilsDir = path.join(__dirname, 'utils');
+const gamesDir = path.join(__dirname, 'games');
+const jsonDir = path.join(__dirname, 'json');
 
-//exports
-module.exports = { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, toolsJson, vabJson, apkMod, google };
+// Carregamento dos módulos
+// Downloads
+const youtube = loadModule(path.join(downloadsDir, 'youtube.js'), 'youtube');
+const tiktok = loadModule(path.join(downloadsDir, 'tiktok.js'), 'tiktok');
+const pinterest = loadModule(path.join(downloadsDir, 'pinterest.js'), 'pinterest');
+const igdl = loadModule(path.join(downloadsDir, 'igdl.js'), 'igdl');
+const google = loadModule(path.join(downloadsDir, 'google.js'), 'google');
+const mcPlugin = loadModule(path.join(downloadsDir, 'mcplugins.js'), 'mcPlugin');
+const FilmesDL = loadModule(path.join(downloadsDir, 'filmes.js'), 'FilmesDL');
+const apkMod = loadModule(path.join(downloadsDir, 'apkmod.js'), 'apkMod');
+
+// Utils
+const reportError = loadModule(path.join(utilsDir, 'debug.js'), 'reportError');
+const styleText = loadModule(path.join(utilsDir, 'gerarnick.js'), 'styleText');
+const emojiMix = loadModule(path.join(utilsDir, 'emojimix.js'), 'emojiMix');
+const upload = loadModule(path.join(utilsDir, 'upload.js'), 'upload');
+const sendSticker = loadModule(path.join(utilsDir, 'sticker.js'), 'sendSticker').sendSticker;
+const clearMemory = loadModule(path.join(utilsDir, 'clear.js'), 'clearMemory');
+
+// Jogos
+const tictactoe = loadModule(path.join(gamesDir, 'tictactoe.js'), 'tictactoe');
+const rpg = loadModule(path.join(gamesDir, 'rpg.js'), 'rpg');
+
+// JSONs
+let toolsJson, vabJson;
+(async () => {
+  toolsJson = await loadJson(path.join(jsonDir, 'tools.json'), 'tools.json');
+  vabJson = await loadJson(path.join(jsonDir, 'vab.json'), 'vab.json');
+})();
+
+// Exportação
+module.exports = {
+  reportError,
+  youtube,
+  tiktok,
+  pinterest,
+  igdl,
+  sendSticker,
+  FilmesDL,
+  styleText,
+  emojiMix,
+  upload,
+  mcPlugin,
+  tictactoe,
+  rpg,
+  toolsJson: () => toolsJson,
+  vabJson: () => vabJson,
+  apkMod,
+  google
+};

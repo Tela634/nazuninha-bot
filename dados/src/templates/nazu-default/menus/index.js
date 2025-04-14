@@ -1,18 +1,48 @@
-// Export de menus
-// Sistema unico, diferente de qualquer outro bot
+// Export de Menus
+// Sistema único, diferente de qualquer outro bot
 // Criador: Hiudy
-// Caso for usar deixe o caralho dos créditos 
-// <3
+// Caso for usar, deixe os créditos por favor! <3
 
-const menu = require('./menu.js');
-const menudown = require('./menudown.js');
-const menuadm = require('./menuadm.js');
-const menubn = require('./menubn.js');
-const menuDono = require('./menudono.js');
-const menuMembros = require('./menumemb.js');
-const menuFerramentas = require('./ferramentas.js');
-const menuSticker = require('./menufig.js');
-const menuIa = require('./menuia.js');
-const menuRpg = require('./menurpg.js');
+/**
+ * Centraliza a exportação de todos os menus do bot
+ * @module menus
+ */
 
-module.exports = { menu, menudown, menuadm, menubn, menuDono, menuMembros, menuFerramentas, menuSticker, menuIa, menuRpg };
+/**
+ * Lista de menus disponíveis
+ * @type {Object.<string, Object>}
+ */
+const menus = {
+  menu: require('./menu'),
+  menudown: require('./menudown'),
+  menuadm: require('./menuadm'),
+  menubn: require('./menubn'),
+  menuDono: require('./menudono'),
+  menuMembros: require('./menumemb'),
+  menuFerramentas: require('./ferramentas'),
+  menuSticker: require('./menufig'),
+  menuIa: require('./menuia'),
+  menuRpg: require('./menurpg')
+};
+
+/**
+ * Valida se todos os menus foram carregados corretamente
+ * @returns {boolean} - True se todos os menus estão válidos
+ */
+function validateMenus() {
+  const invalidMenus = Object.entries(menus).filter(([name, menu]) => !menu || typeof menu !== 'object').map(([name]) => name);
+
+  if (invalidMenus.length) {
+    console.warn(`[${new Date().toISOString()}] Menus inválidos detectados: ${invalidMenus.join(', ')}`);
+    return false;
+  }
+  return true;
+}
+
+// Executa validação ao carregar o módulo
+if (!validateMenus()) {
+  console.error(`[${new Date().toISOString()}] Erro: Um ou mais menus não foram carregados corretamente.`);
+}
+
+// Exporta todos os menus
+module.exports = menus;

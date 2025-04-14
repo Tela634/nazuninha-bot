@@ -1,89 +1,117 @@
-#!/bin/sh
+#!/bin/bash
 
-# Função para exibir mensagens formatadas
-mensagem() {
-    echo "\033[1;32m$1\033[0m"
+# Nazuna Bot - Script de Inicialização
+# Criado por Hiudy
+# Mantenha os créditos, por favor! <3
+
+# Configurações iniciais
+set -e
+CONFIG_FILE="./dados/src/config.json"
+NODE_MODULES="./node_modules"
+QR_CODE_DIR="./dados/database/qr-code/default"
+CONNECT_FILE="./dados/src/connect.js"
+VERSION=$(jq -r .version package.json 2>/dev/null || echo "Desconhecida")
+
+# Funções utilitárias
+print_message() {
+    printf "\033[1;32m%s\033[0m\n" "$1"
 }
 
-aviso() {
-    echo "\033[1;31m$1\033[0m"
+print_warning() {
+    printf "\033[1;31m%s\033[0m\n" "$1"
 }
 
-separador() {
-    echo "\033[1;34m============================================\033[0m"
+print_separator() {
+    printf "\033[1;34m============================================\033[0m\n"
 }
 
-# Obtém a versão do package.json
-versao=$(jq -r .version package.json 2>/dev/null || echo "Desconhecida")
+# Verifica pré-requisitos
+check_requirements() {
+    [ -f "$CONFIG_FILE" ] || {
+        print_warning "⚠ Configuração não encontrada!"
+        print_message "🔹 Execute: npm run config"
+        exit 1
+    }
 
-# Caminho dos arquivos necessários
-config="./dados/src/config.json"
-node_modules="./node_modules"
-qr_code_dir="./dados/database/qr-code/default"
-connect_file="./dados/src/connect.js"
+    [ -d "$NODE_MODULES" ] || {
+        print_warning "⚠ Módulos não instalados!"
+        print_message "🔹 Execute: npm run config:install"
+        exit 1
+    }
 
-# Exibe o cabeçalho
-separador
-mensagem "   🚀 Inicializador da Nazuna 🚀        "
-mensagem "   🔧 Criado por Hiudy - Versão: $versao 🔧"
-separador
-echo ""
+    command -v node >/dev/null 2>&1 || {
+        print_warning "❌ Node.js não encontrado. Instale o Node.js."
+        exit 1
+    }
+}
 
-# Verifica se a configuração já foi feita
-if [ ! -f "$config" ]; then
-    aviso "⚠ Opa! Parece que você ainda não configurou o bot."
-    mensagem "🔹 Para configurar, execute: \033[1;34mnpm run config\033[0m"
-    exit 1
-fi
+# Verifica conexão existente
+check_existing_connection() {
+    if [ -d "$QR_CODE_DIR" ] && [ "$(find "$QR_CODE_DIR" -maxdepth 1 -type f | wc -l)" -gt 2 ]; then
+        print_message "📡 Conexão existente detectada! Iniciando automaticamente..."
+        run_bot
+        return 0
+    fi
+    return 1
+}
 
-# Verifica se os módulos estão instalados
-if [ ! -d "$node_modules" ]; then
-    aviso "⚠ Opa! Parece que os módulos ainda não foram instalados."
-    mensagem "📦 Para instalar, execute: \033[1;34mnpm run config:install\033[0m"
-    exit 1
-fi
+# Função para escolher método de conexão
+choose_connection_method() {
+    local choice
+    print_message "🔗 Escolha o método de conexão:"
+    printf "\033[1;33m1.\033[0m QR Code\n"
+    printf "\033[1;33m2.\033[0m Código de Pareamento\n"
+    printf "Opção (1/2): "
+    
+    read -r choice
+    case "$choice" in
+        1) return 1 ;;
+        2) return 2 ;;
+        *) 
+            print_warning "❌ Opção inválida! Escolha 1 ou 2."
+            exit 1
+            ;;
+    esac
+}
 
-# Verifica se há mais de 2 arquivos na pasta QR Code
-if [ -d "$qr_code_dir" ] && [ "$(ls -1 "$qr_code_dir" 2>/dev/null | wc -l)" -gt 2 ]; then
-    mensagem "📡 QR Code já detectado! Iniciando conexão automática..."
+# Executa o bot
+run_bot() {
+    local mode=$1
+    local cmd="node --expose-gc $CONNECT_FILE"
+    [ "$mode" = "code" ] && cmd="$cmd --code"
+
+    print_message "🚀 Iniciando Nazuna Bot..."
     while true; do
-        node --expose-gc "$connect_file" || {
-            aviso "⚠ O bot caiu! Reiniciando em 1 segundo..."
+        $cmd || {
+            print_warning "⚠ Bot caiu! Reiniciando em 1 segundo..."
             sleep 1
         }
     done
-    exit 0
-fi
+}
 
-# Pergunta sobre o método de conexão
-echo "🔗 Como deseja conectar o bot?"
-echo "\033[1;33m1.\033[0m Conexão por QR Code"
-echo "\033[1;33m2.\033[0m Conexão por Código"
-echo "Escolha uma opção (1/2):"
-read conexao
+# Main
+main() {
+    print_separator
+    print_message "🚀 Inicializador da Nazuna - v$VERSION"
+    print_message "🔧 Criado por Hiudy"
+    print_separator
+    echo
 
-# Inicia conforme a escolha
-case "$conexao" in
-    1)
-        mensagem "📡 Iniciando conexão por QR Code..."
-        while true; do
-            node --expose-gc "$connect_file" || {
-                aviso "⚠ O bot caiu! Reiniciando em 1 segundo..."
-                sleep 1
-            }
-        done
-        ;;
-    2)
-        mensagem "🔑 Iniciando conexão por Código..."
-        while true; do
-            node --expose-gc "$connect_file" --code || {
-                aviso "⚠ O bot caiu! Reiniciando em 1 segundo..."
-                sleep 1
-            }
-        done
-        ;;
-    *)
-        aviso "❌ Opção inválida! Reinicie o script e escolha 1 ou 2."
-        exit 1
-        ;;
-esac
+    check_requirements
+
+    if check_existing_connection; then
+        return
+    fi
+
+    choose_connection_method
+    case $? in
+        1) run_bot ;;
+        2) run_bot "code" ;;
+    esac
+}
+
+# Executa com tratamento de erros
+main || {
+    print_warning "❌ Erro ao iniciar o bot."
+    exit 1
+}
