@@ -394,7 +394,7 @@ if (botState.status === 'off' && !isOwner) return;
   //FERRAMENTAS
   case 'encurtalink': case 'tinyurl': try {
   if(!q) return reply(`❌️ *Forma incorreta, use está como exemplo:* ${prefix + command} https://instagram.com/hiudyyy_`);
-  anu = await axios.get(`https://tinyurl.com/api-create.php?url=${link}`);
+  anu = await axios.get(`https://tinyurl.com/api-create.php?url=${q}`);
   reply(`${anu.data}`);
   } catch(e) {
   console.error(e);
