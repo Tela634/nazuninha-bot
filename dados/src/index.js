@@ -6,7 +6,7 @@
 
 const { downloadContentFromMessage, Mimetype } = require('baileys');
 const { exec, spawn, execSync } = require('child_process');
-const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, toolsJson, vabJson, apkMod }  = require(__dirname+'/funcs/exports.js');
+const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, toolsJson, vabJson, apkMod, google }  = require(__dirname+'/funcs/exports.js');
 const axios = require('axios');
 const pathz = require('path');
 const fs = require('fs');
@@ -213,6 +213,14 @@ if (globalBlocks.users && (globalBlocks.users[sender.split('@')[0]] || globalBlo
 if (isCmd && globalBlocks.commands && globalBlocks.commands[command]) {
   return reply(`🚫 O comando *${command}* está bloqueado globalmente!\nMotivo: ${globalBlocks.commands[command].reason}`);
 };
+
+//BOT OFF
+const botStateFile = __dirname + '/../database/botState.json';
+let botState = { status: 'on' };
+if (fs.existsSync(botStateFile)) {
+  botState = JSON.parse(fs.readFileSync(botStateFile));
+};
+if (botState.status === 'off' && !isOwner) return;
 
  switch(command) {
   //INTELIGENCIA ARTIFICIAL
@@ -470,6 +478,17 @@ await reply(t.b.erro());
 };
 break;
   
+  case 'google': try {
+  if(!q) return reply(t.b.formatoEspecifico('Texto', `${prefix}${command} Os Simpsons`));
+  bahzhw = await google.search(q);
+  if(!bahzhw.ok) return reply(t.b.erro());
+  await nazu.sendMessage(from, {image: {url: bahzhw.image}, caption: bahzhw.text}, {quoted: info});
+  } catch(e) {
+  console.error(e);
+  await reply(t.b.erro());
+  };
+  break;
+  
   case 'mcplugin':case 'mcplugins': try {
   if(!q) return reply('Cadê o nome do plugin para eu pesquisar? 🤔');
   await nazu.react('🔍');
@@ -636,6 +655,39 @@ break;
    
    
   //COMANDOS DE DONO BB
+  case 'boton':
+case 'botoff':
+  if (!isOwner) return reply(t.b.dono());
+  try {
+    const botStateFile = __dirname + '/../database/botState.json';
+    let botState = { status: 'on' };
+    if (fs.existsSync(botStateFile)) {
+      botState = JSON.parse(fs.readFileSync(botStateFile));
+    }
+
+    const isOn = botState.status === 'on';
+    if (command === 'boton' && isOn) {
+      return reply('🌟 O bot já está ativado!');
+    }
+    if (command === 'botoff' && !isOn) {
+      return reply('🌙 O bot já está desativado!');
+    }
+
+    botState.status = command === 'boton' ? 'on' : 'off';
+    fs.writeFileSync(botStateFile, JSON.stringify(botState, null, 2));
+
+    const message = command === 'boton'
+      ? '✅ *Bot ativado!* Agora todos podem usar os comandos.'
+      : '✅ *Bot desativado!* Apenas o dono pode usar comandos.';
+    
+    await reply(message);
+    await nazu.react('🔄');
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  }
+break;
+
   case 'blockcmdg':
   if (!isOwner) return reply(t.b.dono());
   try {

@@ -1,10 +1,10 @@
-const swiftly = require('swiftly');
+const axios = require('axios');
 const { DOMParser } = require('linkedom');
 
 async function apkMod(searchText) { // By Hiudy
     try {
         // Busca a página de pesquisa
-        const searchResponse = await swiftly.get(`https://apkmodct.com/?s=${searchText}`);
+        const searchResponse = (await axios.get(`https://apkmodct.com/?s=${searchText}`)).data;
         const searchDoc = new DOMParser().parseFromString(searchResponse, 'text/html');
 
         // Pega o primeiro post da busca
@@ -16,7 +16,7 @@ async function apkMod(searchText) { // By Hiudy
         const imageUrl = searchDoc.querySelector('figure.home-icon img')?.src || 'não encontrada';
 
         // Acessa a página do post
-        const postResponse = await swiftly.get(postUrl);
+        const postResponse = (await axios.get(postUrl)).data;
         const postDoc = new DOMParser().parseFromString(postResponse, 'text/html');
 
         // Pega a descrição
@@ -35,7 +35,7 @@ async function apkMod(searchText) { // By Hiudy
         if (!mainPicUrl) return { error: 'nenhum link principal encontrado' };
 
         // Acessa a página de download
-        const downloadResponse = await swiftly.get(mainPicUrl);
+        const downloadResponse = (await axios.get(mainPicUrl)).data;
         const downloadDoc = new DOMParser().parseFromString(downloadResponse, 'text/html');
 
         // Pega o link de download
