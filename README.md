@@ -75,18 +75,18 @@ Let’s set up the bot on your device:
 
 1. **Download the Bot Files**  
    Open your terminal (or Command Prompt) and type:  
-   $$$bash
+   ```bash
    git clone https://github.com/hiudyy/nazuninha-bot.git
    cd nazuninha-bot
-   $$$  
+   ```  
    This grabs the bot and moves you to its folder.
 
 2. **Add Needed Tools**  
    Run these commands one by one:  
-   $$$bash
+   ```bash
    npm run config
    npm run config:install
-   $$$  
+   ```  
    These install everything the bot needs to work.
 
    > **Stuck?** If you see errors, make sure Node.js is installed (try `node -v` to check). You can also type `npm install` to fix missing files.
@@ -94,9 +94,9 @@ Let’s set up the bot on your device:
 #### 🚀 **Starting the Bot**
 
 To start **Nazuninha Bot**, type:  
-$$$bash
+```bash
 npm start
-$$$
+```
 
 The bot will ask how you want to connect to WhatsApp (see [Connecting to WhatsApp](#connecting-to-whatsapp)).
 
@@ -133,9 +133,9 @@ The bot will ask how you want to connect to WhatsApp (see [Connecting to WhatsAp
 #### 🔄 **Updating the Bot**
 
 Want the latest features? Update with:  
-$$$bash
+```bash
 npm run update
-$$$
+```
 
 This keeps your bot fresh without deleting your settings or chats.
 
@@ -148,55 +148,55 @@ This keeps your bot fresh without deleting your settings or chats.
 1. **Install Termux**  
    - Download Termux from [F-Droid](https://f-droid.org) or another trusted source (Google Play’s version is outdated).  
    - Open Termux and type:  
-     $$$bash
+     ```bash
      pkg update && pkg upgrade -y
-     $$$  
+     ```  
      This updates Termux.
 
 2. **Add Node.js**  
-   $$$bash
+   ```bash
    pkg install nodejs -y
-   $$$  
+   ```  
    This lets Termux run the bot.
 
 3. **Allow Storage Access**  
-   $$$bash
+   ```bash
    termux-setup-storage
-   $$$  
+   ```  
    Say “yes” if asked for permission.
 
 4. **Go to Your Phone’s Storage**  
-   $$$bash
+   ```bash
    cd /sdcard
-   $$$  
+   ```  
    This is where we’ll save the bot.
 
 5. **Download the Bot**  
-   $$$bash
+   ```bash
    git clone https://github.com/hiudyy/nazuninha-bot.git
    cd nazuninha-bot
-   $$$
+   ```
 
 6. **Install Tools**  
-   $$$bash
+   ```bash
    npm run config
    npm run config:install
-   $$$
+   ```
 
 7. **Start the Bot**  
-   $$$bash
+   ```bash
    npm start
-   $$$  
+   ```  
    Connect using a QR code or pairing code (see [Connecting to WhatsApp](#connecting-to-whatsapp)).
 
 **Restarting the Bot**:  
 - If you close Termux or your phone restarts, don’t worry! To start again:  
   1. Open Termux.  
   2. Type:  
-     $$$bash
+     ```bash
      cd /sdcard/nazuninha-bot
      npm start
-     $$$  
+     ```  
   3. The bot should reconnect automatically if you didn’t log out.  
 - **Tip**: If it asks for a QR code again, your session might have expired. Just reconnect.
 
@@ -311,18 +311,18 @@ Vamos configurar o bot no seu dispositivo:
 
 1. **Baixar os Arquivos do Bot**  
    Abra o terminal (ou Prompt de Comando) e digite:  
-   $$$bash
+   ```bash
    git clone https://github.com/hiudyy/nazuninha-bot.git
    cd nazuninha-bot
-   $$$  
+   ```  
    Isso baixa o bot e entra na pasta dele.
 
 2. **Adicionar Ferramentas**  
    Digite esses comandos, um de cada vez:  
-   $$$bash
+   ```bash
    npm run config
    npm run config:install
-   $$$  
+   ```  
    Eles instalam tudo que o bot precisa.
 
    > **Travou?** Se der erro, veja se o Node.js está instalado (digite `node -v` para checar). Tente também `npm install` para consertar.
@@ -330,9 +330,9 @@ Vamos configurar o bot no seu dispositivo:
 #### 🚀 **Iniciando o Bot**
 
 Para ligar o **Nazuninha Bot**, digite:  
-$$$bash
+```bash
 npm start
-$$$
+```
 
 Ele vai perguntar como conectar ao WhatsApp (veja [Conectando ao WhatsApp](#conectando-ao-whatsapp)).
 
@@ -369,9 +369,9 @@ O **Nazuninha Bot** usa o **modo multi-dispositivos** do WhatsApp, então não p
 #### 🔄 **Atualizando o Bot**
 
 Quer as novidades? Atualize com:  
-$$$bash
+```bash
 npm run update
-$$$
+```
 
 Isso mantém o bot novinho sem apagar suas configurações ou conversas.
 
@@ -384,55 +384,55 @@ O **Termux** é um app que roda o **Nazuninha Bot** no seu celular Android. Idea
 1. **Instalar o Termux**  
    - Baixe o Termux pelo [F-Droid](https://f-droid.org) ou outra fonte confiável (a versão do Google Play é antiga).  
    - Abra o Termux e digite:  
-     $$$bash
+     ```bash
      pkg update && pkg upgrade -y
-     $$$  
+     ```  
      Isso atualiza o Termux.
 
 2. **Adicionar Node.js**  
-   $$$bash
+   ```bash
    pkg install nodejs -y
-   $$$  
+   ```  
    Isso permite rodar o bot.
 
 3. **Liberar Armazenamento**  
-   $$$bash
+   ```bash
    termux-setup-storage
-   $$$  
+   ```  
    Diga “sim” se pedir permissão.
 
 4. **Ir para o Armazenamento do Celular**  
-   $$$bash
+   ```bash
    cd /sdcard
-   $$$  
+   ```  
    É onde vamos salvar o bot.
 
 5. **Baixar o Bot**  
-   $$$bash
+   ```bash
    git clone https://github.com/hiudyy/nazuninha-bot.git
    cd nazuninha-bot
-   $$$
+   ```
 
 6. **Instalar Ferramentas**  
-   $$$bash
+   ```bash
    npm run config
    npm run config:install
-   $$$
+   ```
 
 7. **Iniciar o Bot**  
-   $$$bash
+   ```bash
    npm start
-   $$$  
+   ```  
    Conecte com QR Code ou código de pareamento (veja [Conectando ao WhatsApp](#conectando-ao-whatsapp)).
 
 **Reiniciando o Bot**:  
 - Se fechar o Termux ou o celular desligar, é fácil voltar:  
   1. Abra o Termux.  
   2. Digite:  
-     $$$bash
+     ```bash
      cd /sdcard/nazuninha-bot
      npm start
-     $$$  
+     ```  
   3. Se você não fez logout, o bot reconecta sozinho.  
 - **Dica**: Se pedir QR Code de novo, a sessão pode ter expirado. Reconecte normalmente.
 
@@ -547,18 +547,18 @@ Vamos a configurar el bot:
 
 1. **Descargar los Archivos**  
    Abre tu terminal (o Símbolo del Sistema) y escribe:  
-   $$$bash
+   ```bash
    git clone https://github.com/hiudyy/nazuninha-bot.git
    cd nazuninha-bot
-   $$$  
+   ```  
    Esto baja el bot y te lleva a su carpeta.
 
 2. **Añadir Herramientas**  
    Escribe estos comandos, uno por uno:  
-   $$$bash
+   ```bash
    npm run config
    npm run config:install
-   $$$  
+   ```  
    Instalan lo que el bot necesita.
 
    > **¿Problemas?** Si ves errores, asegúrate de tener Node.js (prueba `node -v`). También puedes escribir `npm install` para arreglar.
@@ -566,9 +566,9 @@ Vamos a configurar el bot:
 #### 🚀 **Iniciando el Bot**
 
 Para encender **Nazuninha Bot**, escribe:  
-$$$bash
+```bash
 npm start
-$$$
+```
 
 Te pedirá que elijas cómo conectar a WhatsApp (mira [Conectando a WhatsApp](#conectando-a-whatsapp)).
 
@@ -605,9 +605,9 @@ Te pedirá que elijas cómo conectar a WhatsApp (mira [Conectando a WhatsApp](#c
 #### 🔄 **Actualizando el Bot**
 
 ¿Quieres lo nuevo? Actualiza con:  
-$$$bash
+```bash
 npm run update
-$$$
+```
 
 Esto mantiene el bot al día sin borrar tus ajustes ni chats.
 
@@ -620,55 +620,55 @@ Esto mantiene el bot al día sin borrar tus ajustes ni chats.
 1. **Instalar Termux**  
    - Descarga Termux desde [F-Droid](https://f-droid.org) u otra fuente confiable (la versión de Google Play está vieja).  
    - Abre Termux y escribe:  
-     $$$bash
+     ```bash
      pkg update && pkg upgrade -y
-     $$$  
+     ```  
      Esto actualiza Termux.
 
 2. **Añadir Node.js**  
-   $$$bash
+   ```bash
    pkg install nodejs -y
-   $$$  
+   ```  
    Esto hace que el bot funcione.
 
 3. **Permitir Almacenamiento**  
-   $$$bash
+   ```bash
    termux-setup-storage
-   $$$  
+   ```  
    Di “sí” si pide permisos.
 
 4. **Ir al Almacenamiento del Celular**  
-   $$$bash
+   ```bash
    cd /sdcard
-   $$$  
+   ```  
    Aquí guardaremos el bot.
 
 5. **Descargar el Bot**  
-   $$$bash
+   ```bash
    git clone https://github.com/hiudyy/nazuninha-bot.git
    cd nazuninha-bot
-   $$$
+   ```
 
 6. **Instalar Herramientas**  
-   $$$bash
+   ```bash
    npm run config
    npm run config:install
-   $$$
+   ```
 
 7. **Iniciar el Bot**  
-   $$$bash
+   ```bash
    npm start
-   $$$  
+   ```  
    Conecta con código QR o de vinculación (mira [Conectando a WhatsApp](#conectando-a-whatsapp)).
 
 **Reiniciando el Bot**:  
 - Si cierras Termux o el celular se apaga, no pasa nada. Para volver:  
   1. Abre Termux.  
   2. Escribe:  
-     $$$bash
+     ```bash
      cd /sdcard/nazuninha-bot
      npm start
-     $$$  
+     ```  
   3. Si no cerraste sesión, el bot reconecta solo.  
 - **Consejo**: Si pide código QR otra vez, la sesión pudo haber expirado. Reconecta normal.
 
@@ -783,18 +783,18 @@ Mari siapkan bot di perangkatmu:
 
 1. **Unduh File Bot**  
    Buka terminal (atau Command Prompt) dan ketik:  
-   $$$bash
+   ```bash
    git clone https://github.com/hiudyy/nazuninha-bot.git
    cd nazuninha-bot
-   $$$  
+   ```  
    Ini mengunduh bot dan masuk ke foldernya.
 
 2. **Tambah Alat yang Dibutuhkan**  
    Ketik perintah ini satu per satu:  
-   $$$bash
+   ```bash
    npm run config
    npm run config:install
-   $$$  
+   ```  
    Ini memasang semua yang bot butuhkan.
 
    > **Macets?** Jika ada error, pastikan Node.js terpasang (cek dengan `node -v`). Coba juga ketik `npm install` untuk memperbaiki.
@@ -802,9 +802,9 @@ Mari siapkan bot di perangkatmu:
 #### 🚀 **Menyalakan Bot**
 
 Untuk menyalakan **Nazuninha Bot**, ketik:  
-$$$bash
+```bash
 npm start
-$$$
+```
 
 Bot akan tanya cara menghubungkan ke WhatsApp (lihat [Menghubungkan ke WhatsApp](#menghubungkan-ke-whatsapp)).
 
@@ -841,9 +841,9 @@ Bot akan tanya cara menghubungkan ke WhatsApp (lihat [Menghubungkan ke WhatsApp]
 #### 🔄 **Memperbarui Bot**
 
 Mau fitur terbaru? Perbarui dengan:  
-$$$bash
+```bash
 npm run update
-$$$
+```
 
 Ini bikin bot tetap fresh tanpa hapus pengaturan atau chatmu.
 
@@ -856,55 +856,55 @@ Ini bikin bot tetap fresh tanpa hapus pengaturan atau chatmu.
 1. **Pasang Termux**  
    - Unduh Termux dari [F-Droid](https://f-droid.org) atau sumber terpercaya (versi Google Play sudah tua).  
    - Buka Termux dan ketik:  
-     $$$bash
+     ```bash
      pkg update && pkg upgrade -y
-     $$$  
+     ```  
      Ini perbarui Termux.
 
 2. **Tambah Node.js**  
-   $$$bash
+   ```bash
    pkg install nodejs -y
-   $$$  
+   ```  
    Ini bikin bot bisa jalan.
 
 3. **Izinkan Akses Penyimpanan**  
-   $$$bash
+   ```bash
    termux-setup-storage
-   $$$  
+   ```  
    Bilang “ya” kalau diminta izin.
 
 4. **Masuk ke Penyimpanan Ponsel**  
-   $$$bash
+   ```bash
    cd /sdcard
-   $$$  
+   ```  
    Di sinilah bot akan disimpan.
 
 5. **Unduh Bot**  
-   $$$bash
+   ```bash
    git clone https://github.com/hiudyy/nazuninha-bot.git
    cd nazuninha-bot
-   $$$
+   ```
 
 6. **Pasang Alat**  
-   $$$bash
+   ```bash
    npm run config
    npm run config:install
-   $$$
+   ```
 
 7. **Nyalakan Bot**  
-   $$$bash
+   ```bash
    npm start
-   $$$  
+   ```  
    Hubungkan dengan kode QR atau kode pasangan (lihat [Menghubungkan ke WhatsApp](#menghubungkan-ke-whatsapp)).
 
 **Menyalakan Ulang Bot**:  
 - Kalau Termux tertutup atau ponsel mati, tenang! Untuk nyalakan lagi:  
   1. Buka Termux.  
   2. Ketik:  
-     $$$bash
+     ```bash
      cd /sdcard/nazuninha-bot
      npm start
-     $$$  
+     ```  
   3. Kalau tak logout, bot akan sambung otomatis.  
 - **Tips**: Jika minta kode QR lagi, sesi mungkin kadaluarsa. Sambung ulang seperti biasa.
 
