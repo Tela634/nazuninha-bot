@@ -139,14 +139,10 @@ class ConnectionManager {
     for(const { key, update } of event) {
         if(update.pollUpdates) {
             const pollCreation = await this.getMessage(key)
+            console.log(pollCreation);
             if(pollCreation) {
-                console.log(
-                    'got poll update, aggregation: ',
-                    getAggregateVotesInPollMessage({
-                        message: pollCreation,
-                        pollUpdates: update.pollUpdates,
-                    })
-                );
+                bah = await getAggregateVotesInPollMessage({ message: pollCreation, pollUpdates: update.pollUpdates});
+                console.log(bah);
             };
         };
     };

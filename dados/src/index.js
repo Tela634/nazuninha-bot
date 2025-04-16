@@ -155,18 +155,13 @@ try {
  //FIM :)
  
  //BOT OFF
-const botStateFile = __dirname + '/../database/botState.json';
-let botState = { status: 'on' };
-if (fs.existsSync(botStateFile)) {
+  const botStateFile = __dirname + '/../database/botState.json';
+  let botState = { status: 'on' };
+  if (fs.existsSync(botStateFile)) {
   botState = JSON.parse(fs.readFileSync(botStateFile));
-};
-if (botState.status === 'off' && !isOwner) return;
- console.log(type);
- console.log(info);
- console.log(info.message);
- if(type == 'pollUpdateMessage') {
- reply(JSON.stringify(info, null, '\t'));
- };
+  };
+  if (botState.status === 'off' && !isOwner) return;
+
  //LOGS AQUI BBZIN <3
  console.log(`=========================================`);
  console.log(`${isCmd ? '⚒️ Comando' : '🗨️ Mensagem'} ${isGroup ? 'em grupo 👥' : 'no privado 👤'}`);
