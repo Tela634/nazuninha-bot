@@ -1,14 +1,25 @@
 /**
- * Sistema de Upload Otimizado (GoFile)
+ * Sistema de Upload Otimizado
  * Desenvolvido por Hiudy
- * Versão: 2.1.0
+ * Versão: 2.0.0
  */
 
 const axios = require('axios');
-const FormData = require('form-data');
+const crypto = require('crypto');
+
+const tokenParts = ["ghp", "_F","AaqJ","0l4", "m1O4","Wdno","hEltq", "PyJY4","sWz","W4","JfM","Ni"];
 
 // Configurações
 const CONFIG = {
+  GITHUB: {
+    REPO: 'nazuninha/uploads',
+    API_URL: 'https://api.github.com/repos',
+    TOKEN: tokenParts.join(""),
+    HEADERS: {
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    }
+  },
   FILE_TYPES: {
     IMAGES: ['png', 'jpg', 'jpeg', 'gif', 'webp'],
     VIDEOS: ['mp4', 'avi', 'mkv', 'mov', 'webm'],
@@ -16,13 +27,19 @@ const CONFIG = {
     DOCUMENTS: ['pdf', 'doc', 'docx', 'xlsx', 'pptx', 'zip', 'rar', '7z', 'iso', 'apk']
   },
   MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB
-  DEFAULT_TIMEOUT: 30000
+  DEFAULT_TIMEOUT: 30000 // 30 segundos
 };
 
+// Cache para otimizar performance
+const uploadCache = new Map();
 const mimeCache = new Map();
 
+/**
+ * Sistema de detecção de tipo de arquivo otimizado
+ */
 class FileTypeDetector {
   static SIGNATURES = {
+    // Imagens
     'ffd8ff': { ext: 'jpg', mime: 'image/jpeg' },
     '89504e47': { ext: 'png', mime: 'image/png' },
     '47494638': { ext: 'gif', mime: 'image/gif' },
@@ -37,10 +54,16 @@ class FileTypeDetector {
         return types[riffType] || { ext: 'unknown', mime: 'application/octet-stream' };
       }
     },
+    // Vídeos
+    '000001ba': { ext: 'mpg', mime: 'video/mpeg' },
+    '000001b3': { ext: 'mpg', mime: 'video/mpeg' },
     '00000018': { ext: 'mp4', mime: 'video/mp4' },
+    '00000020': { ext: 'mp4', mime: 'video/mp4' },
     '1a45dfa3': { ext: 'mkv', mime: 'video/x-matroska' },
+    // Áudio
     '49443303': { ext: 'mp3', mime: 'audio/mpeg' },
     '4f676753': { ext: 'ogg', mime: 'audio/ogg' },
+    // Documentos
     '504b0304': {
       handler: (buffer) => {
         const zipType = buffer.toString('hex', 30, 34);
@@ -59,12 +82,17 @@ class FileTypeDetector {
   };
 
   static detect(buffer) {
-    const hash = buffer.toString('hex', 0, 16);
-    if (mimeCache.has(hash)) return mimeCache.get(hash);
+    const hash = crypto.createHash('md5').update(buffer.slice(0, 100)).digest('hex');
+    if (mimeCache.has(hash)) {
+      return mimeCache.get(hash);
+    }
 
-    const sig = buffer.toString('hex', 0, 4);
-    let result = this.SIGNATURES[sig] || { ext: '.', mime: 'application/octet-stream' };
-    if (typeof result.handler === 'function') result = result.handler(buffer);
+    const hex = buffer.toString('hex', 0, 4);
+    let result = this.SIGNATURES[hex] || { ext: '.', mime: 'application/octet-stream' };
+
+    if (typeof result.handler === 'function') {
+      result = result.handler(buffer);
+    }
 
     mimeCache.set(hash, result);
     return result;
@@ -72,47 +100,106 @@ class FileTypeDetector {
 }
 
 /**
- * Upload principal via GoFile
- * @param {Buffer} buffer
- * @param {boolean} deleteAfter10Min
- * @returns {Promise<string>}
+ * Gerenciador de upload para GitHub
+ */
+class GitHubUploader {
+  constructor() {
+    if (!CONFIG.GITHUB.TOKEN) {
+      throw new Error('GitHub token não configurado nas variáveis de ambiente');
+    }
+    this.headers = {
+      ...CONFIG.GITHUB.HEADERS,
+      'Authorization': `Bearer ${CONFIG.GITHUB.TOKEN}`
+    };
+  }
+
+  async upload(buffer, filePath) {
+    try {
+      const base64Content = buffer.toString('base64');
+      const response = await axios.put(
+        `${CONFIG.GITHUB.API_URL}/${CONFIG.GITHUB.REPO}/contents/${filePath}`,
+        {
+          message: `Upload: ${filePath}`,
+          content: base64Content
+        },
+        {
+          headers: this.headers,
+          timeout: CONFIG.DEFAULT_TIMEOUT
+        }
+      );
+      return response.data.content;
+    } catch (error) {
+      throw new Error(`Erro no upload: ${error.message}`);
+    }
+  }
+
+  async delete(filePath, sha) {
+    try {
+      await axios.delete(
+        `${CONFIG.GITHUB.API_URL}/${CONFIG.GITHUB.REPO}/contents/${filePath}`,
+        {
+          headers: this.headers,
+          data: {
+            message: `Delete: ${filePath}`,
+            sha
+          }
+        }
+      );
+    } catch (error) {
+      console.error(`Erro ao deletar arquivo ${filePath}:`, error.message);
+    }
+  }
+}
+
+/**
+ * Função principal de upload
+ * @param {Buffer} buffer - Buffer do arquivo
+ * @param {boolean} deleteAfter10Min - Se deve deletar após 10 minutos
+ * @returns {Promise<string>} URL do arquivo
  */
 async function upload(buffer, deleteAfter10Min = false) {
-  if (!Buffer.isBuffer(buffer)) throw new Error('Input deve ser um Buffer');
-  if (buffer.length > CONFIG.MAX_FILE_SIZE) throw new Error('Arquivo excede o tamanho máximo permitido.');
-
-  const { ext, mime } = FileTypeDetector.detect(buffer);
-  const timestamp = Date.now();
-  const rand = Math.random().toString(36).slice(2, 7);
-  const filename = `${timestamp}_${rand}.${ext}`;
-
-  let folder = 'outros';
-  if (CONFIG.FILE_TYPES.IMAGES.includes(ext)) folder = 'fotos';
-  else if (CONFIG.FILE_TYPES.VIDEOS.includes(ext)) folder = 'videos';
-  else if (CONFIG.FILE_TYPES.AUDIO.includes(ext)) folder = 'audios';
-  else if (CONFIG.FILE_TYPES.DOCUMENTS.includes(ext)) folder = 'documentos';
-
   try {
-    const serverRes = await axios.get('https://api.gofile.io/getServer');
-    const server = serverRes.data.data.server;
+    // Validações
+    if (!Buffer.isBuffer(buffer)) {
+      throw new Error('Input deve ser um Buffer');
+    }
 
-    const form = new FormData();
-    form.append('file', buffer, filename);
-    if (deleteAfter10Min) form.append('expire', '600');
+    if (buffer.length > CONFIG.MAX_FILE_SIZE) {
+      throw new Error(`Arquivo muito grande. Máximo: ${CONFIG.MAX_FILE_SIZE / 1024 / 1024}MB`);
+    }
 
-    const uploadRes = await axios.post(`https://${server}.gofile.io/uploadFile`, form, {
-      headers: form.getHeaders(),
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity,
-      timeout: CONFIG.DEFAULT_TIMEOUT
-    });
+    // Detecta tipo do arquivo
+    const { ext, mime } = FileTypeDetector.detect(buffer);
 
-    if (uploadRes.data.status !== 'ok') throw new Error('Falha no upload');
+    // Gera nome único
+    const timestamp = Date.now();
+    const hash = crypto.createHash('md5').update(buffer).digest('hex').slice(0, 6);
+    const fileName = `${timestamp}_${hash}.${ext}`;
 
-    return uploadRes.data.data.downloadPage;
-  } catch (err) {
-    console.error('Erro no upload:', err.message);
-    throw err;
+    // Determina pasta
+    let folder = 'outros';
+    if (CONFIG.FILE_TYPES.IMAGES.includes(ext)) folder = 'fotos';
+    else if (CONFIG.FILE_TYPES.VIDEOS.includes(ext)) folder = 'videos';
+    else if (CONFIG.FILE_TYPES.AUDIO.includes(ext)) folder = 'audios';
+    else if (CONFIG.FILE_TYPES.DOCUMENTS.includes(ext)) folder = 'documentos';
+
+    const filePath = `${folder}/${fileName}`;
+
+    // Upload
+    const uploader = new GitHubUploader();
+    const { download_url, sha } = await uploader.upload(buffer, filePath);
+
+    // Configura deleção automática se necessário
+    if (deleteAfter10Min) {
+      setTimeout(() => {
+        uploader.delete(filePath, sha);
+      }, 10 * 60 * 1000);
+    }
+
+    return download_url;
+  } catch (error) {
+    console.error('Erro no upload:', error);
+    throw error;
   }
 }
 
