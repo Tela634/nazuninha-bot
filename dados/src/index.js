@@ -154,6 +154,15 @@ try {
  };
  //FIM :)
  
+ //BOT OFF
+const botStateFile = __dirname + '/../database/botState.json';
+let botState = { status: 'on' };
+if (fs.existsSync(botStateFile)) {
+  botState = JSON.parse(fs.readFileSync(botStateFile));
+};
+if (botState.status === 'off' && !isOwner) return;
+
+console.log(info);
  //LOGS AQUI BBZIN <3
  console.log(`=========================================`);
  console.log(`${isCmd ? '⚒️ Comando' : '🗨️ Mensagem'} ${isGroup ? 'em grupo 👥' : 'no privado 👤'}`);
@@ -213,14 +222,6 @@ if (globalBlocks.users && (globalBlocks.users[sender.split('@')[0]] || globalBlo
 if (isCmd && globalBlocks.commands && globalBlocks.commands[command]) {
   return reply(`🚫 O comando *${command}* está bloqueado globalmente!\nMotivo: ${globalBlocks.commands[command].reason}`);
 };
-
-//BOT OFF
-const botStateFile = __dirname + '/../database/botState.json';
-let botState = { status: 'on' };
-if (fs.existsSync(botStateFile)) {
-  botState = JSON.parse(fs.readFileSync(botStateFile));
-};
-if (botState.status === 'off' && !isOwner) return;
 
  switch(command) {
   //INTELIGENCIA ARTIFICIAL
