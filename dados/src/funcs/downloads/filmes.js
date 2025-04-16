@@ -2,9 +2,11 @@
  * Sistema de Busca e Download de Filmes Otimizado
  * Desenvolvido por Hiudy
  * Versão: 2.0.0
+ * Modificado para usar Axios e LinkedOM
  */
 
-const swiftly = require('swiftly');
+const axios = require('axios');
+const { parseHTML } = require('linkedom');
 
 // Configurações
 const CONFIG = {
@@ -19,7 +21,7 @@ const CONFIG = {
         "AIzaSyB1wjSU3NfUmc32bus34j9BmSDBKTKaEYg",
         "AIzaSyBm0L9hwLyZ9jhV3HGVcNKQ6znG7_zbSoU",
         "AIzaSyAm_B1DHAK_kCVWHPACK1XAe8sVry1Fj0U"
-    ]
+      ]
     },
     TIMEOUT: 30000
   },
@@ -33,9 +35,9 @@ const CONFIG = {
   },
   SCRAPE: {
     SELECTORS: {
-      VIDEO_URL: '#tokyvideo_player@src',
-      IMAGE: '#tokyvideo_player@poster',
-      NAME: '#tokyvideo_player@data-title'
+      VIDEO_URL: '#tokyvideo_player',
+      IMAGE: '#tokyvideo_player',
+      NAME: '#tokyvideo_player'
     }
   }
 };
@@ -117,6 +119,9 @@ class SearchClient {
     }
     
     this.keyManager = new APIKeyManager(CONFIG.API.GOOGLE.KEYS);
+    this.axiosInstance = axios.create({
+      timeout: CONFIG.API.TIMEOUT
+    });
   }
 
   async search(query, attempt = 1) {
@@ -127,17 +132,16 @@ class SearchClient {
 
       const currentKey = this.keyManager.getCurrentKey();
       
-      const response = await swiftly.get(CONFIG.API.GOOGLE.BASE_URL, {
+      const response = await this.axiosInstance.get(CONFIG.API.GOOGLE.BASE_URL, {
         params: {
           q: query,
           key: currentKey,
           cx: CONFIG.API.GOOGLE.CX
-        },
-        timeout: CONFIG.API.TIMEOUT
+        }
       });
 
-      if (response.items) {
-        return response.items.map(item => ({
+      if (response.data.items) {
+        return response.data.items.map(item => ({
           title: item.title,
           link: item.link
         }));
@@ -161,17 +165,23 @@ class SearchClient {
 
   async scrapeVideo(url) {
     try {
-      const videoData = await swiftly.scrape(url, CONFIG.SCRAPE.SELECTORS);
+      const response = await this.axiosInstance.get(url);
+      const { document } = parseHTML(response.data);
+      
+      const videoElement = document.querySelector(CONFIG.SCRAPE.SELECTORS.VIDEO_URL);
+      if (!videoElement) return null;
 
-      if (!videoData.videoUrl?.[0] || !videoData.img?.[0] || !videoData.name?.[0]) {
+      const videoData = {
+        img: videoElement.getAttribute('poster'),
+        name: videoElement.getAttribute('data-title'),
+        url: videoElement.getAttribute('src')
+      };
+
+      if (!videoData.url || !videoData.img || !videoData.name) {
         return null;
       }
 
-      return {
-        img: videoData.img[0],
-        name: videoData.name[0],
-        url: videoData.videoUrl[0]
-      };
+      return videoData;
     } catch (error) {
       console.error('Erro ao extrair dados do vídeo:', error);
       return null;
