@@ -165,7 +165,7 @@ if (botState.status === 'off' && !isOwner) return;
  console.log(info);
  console.log(info.message);
  if(type == 'pollUpdateMessage') {
- console.log(info.message.vote);
+ reply(JSON.stringify(info, null, '\t'));
  };
  //LOGS AQUI BBZIN <3
  console.log(`=========================================`);
