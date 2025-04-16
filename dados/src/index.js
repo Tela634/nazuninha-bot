@@ -164,6 +164,9 @@ if (botState.status === 'off' && !isOwner) return;
  console.log(type);
  console.log(info);
  console.log(info.message);
+ if(type == 'pollUpdateMessage') {
+ console.log(info.message.vote);
+ };
  //LOGS AQUI BBZIN <3
  console.log(`=========================================`);
  console.log(`${isCmd ? '⚒️ Comando' : '🗨️ Mensagem'} ${isGroup ? 'em grupo 👥' : 'no privado 👤'}`);
