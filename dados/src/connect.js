@@ -51,7 +51,12 @@ class ConnectionManager {
       const authDir = path.join(this.baseAuthDir, id);
       const { state, saveCreds } = await useMultiFileAuthState(authDir);
       const { version } = await fetchLatestBaileysVersion();
-      const store = makeInMemoryStore({});
+      const store = makeInMemoryStore({
+          logger: pino().child({
+          level: 'silent',
+          stream: 'store',
+        }),
+      });
       
       async function getMessage(key) {
           const msg = await store.loadMessage(key.remoteJid, key.id);
