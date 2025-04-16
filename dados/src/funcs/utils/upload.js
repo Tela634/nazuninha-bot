@@ -77,6 +77,7 @@ async function upload(buffer, deleteAfter10Min = false) {
     maxBodyLength: Infinity
   });
 
+ console.log(response);
   if (!response.data.success) throw new Error('Falha no upload');
 
   return {
