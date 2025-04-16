@@ -1,3 +1,13 @@
+/**
+ * Menu de brincadeiras e jogos
+ * @module menubn
+ * @param {string} prefix - Prefixo dos comandos do bot
+ * @param {string} [botName="MeuBot"] - Nome do bot
+ * @param {string} [userName="Usuário"] - Nome do usuário
+ * @returns {Promise<string>} Menu formatado com comandos de diversão
+ * @description Lista todos os comandos de brincadeiras, incluindo jogos,
+ * interações entre usuários, brincadeiras com gêneros específicos e rankings
+ */
 async function menubn(prefix, botName = "MeuBot", userName = "Usuário") {
   return `
 ╭─🌸 *${botName}*

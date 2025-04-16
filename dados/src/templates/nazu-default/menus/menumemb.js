@@ -1,3 +1,13 @@
+/**
+ * Menu de comandos gerais para membros
+ * @module menumemb
+ * @param {string} prefix - Prefixo dos comandos do bot
+ * @param {string} [botName="MeuBot"] - Nome do bot
+ * @param {string} [userName="Usuário"] - Nome do usuário
+ * @returns {Promise<string>} Menu formatado com comandos para membros
+ * @description Lista todos os comandos disponíveis para membros comuns,
+ * incluindo verificação de status, rankings e estatísticas do grupo/bot
+ */
 async function menuMembros(prefix, botName = "MeuBot", userName = "Usuário") {
   return `
 ╭─🌸 *${botName}*

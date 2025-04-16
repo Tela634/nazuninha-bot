@@ -1,3 +1,16 @@
+/**
+ * Sistema de textos e mensagens do bot
+ * @module basic
+ * @description Centraliza todas as mensagens e respostas do bot,
+ * incluindo mensagens de erro, avisos e feedback para o usuário
+ */
+
+/**
+ * Arrays de mensagens para diferentes situações
+ * Cada array contém variações de mensagens para tornar o bot mais dinâmico
+ */
+
+/** @type {string[]} Mensagens de aguarde */
 const aguardeArray = [
   "⌛ Preparando tudo com carinho... só um instante, tá bem?",
   "⏳ Quase lá! Obrigado por esperar~",
@@ -11,6 +24,7 @@ const aguardeArray = [
   "✨ Caprichando nos detalhes... obrigado por esperar!"
 ];
 
+/** @type {string[]} Mensagens de erro */
 const erroArray = [
   "✖️ Ah não... algo deu errado... desculpa mesmo!",
   "❌ Ops... não era pra acontecer isso...",
@@ -20,6 +34,7 @@ const erroArray = [
   "⚠️ Parece que algo não funcionou direito... tente mais uma vez!"
 ];
 
+/** @type {string[]} Mensagens de permissão de admin */
 const adminArray = [
   "🚫 Esse comando é só pros adminzinhos do grupo~",
   "⚠️ Você precisa ser admin pra fazer isso, viu?",
@@ -28,6 +43,7 @@ const adminArray = [
   "⚡ Comando reservado para administradores, tá bem?"
 ];
 
+/** @type {string[]} Mensagens de permissão de dono */
 const donoArray = [
   "👑 Esse comando é só pro dono do bot!",
   "🚫 Apenas o dono supremo pode usar esse comando!",
@@ -36,6 +52,7 @@ const donoArray = [
   "⚡ Acesso negado: comando exclusivo do dono!"
 ];
 
+/** @type {string[]} Mensagens de uso em grupo */
 const grupoArray = [
   "👥 Esse comando é pra usar num grupo!",
   "🚫 Só funciona em grupinhos animados, sabia?",
@@ -44,6 +61,7 @@ const grupoArray = [
   "❗ Comando disponível apenas em grupos!"
 ];
 
+/** @type {string[]} Mensagens de modo brincadeira */
 const modoBrincadeiraArray = [
   "🎈 O modo brincadeira tá desligado... ativa ele primeiro!",
   "⚡ Esse comando precisa que o modo brincadeira esteja ativo!",
@@ -52,6 +70,7 @@ const modoBrincadeiraArray = [
   "🎉 Ativa o modo brincadeira primeiro, tá bom?"
 ];
 
+/** @type {string[]} Mensagens de bot admin */
 const botAdmArray = [
   "🤖 Eu preciso ser admin pra fazer isso!",
   "🚫 Não consigo fazer isso... me dá admin, por favorzinho~",
@@ -60,6 +79,7 @@ const botAdmArray = [
   "⚡ Eu queria te ajudar, mas preciso ser admin antes!"
 ];
 
+/** @type {string[]} Mensagens de uso em privado */
 const privadoArray = [
   "✉️ Esse comando é só no privado, tá bom?",
   "🚫 Manda uma mensagem no meu privado pra usar isso!",
@@ -68,6 +88,7 @@ const privadoArray = [
   "❗ Esse comando é exclusivo no privado, beleza?"
 ];
 
+/** @type {string[]} Mensagens de marcar imagem */
 const marcarImagemArray = [
   "🖼️ Marca uma imagem pra eu poder trabalhar nela, tá?",
   "📸 Ops... você esqueceu de marcar uma imagem!",
@@ -76,6 +97,7 @@ const marcarImagemArray = [
   "✨ Marca uma imagem que eu faço a mágica acontecer~"
 ];
 
+/** @type {string[]} Mensagens de marcar vídeo */
 const marcarVideoArray = [
   "🎥 Marca um vídeo pra eu poder ajudar!",
   "📹 Opa... você não marcou nenhum vídeo!",
@@ -84,6 +106,7 @@ const marcarVideoArray = [
   "📽️ Sem vídeo marcado, sem diversão... marca um pra mim?"
 ];
 
+/** @type {string[]} Mensagens de marcar mídia */
 const marcarMidiaArray = [
   "📁 Marca uma mídia (foto, vídeo, áudio ou documento) pra eu ver!",
   "📦 Opa... você esqueceu de marcar algo! Pode ser foto, vídeo, áudio ou doc~",
@@ -92,6 +115,7 @@ const marcarMidiaArray = [
   "📂 Esse comando só funciona com mídias marcadas, tá bom?"
 ];
 
+/** @type {string[]} Mensagens de digitar link */
 const digitarLinkArray = [
   "🔗 Opa... cadê o link? Preciso dele pra continuar!",
   "📎 Você esqueceu de colocar o link! Cola ele aqui pra mim~",
@@ -100,6 +124,7 @@ const digitarLinkArray = [
   "✨ Manda o link que eu faço a mágica acontecer~"
 ];
 
+/** @type {string[]} Mensagens de digitar nome */
 const digitarNomeArray = [
   "📛 Opa... qual é o nome? Preciso dele pra continuar!",
   "🏷️ Você esqueceu de digitar o nome! Escreve ele pra mim~",
@@ -108,6 +133,7 @@ const digitarNomeArray = [
   "✨ Me diz o nome que eu cuido do resto~"
 ];
 
+/** @type {string[]} Mensagens de digitar nome ou link */
 const digitarNomeOuLinkArray = [
   "📝 Você pode digitar um nome ou colar um link, tá bom?",
   "🔤 Opa... preciso de um nome ou link pra continuar!",
@@ -116,6 +142,7 @@ const digitarNomeOuLinkArray = [
   "🌐🔤 Sem nome/link, sem diversão... me ajuda aí?"
 ];
 
+/** @type {string[]} Mensagens de marcar alguém */
 const marcarAlguemArray = [
   "👤 Ops... você precisa marcar alguém pra eu poder ajudar!",
   "📍 Marca um amiguinho pra gente continuar~",
@@ -127,6 +154,7 @@ const marcarAlguemArray = [
   "💬 Marca o usuário que você quer mencionar, tá bem?"
 ];
 
+/** @type {string[]} Mensagens de marcar figurinha */
 const marcarFigurinhaArray = [
   "💟 Ops... você esqueceu de marcar a figurinha!",
   "🖍️ Marca uma figurinha pra eu poder trabalhar nela~",
@@ -138,6 +166,7 @@ const marcarFigurinhaArray = [
   "🧸 Marca a figurinha fofa que você quer modificar!"
 ];
 
+/** @type {string[]} Mensagens de marcar visualização única */
 const marcarVisualizacaoUnicaArray = [
   "🔒 Ops... marque uma mídia de visualização única (áudio, vídeo ou foto) pra eu poder ajudar!",
   "👀 Esse comando precisa de uma mídia que some depois de vista! Marca ela pra mim~",
@@ -146,6 +175,7 @@ const marcarVisualizacaoUnicaArray = [
   "⏳ Essa magia só funciona com mídias de visualização única, marca aí!"
 ];
 
+/** @type {string[]} Mensagens de premium */
 const precisaSerPremiumArray = [
   "🌟 Opa... esse recurso é exclusivo pra contas/grupos Premium!",
   "💎 Você precisa ser Premium (ou estar num grupo Premium) pra isso!",
@@ -154,6 +184,7 @@ const precisaSerPremiumArray = [
   "🪙 Sem Premium, sem essa diversão... que tal experimentar?"
 ];
 
+/** @type {string[]} Mensagens de digitar nick */
 const digitarNickArray = [
   "🏷️ Opa... qual vai ser o nick? Escreve pra mim!",
   "📛 Me conta como quer ser chamado daqui pra frente~",
@@ -162,6 +193,7 @@ const digitarNickArray = [
   "💬 Digita o novo nome que você quer usar, tá bem?"
 ];
 
+/** @type {string[]} Mensagens de digitar prompt */
 const digitarPromptArray = [
   "💭 O que você quer perguntar? Escreve aí sua dúvida!",
   "🤔 Tô curioso... qual é sua pergunta ou prompt?",
@@ -170,6 +202,7 @@ const digitarPromptArray = [
   "🧠 Me alimenta com seu prompt criativo, por favor~"
 ];
 
+/** @type {((necessarios: string, exemplo: string) => string)[]} Mensagens de formato específico */
 const formatoEspecificoArray = [
   (necessarios, exemplo) => `📌 Você precisa usar: ${necessarios}\n✨ Exemplo: ${exemplo}`,
   (necessarios, exemplo) => `🔣 Formato incorreto!\n✅ Necessário: ${necessarios}\n💡 Tente assim: ${exemplo}`,
@@ -178,6 +211,7 @@ const formatoEspecificoArray = [
   (necessarios, exemplo) => `💬 Tem que conter:\n🔮 ${necessarios}\n🌰 Assim ó: ${exemplo}`
 ];
 
+/** @type {((tipo: string) => string)[]} Mensagens de marcar mensagem */
 const marcarMensagemArray = [
   (tipo) => `💬 Ops! Você precisa marcar ${tipo} pra eu poder ajudar!`,
   (tipo) => `🔍 Cadê a mensagem? Marca ${tipo} que eu cuido do resto~`,
@@ -188,11 +222,21 @@ const marcarMensagemArray = [
   (tipo) => `👀 Tá faltando ${tipo} marcado... qual será?`
 ];
 
+/**
+ * Seleciona uma mensagem aleatória de um array
+ * @param {Array} arr Array de mensagens
+ * @param {...any} args Argumentos adicionais para mensagens funcionais
+ * @returns {string} Mensagem selecionada
+ */
 function random(arr, ...args) {
   const item = arr[Math.floor(Math.random() * arr.length)];
   return typeof item === 'function' ? item(...args) : item;
 }
 
+/**
+ * Exporta funções para gerar mensagens aleatórias
+ * @exports basic
+ */
 module.exports = {
   aguarde: () => random(aguardeArray),
   erro: () => random(erroArray),

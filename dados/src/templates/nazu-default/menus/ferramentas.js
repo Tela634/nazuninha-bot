@@ -1,4 +1,14 @@
-async function menuMembros(prefix, botName = "MeuBot", userName = "Usuário") {
+/**
+ * Menu de ferramentas utilitárias
+ * @module ferramentas
+ * @param {string} prefix - Prefixo dos comandos do bot
+ * @param {string} [botName="MeuBot"] - Nome do bot
+ * @param {string} [userName="Usuário"] - Nome do usuário
+ * @returns {Promise<string>} Menu formatado com comandos de ferramentas
+ * @description Lista todas as ferramentas utilitárias disponíveis,
+ * incluindo geração de nicks, captura de tela, upload de arquivos e encurtador de links
+ */
+async function menuFerramentas(prefix, botName = "MeuBot", userName = "Usuário") {
   return `
 ╭─🌸 *${botName}*
 │ Oii, *${userName}*
@@ -17,6 +27,6 @@ async function menuMembros(prefix, botName = "MeuBot", userName = "Usuário") {
 │    → Encurtar links
 ╰──────────────╯
 `;
-};
+}
 
-module.exports = menuMembros;
+module.exports = menuFerramentas;

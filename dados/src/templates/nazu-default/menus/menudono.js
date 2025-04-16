@@ -1,3 +1,13 @@
+/**
+ * Menu exclusivo para o dono do bot
+ * @module menudono
+ * @param {string} prefix - Prefixo dos comandos do bot
+ * @param {string} [botName="MeuBot"] - Nome do bot
+ * @param {string} [userName="Usuário"] - Nome do usuário
+ * @returns {Promise<string>} Menu formatado com comandos do dono
+ * @description Lista todos os comandos disponíveis apenas para o dono do bot,
+ * incluindo configurações do bot e funções administrativas globais
+ */
 async function menuDono(prefix, botName = "MeuBot", userName = "Usuário") {
   return `
 ╭─🌸 *${botName}*

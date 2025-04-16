@@ -1,3 +1,11 @@
+/**
+ * Menu principal do bot que lista todos os submenus disponíveis
+ * @module menu
+ * @param {string} prefix - Prefixo dos comandos do bot
+ * @param {string} [botName="MeuBot"] - Nome do bot
+ * @param {string} [userName="Usuário"] - Nome do usuário
+ * @returns {Promise<string>} Menu formatado com lista de submenus
+ */
 async function menu(prefix, botName = "MeuBot", userName = "Usuário") {
   return `
 ╭─🌸 *${botName}*
@@ -25,6 +33,6 @@ async function menu(prefix, botName = "MeuBot", userName = "Usuário") {
 │    → Criar figurinhas
 ╰──────────────╯
 `;
-};
+}
 
 module.exports = menu;

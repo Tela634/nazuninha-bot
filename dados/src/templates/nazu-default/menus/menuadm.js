@@ -1,3 +1,13 @@
+/**
+ * Menu de administração de grupo
+ * @module menuadm
+ * @param {string} prefix - Prefixo dos comandos do bot
+ * @param {string} [botName="MeuBot"] - Nome do bot
+ * @param {string} [userName="Usuário"] - Nome do usuário
+ * @returns {Promise<string>} Menu formatado com comandos administrativos
+ * @description Lista todos os comandos disponíveis para administradores de grupo,
+ * incluindo gerenciamento de membros, configurações do grupo e recursos de moderação
+ */
 async function menuadm(prefix, botName = "MeuBot", userName = "Usuário") {
   return `
 ╭─🌸 *${botName}*
