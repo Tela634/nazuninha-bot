@@ -19,7 +19,7 @@ const CONFIG = {
         "AIzaSyB1wjSU3NfUmc32bus34j9BmSDBKTKaEYg",
         "AIzaSyBm0L9hwLyZ9jhV3HGVcNKQ6znG7_zbSoU",
         "AIzaSyAm_B1DHAK_kCVWHPACK1XAe8sVry1Fj0U"
-    ];
+    ]
     },
     TIMEOUT: 30000
   },
