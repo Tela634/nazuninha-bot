@@ -4,7 +4,7 @@
 // Caso for usar deixe o caralho dos créditos 
 // <3
 
-const { downloadContentFromMessage, Mimetype } = require('baileys');
+const { downloadContentFromMessage, Mimetype, getAggregateVotesInPollMessage } = require('baileys');
 const { exec, spawn, execSync } = require('child_process');
 const { reportError, youtube, tiktok, pinterest, igdl, sendSticker, FilmesDL, styleText, emojiMix, upload, mcPlugin, tictactoe, rpg, toolsJson, vabJson, apkMod, google }  = require(__dirname+'/funcs/exports.js');
 const axios = require('axios');
@@ -163,6 +163,7 @@ if (fs.existsSync(botStateFile)) {
 if (botState.status === 'off' && !isOwner) return;
 
 console.log(info);
+console.log(getAggregateVotesInPollMessage(info);
  //LOGS AQUI BBZIN <3
  console.log(`=========================================`);
  console.log(`${isCmd ? '⚒️ Comando' : '🗨️ Mensagem'} ${isGroup ? 'em grupo 👥' : 'no privado 👤'}`);
