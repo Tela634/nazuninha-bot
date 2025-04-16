@@ -53,7 +53,7 @@ class ConnectionManager {
       const { version } = await fetchLatestBaileysVersion();
       const store = makeInMemoryStore({});
       
-      async function getMessage(key) => {
+      async function getMessage(key) {
           const msg = await store.loadMessage(key.remoteJid, key.id);
           return msg?.message || proto.Message.fromObject({});
       };
