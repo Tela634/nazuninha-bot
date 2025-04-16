@@ -135,7 +135,7 @@ class ConnectionManager {
       await this.handleConnectionUpdate(connection, lastDisconnect, id, socket);
     });
     
-    socket.ev.on('messages.update', event => {
+    socket.ev.on('messages.update', async event => {
     for(const { key, update } of event) {
         if(update.pollUpdates) {
             const pollCreation = await this.getMessage(key)
