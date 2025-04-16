@@ -161,9 +161,9 @@ if (fs.existsSync(botStateFile)) {
   botState = JSON.parse(fs.readFileSync(botStateFile));
 };
 if (botState.status === 'off' && !isOwner) return;
-
-console.log(info);
-console.log(getAggregateVotesInPollMessage(info);
+ console.log(type);
+ console.log(info);
+ console.log(info.message);
  //LOGS AQUI BBZIN <3
  console.log(`=========================================`);
  console.log(`${isCmd ? '⚒️ Comando' : '🗨️ Mensagem'} ${isGroup ? 'em grupo 👥' : 'no privado 👤'}`);
