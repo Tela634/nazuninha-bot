@@ -1,49 +1,49 @@
 /**
- * Sistema de Download de APK Mod Otimizado
+ * Sistema de Busca e Download de Filmes Otimizado
  * Desenvolvido por Hiudy
  * Versão: 2.0.0
+ * Modificado para usar Axios e LinkedOM
  */
 
 const axios = require('axios');
-const { DOMParser } = require('linkedom');
+const { parseHTML } = require('linkedom');
 
 // Configurações
 const CONFIG = {
   API: {
-    BASE_URL: 'https://apkmodct.com',
-    TIMEOUT: 30000,
-    HEADERS: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-      'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7'
-    }
+    GOOGLE: {
+      BASE_URL: 'https://www.googleapis.com/customsearch/v1',
+      CX: '32a7e8cb9ffc24cd5',
+      KEYS: [
+        "AIzaSyD51LedjJnOulDkA6u8nfmt17cnIlJ7igc",
+        "AIzaSyDbQwjgQforqkA-cHt0omRNX4OQsJ3ocvg",
+        "AIzaSyA9wPFHMwnkaBLpnLTP9d8lgEoHAsISQN0",
+        "AIzaSyB1wjSU3NfUmc32bus34j9BmSDBKTKaEYg",
+        "AIzaSyBm0L9hwLyZ9jhV3HGVcNKQ6znG7_zbSoU",
+        "AIzaSyAm_B1DHAK_kCVWHPACK1XAe8sVry1Fj0U"
+      ]
+    },
+    TIMEOUT: 30000
   },
   CACHE: {
     MAX_SIZE: 100,
-    EXPIRE_TIME: 30 * 60 * 1000 // 30 minutos
+    EXPIRE_TIME: 60 * 60 * 1000 // 1 hora
   },
   RETRY: {
     MAX_ATTEMPTS: 3,
     DELAY: 1000
   },
-  SELECTORS: {
-    SEARCH: {
-      POST: 'div.post a',
-      IMAGE: 'figure.home-icon img'
-    },
-    POST: {
-      DESCRIPTION: 'meta[name="description"]',
-      TABLE: 'table.table-bordered tr',
-      MAIN_LINK: 'div.main-pic a'
-    },
-    DOWNLOAD: {
-      LINK: 'div.col-xs-12 a'
+  SCRAPE: {
+    SELECTORS: {
+      VIDEO_URL: '#tokyvideo_player',
+      IMAGE: '#tokyvideo_player',
+      NAME: '#tokyvideo_player'
     }
   }
 };
 
 // Cache para resultados
-class APKCache {
+class MovieCache {
   constructor() {
     this.cache = new Map();
   }
@@ -80,163 +80,163 @@ class APKCache {
   }
 }
 
-// Parser de APK
-class APKParser {
-  constructor() {
-    this.parser = new DOMParser();
+// Gerenciador de API Keys
+class APIKeyManager {
+  constructor(keys) {
+    this.keys = keys;
+    this.currentIndex = 0;
+    this.failedKeys = new Set();
   }
 
-  parseDocument(html) {
-    return this.parser.parseFromString(html, 'text/html');
+  getCurrentKey() {
+    return this.keys[this.currentIndex];
   }
 
-  parseSearchResults(document) {
-    const postElement = document.querySelector(CONFIG.SELECTORS.SEARCH.POST);
-    if (!postElement) {
-      throw new Error('Nenhum resultado encontrado');
-    }
-
-    return {
-      url: postElement.href,
-      title: postElement.title,
-      image: document.querySelector(CONFIG.SELECTORS.SEARCH.IMAGE)?.src || 'não encontrada'
-    };
+  markKeyAsFailed(key) {
+    this.failedKeys.add(key);
   }
 
-  parsePostDetails(document) {
-    const description = document.querySelector(CONFIG.SELECTORS.POST.DESCRIPTION)?.content || 'não disponível';
-    const details = this.parseDetailsTable(document);
-    const mainPicUrl = document.querySelector(CONFIG.SELECTORS.POST.MAIN_LINK)?.href;
-
-    if (!mainPicUrl) {
-      throw new Error('Nenhum link principal encontrado');
-    }
-
-    return { description, details, mainPicUrl };
+  getNextKey() {
+    this.currentIndex = (this.currentIndex + 1) % this.keys.length;
+    return this.getCurrentKey();
   }
 
-  parseDetailsTable(document) {
-    const details = {};
-    document.querySelectorAll(CONFIG.SELECTORS.POST.TABLE).forEach(row => {
-      const key = row.querySelector('th')?.textContent.trim().toLowerCase();
-      const value = row.querySelector('td')?.textContent.trim();
-      if (key && value) details[key] = value;
-    });
-    return details;
+  hasAvailableKeys() {
+    return this.failedKeys.size < this.keys.length;
   }
 
-  parseDownloadLink(document) {
-    const downloadUrl = document.querySelector(CONFIG.SELECTORS.DOWNLOAD.LINK)?.href;
-    if (!downloadUrl) {
-      throw new Error('Nenhum link de download encontrado');
-    }
-    return downloadUrl;
+  resetFailedKeys() {
+    this.failedKeys.clear();
+    this.currentIndex = 0;
   }
 }
 
-// Cliente APK
-class APKClient {
+// Cliente de Busca
+class SearchClient {
   constructor() {
-    this.parser = new APKParser();
+    if (!CONFIG.API.GOOGLE.KEYS.length) {
+      throw new Error('Nenhuma chave de API configurada');
+    }
+    
+    this.keyManager = new APIKeyManager(CONFIG.API.GOOGLE.KEYS);
+    this.axiosInstance = axios.create({
+      timeout: CONFIG.API.TIMEOUT
+    });
   }
 
-  async request(url, attempt = 1) {
+  async search(query, attempt = 1) {
     try {
-      const response = (await axios.get(url, {
-        timeout: CONFIG.API.TIMEOUT,
-        headers: CONFIG.API.HEADERS
-      })).data;
-      return this.parser.parseDocument(response);
-    } catch (error) {
-      if (attempt < CONFIG.RETRY.MAX_ATTEMPTS) {
-        await new Promise(resolve => setTimeout(resolve, CONFIG.RETRY.DELAY * attempt));
-        return this.request(url, attempt + 1);
+      if (!this.keyManager.hasAvailableKeys()) {
+        throw new Error('Todas as chaves de API foram esgotadas');
       }
+
+      const currentKey = this.keyManager.getCurrentKey();
+      
+      const response = await this.axiosInstance.get(CONFIG.API.GOOGLE.BASE_URL, {
+        params: {
+          q: query,
+          key: currentKey,
+          cx: CONFIG.API.GOOGLE.CX
+        }
+      });
+
+      if (response.data.items) {
+        return response.data.items.map(item => ({
+          title: item.title,
+          link: item.link
+        }));
+      }
+
+      return [];
+    } catch (error) {
+      console.error(`Erro com a chave de API:`, error.message);
+      
+      this.keyManager.markKeyAsFailed(this.keyManager.getCurrentKey());
+      
+      if (attempt < CONFIG.RETRY.MAX_ATTEMPTS && this.keyManager.hasAvailableKeys()) {
+        await new Promise(resolve => setTimeout(resolve, CONFIG.RETRY.DELAY * attempt));
+        this.keyManager.getNextKey();
+        return this.search(query, attempt + 1);
+      }
+      
       throw error;
     }
   }
 
-  async search(query) {
-    const searchUrl = `${CONFIG.API.BASE_URL}/?s=${encodeURIComponent(query)}`;
-    const document = await this.request(searchUrl);
-    return this.parser.parseSearchResults(document);
-  }
+  async scrapeVideo(url) {
+    try {
+      const response = await this.axiosInstance.get(url);
+      const { document } = parseHTML(response.data);
+      
+      const videoElement = document.querySelector(CONFIG.SCRAPE.SELECTORS.VIDEO_URL);
+      if (!videoElement) return null;
 
-  async getPostDetails(url) {
-    const document = await this.request(url);
-    return this.parser.parsePostDetails(document);
-  }
+      const videoData = {
+        img: videoElement.getAttribute('poster'),
+        name: videoElement.getAttribute('data-title'),
+        url: videoElement.getAttribute('src')
+      };
 
-  async getDownloadLink(url) {
-    const document = await this.request(url);
-    return this.parser.parseDownloadLink(document);
-  }
+      if (!videoData.url || !videoData.img || !videoData.name) {
+        return null;
+      }
 
-  formatDetails(details) {
-    return {
-      name: details['name'] || 'não disponível',
-      updated: details['updated'] || 'não disponível',
-      version: details['version'] || 'não disponível',
-      category: details['category'] || 'não disponível',
-      modinfo: details['mod info'] || 'não disponível',
-      size: details['size'] || 'não disponível',
-      rate: details['rate'] || 'não disponível',
-      requires: details['requires android'] || 'não disponível',
-      developer: details['developer'] || 'não disponível',
-      googleplay: details['google play'] || 'não disponível',
-      downloads: details['downloads'] || 'não disponível'
-    };
+      return videoData;
+    } catch (error) {
+      console.error('Erro ao extrair dados do vídeo:', error);
+      return null;
+    }
   }
 }
 
 // Cache e cliente instanciados uma única vez
-const cache = new APKCache();
-const client = new APKClient();
+const cache = new MovieCache();
+const client = new SearchClient();
 
 /**
- * Busca e obtém informações de APK mod
- * @param {string} searchText - Termo de busca
- * @returns {Promise<Object>} Informações do APK
+ * Busca filmes e séries
+ * @param {string} texto - Termo de busca
+ * @returns {Promise<Object|null>} Informações do vídeo
  */
-async function apkMod(searchText) {
+async function Filmes(texto) {
   try {
-    if (!searchText || typeof searchText !== 'string') {
-      return { error: 'Termo de busca inválido' };
+    if (!texto || typeof texto !== 'string') {
+      console.log('Termo de busca inválido');
+      return null;
     }
 
     // Verifica cache
-    const cached = cache.get(searchText);
+    const cached = cache.get(texto);
     if (cached) return cached;
 
     // Busca resultados
-    const searchResult = await client.search(searchText);
-    
-    // Obtém detalhes do post
-    const { description, details, mainPicUrl } = await client.getPostDetails(searchResult.url);
-    
-    // Obtém link de download
-    const downloadUrl = await client.getDownloadLink(mainPicUrl);
+    const results = await client.search(texto);
+    if (results.length === 0) {
+      console.log('Nenhum resultado encontrado');
+      return null;
+    }
 
-    const result = {
-      title: searchResult.title || 'sem título',
-      description,
-      image: searchResult.image,
-      details: client.formatDetails(details),
-      download: downloadUrl
-    };
+    // Procura vídeos nos resultados
+    for (const result of results) {
+      if (result.link.includes('/video/')) {
+        const videoData = await client.scrapeVideo(result.link);
+        if (videoData) {
+          // Salva no cache
+          cache.set(texto, videoData);
+          return videoData;
+        }
+      }
+    }
 
-    // Salva no cache
-    cache.set(searchText, result);
-
-    return result;
+    console.log('Nenhum vídeo encontrado');
+    return null;
   } catch (error) {
-    console.error('Erro ao buscar APK:', error);
-    return {
-      error: error.message === 'Nenhum resultado encontrado'
-        ? 'Nenhum resultado encontrado'
-        : 'Ocorreu um erro ao buscar o APK'
-    };
+    console.error('Erro ao buscar filme:', error);
+    return null;
+  } finally {
+    // Reseta as chaves falhadas para a próxima busca
+    client.keyManager.resetFailedKeys();
   }
 }
 
-module.exports = apkMod;
+module.exports = Filmes;
