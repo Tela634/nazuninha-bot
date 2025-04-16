@@ -10,7 +10,8 @@ const {
   fetchLatestBaileysVersion,
   DisconnectReason,
   proto,
-  makeInMemoryStore
+  makeInMemoryStore,
+  getAggregateVotesInPollMessage
 } = require('baileys');
 const NodeCache = require('node-cache');
 const axios = require('axios');
@@ -51,7 +52,14 @@ class ConnectionManager {
       const { state, saveCreds } = await useMultiFileAuthState(authDir);
       const { version } = await fetchLatestBaileysVersion();
       const store = makeInMemoryStore({});
-
+      
+      async function getMessage(key) => {
+          const msg = await store.loadMessage(key.remoteJid, key.id);
+          return msg?.message || proto.Message.fromObject({});
+      };
+      
+      this.getMessage = getMessage;
+      
       const socket = makeWASocket({
         version,
         auth: {
@@ -83,10 +91,7 @@ class ConnectionManager {
           }
           return msg;
         },
-        getMessage: async (key) => {
-          const msg = await store.loadMessage(key.remoteJid, key.id);
-          return msg?.message || proto.Message.fromObject({});
-        },
+        getMessage,
         browser: ['Ubuntu', 'Edge', '110.0.1587.56']
       });
 
@@ -129,7 +134,25 @@ class ConnectionManager {
     socket.ev.on('connection.update', async ({ connection, lastDisconnect, qr }) => {
       await this.handleConnectionUpdate(connection, lastDisconnect, id, socket);
     });
-  }
+    
+    socket.ev.on('messages.update', event => {
+    for(const { key, update } of event) {
+        if(update.pollUpdates) {
+            const pollCreation = await this.getMessage(key)
+            if(pollCreation) {
+                console.log(
+                    'got poll update, aggregation: ',
+                    getAggregateVotesInPollMessage({
+                        message: pollCreation,
+                        pollUpdates: update.pollUpdates,
+                    })
+                );
+            };
+        };
+    };
+  });
+  
+  };
 
   async handleGroupParticipants(groupId, participants, action, socket) {
     const metadata = await socket.groupMetadata(groupId);
