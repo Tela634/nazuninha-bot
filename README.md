@@ -3,10 +3,10 @@
 [![Last Update](https://img.shields.io/github/last-commit/hiudyy/nazuninha-bot)](https://github.com/hiudyy/nazuninha-bot)
 [![Stars](https://img.shields.io/github/stars/hiudyy/nazuninha-bot?color=yellow&label=Favorites&style=for-the-badge)](https://github.com/hiudyy/nazuninha-bot/stargazers)
 [![License](https://img.shields.io/badge/license-Copyright-red?style=for-the-badge)](LICENSE)
-[![Status](https://img.shields.io/badge/STATUS-ACTIVE-success?style=for-the-badge)](#)
+[![Status](https://img.shields.io/badge/STATUS-ACTIVE-success?style=for-the-badge)](#-)
 
 📊 **Total Visits:**  
-[![Visits Counter](https://count.getloli.com/@nazuninha-bot?name=nazuninha-bot&theme=booru-lewd&padding=8&offset=0&align=top&scale=2&pixelated=1&darkmode=1)](#)
+[![Visits Counter](https://count.getloli.com/@nazuninha-bot?name=nazuninha-bot&theme=booru-lewd&padding=8&offset=0&align=top&scale=2&pixelated=1&darkmode=1)](#-)
 
 ---
 
@@ -21,10 +21,10 @@ Stay in the loop with the latest **Nazuninha Bot** news, updates, and tips! Join
 
 This README is available in multiple languages to make it easy for everyone:
 
-- 🇺🇸 [English](#english)
-- 🇧🇷 [Português (Brasil)](#português-brasil)
-- 🇪🇸 [Español](#español)
-- 🇮🇩 [Bahasa Indonesia](#bahasa-indonesia)
+- 🇺🇸 [English](#-english)
+- 🇧🇷 [Português (Brasil)](#-português-brasil)
+- 🇪🇸 [Español](#-español)
+- 🇮🇩 [Bahasa Indonesia](#-bahasa-indonesia)
 
 ---
 
@@ -46,16 +46,16 @@ This README is available in multiple languages to make it easy for everyone:
 
 ### 📜 **Table of Contents**
 
-- [📋 Before You Start](#before-you-start)
-- [📥 How to Install](#how-to-install)
-- [🚀 Starting the Bot](#starting-the-bot)
-- [🔌 Connecting to WhatsApp](#connecting-to-whatsapp)
-- [🔄 Updating the Bot](#updating-the-bot)
-- [💻 Using Termux (Android)](#using-termux-android)
-- [❓ Help! Something’s Wrong](#help-somethings-wrong)
-- [💖 Support Us](#support-us)
-- [📜 Rules (License)](#rules-license)
-- [👤 Who Made This?](#who-made-this)
+- [📋 Before You Start](#-before-you-start)
+- [📥 How to Install](#-how-to-install)
+- [🚀 Starting the Bot](#-starting-the-bot)
+- [🔌 Connecting to WhatsApp](#-connecting-to-whatsapp)
+- [🔄 Updating the Bot](#-updating-the-bot)
+- [💻 Using Termux (Android)](#-using-termux-android)
+- [❓ Help! Something’s Wrong](#-help-somethings-wrong)
+- [💖 Support Us](#-support-us)
+- [📜 Rules (License)](#-rules-license)
+- [👤 Who Made This?](#-who-made-this)
 
 #### 📋 **Before You Start**
 
@@ -98,7 +98,7 @@ To start **Nazuninha Bot**, type:
 npm start
 ```
 
-The bot will ask how you want to connect to WhatsApp (see [Connecting to WhatsApp](#connecting-to-whatsapp)).
+The bot will ask how you want to connect to WhatsApp (see [Connecting to WhatsApp](#-connecting-to-whatsapp)).
 
 > **First Time?** You’ll need to connect with a QR code or phone number. After that, it’s usually automatic!
 
@@ -187,7 +187,7 @@ This keeps your bot fresh without deleting your settings or chats.
    ```bash
    npm start
    ```  
-   Connect using a QR code or pairing code (see [Connecting to WhatsApp](#connecting-to-whatsapp)).
+   Connect using a QR code or pairing code (see [Connecting to WhatsApp](#-connecting-to-whatsapp)).
 
 **Restarting the Bot**:  
 - If you close Termux or your phone restarts, don’t worry! To start again:  
@@ -204,14 +204,14 @@ This keeps your bot fresh without deleting your settings or chats.
 - To keep the bot online 24/7, don’t close Termux. Use a “keep awake” app or charge your phone to prevent it from sleeping.  
 - If Termux stops, just repeat the restart steps above.
 
-> **Helpful Hint**: If the bot doesn’t start, try `npm install` or check [Help! Something’s Wrong](#help-somethings-wrong).
+> **Helpful Hint**: If the bot doesn’t start, try `npm install` or check [Help! Something’s Wrong](#-help-somethings-wrong).
 
 #### ❓ **Help! Something’s Wrong**
 
 New to bots? Here are answers to common problems:
 
 - **“Command not found” (e.g., git, node)**  
-  - You need to install Git or Node.js. Check [Before You Start](#before-you-start) for links.  
+  - You need to install Git or Node.js. Check [Before You Start](#-before-you-start) for links.  
   - In Termux, try `pkg install git` or `pkg install nodejs`.
 
 - **QR Code Doesn’t Work**  
@@ -282,16 +282,16 @@ O **Nazuninha Bot** é um bot para WhatsApp superlegal, feito com **Node.js** e 
 
 ### 📜 **Índice**
 
-- [📋 Antes de Começar](#antes-de-começar)
-- [📥 Como Instalar](#como-instalar)
-- [🚀 Iniciando o Bot](#iniciando-o-bot)
-- [🔌 Conectando ao WhatsApp](#conectando-ao-whatsapp)
-- [🔄 Atualizando o Bot](#atualizando-o-bot)
-- [💻 Usando no Termux (Android)](#usando-no-termux-android)
-- [❓ Socorro! Algo deu Errado](#socorro-algo-deu-errado)
-- [💖 Apoie o Projeto](#apoie-o-projeto)
-- [📜 Regras (Licença)](#regras-licença)
-- [👤 Quem Fez Isso?](#quem-fez-isso)
+- [📋 Antes de Começar](#-antes-de-começar)
+- [📥 Como Instalar](#-como-instalar)
+- [🚀 Iniciando o Bot](#-iniciando-o-bot)
+- [🔌 Conectando ao WhatsApp](#-conectando-ao-whatsapp)
+- [🔄 Atualizando o Bot](#-atualizando-o-bot)
+- [💻 Usando no Termux (Android)](#-usando-no-termux-android)
+- [❓ Socorro! Algo deu Errado](#-socorro-algo-deu-errado)
+- [💖 Apoie o Projeto](#-apoie-o-projeto)
+- [📜 Regras (Licença)](#-regras-licença)
+- [👤 Quem Fez Isso?](#-quem-fez-isso)
 
 #### 📋 **Antes de Começar**
 
@@ -334,7 +334,7 @@ Para ligar o **Nazuninha Bot**, digite:
 npm start
 ```
 
-Ele vai perguntar como conectar ao WhatsApp (veja [Conectando ao WhatsApp](#conectando-ao-whatsapp)).
+Ele vai perguntar como conectar ao WhatsApp (veja [Conectando ao WhatsApp](#-conectando-ao-whatsapp)).
 
 > **Primeira Vez?** Você vai precisar conectar com QR Code ou número. Depois disso, normalmente é automático!
 
@@ -423,7 +423,7 @@ O **Termux** é um app que roda o **Nazuninha Bot** no seu celular Android. Idea
    ```bash
    npm start
    ```  
-   Conecte com QR Code ou código de pareamento (veja [Conectando ao WhatsApp](#conectando-ao-whatsapp)).
+   Conecte com QR Code ou código de pareamento (veja [Conectando ao WhatsApp](#-conectando-ao-whatsapp)).
 
 **Reiniciando o Bot**:  
 - Se fechar o Termux ou o celular desligar, é fácil voltar:  
@@ -440,14 +440,14 @@ O **Termux** é um app que roda o **Nazuninha Bot** no seu celular Android. Idea
 - Para o bot ficar online 24/7, não feche o Termux. Use um app de “manter acordado” ou deixe o celular carregando para não dormir.  
 - Se parar, é só reiniciar com os passos acima.
 
-> **Dica Esperta**: Se o bot não ligar, tente `npm install` ou veja [Socorro! Algo deu Errado](#socorro-algo-deu-errado).
+> **Dica Esperta**: Se o bot não ligar, tente `npm install` ou veja [Socorro! Algo deu Errado](#-socorro-algo-deu-errado).
 
 #### ❓ **Socorro! Algo deu Errado**
 
 Novo com bots? Aqui estão soluções para problemas comuns:
 
 - **“Comando não encontrado” (ex.: git, node)**  
-  - Você precisa instalar o Git ou Node.js. Veja [Antes de Começar](#antes-de-começar) para links.  
+  - Você precisa instalar o Git ou Node.js. Veja [Antes de Começar](#-antes-de-começar) para links.  
   - No Termux, tente `pkg install git` ou `pkg install nodejs`.
 
 - **QR Code Não Funciona**  
@@ -518,16 +518,16 @@ Gostou? Dê uma ⭐ no GitHub e mostre pros amigos!
 
 ### 📜 **Índice**
 
-- [📋 Antes de Empezar](#antes-de-empezar)
-- [📥 Cómo Instalar](#cómo-instalar)
-- [🚀 Iniciando el Bot](#iniciando-el-bot)
-- [🔌 Conectando a WhatsApp](#conectando-a-whatsapp)
-- [🔄 Actualizando el Bot](#actualizando-el-bot)
-- [💻 Usando Termux (Android)](#usando-termux-android)
-- [❓ ¡Ayuda! Algo salió Mal](#ayuda-algo-salió-mal)
-- [💖 Apóyanos](#apóyanos)
-- [📜 Reglas (Licencia)](#reglas-licencia)
-- [👤 ¿Quién lo Hizo?](#quién-lo-hizo)
+- [📋 Antes de Empezar](#-antes-de-empezar)
+- [📥 Cómo Instalar](#-cómo-instalar)
+- [🚀 Iniciando el Bot](#-iniciando-el-bot)
+- [🔌 Conectando a WhatsApp](#-conectando-a-whatsapp)
+- [🔄 Actualizando el Bot](#-actualizando-el-bot)
+- [💻 Usando Termux (Android)](#-usando-termux-android)
+- [❓ ¡Ayuda! Algo salió Mal](#-ayuda-algo-salió-mal)
+- [💖 Apóyanos](#-apóyanos)
+- [📜 Reglas (Licencia)](#-reglas-licencia)
+- [👤 ¿Quién lo Hizo?](#-quién-lo-hizo)
 
 #### 📋 **Antes de Empezar**
 
@@ -570,7 +570,7 @@ Para encender **Nazuninha Bot**, escribe:
 npm start
 ```
 
-Te pedirá que elijas cómo conectar a WhatsApp (mira [Conectando a WhatsApp](#conectando-a-whatsapp)).
+Te pedirá que elijas cómo conectar a WhatsApp (mira [Conectando a WhatsApp](#-conectando-a-whatsapp)).
 
 > **¿Primera vez?** Necesitarás conectar con un código QR o número. ¡Después suele ser automático!
 
@@ -659,7 +659,7 @@ Esto mantiene el bot al día sin borrar tus ajustes ni chats.
    ```bash
    npm start
    ```  
-   Conecta con código QR o de vinculación (mira [Conectando a WhatsApp](#conectando-a-whatsapp)).
+   Conecta con código QR o de vinculación (mira [Conectando a WhatsApp](#-conectando-a-whatsapp)).
 
 **Reiniciando el Bot**:  
 - Si cierras Termux o el celular se apaga, no pasa nada. Para volver:  
@@ -676,14 +676,14 @@ Esto mantiene el bot al día sin borrar tus ajustes ni chats.
 - Para que el bot esté online 24/7, no cierres Termux. Usa una app de “mantener despierto” o deja el celular cargando para que no duerma.  
 - Si se detiene, repite los pasos de reinicio.
 
-> **Truco**: Si el bot no arranca, prueba `npm install` o mira [¡Ayuda! Algo salió Mal](#ayuda-algo-salió-mal).
+> **Truco**: Si el bot no arranca, prueba `npm install` o mira [¡Ayuda! Algo salió Mal](#-ayuda-algo-salió-mal).
 
 #### ❓ **¡Ayuda! Algo salió Mal**
 
 ¿Nuevo con bots? Resolvemos problemas comunes:
 
 - **“Comando no encontrado” (ej.: git, node)**  
-  - Necesitas instalar Git o Node.js. Mira [Antes de Empezar](#antes-de-empezar) para links.  
+  - Necesitas instalar Git o Node.js. Mira [Antes de Empezar](#-antes-de-empezar) para links.  
   - En Termux, prueba `pkg install git` o `pkg install nodejs`.
 
 - **Código QR No Funciona**  
@@ -754,16 +754,16 @@ Creado con ❤️ por [**Hiudy**](https://github.com/hiudyy).
 
 ### 📜 **Daftar Isi**
 
-- [📋 Sebelum Mulai](#sebelum-mulai)
-- [📥 Cara Pasang](#cara-pasang)
-- [🚀 Menyalakan Bot](#menyalakan-bot)
-- [🔌 Menghubungkan ke WhatsApp](#menghubungkan-ke-whatsapp)
-- [🔄 Memperbarui Bot](#memperbarui-bot)
-- [💻 Pakai Termux (Android)](#pakai-termux-android)
-- [❓ Bantuan! Ada Masalah](#bantuan-ada-masalah)
-- [💖 Dukung Kami](#dukung-kami)
-- [📜 Aturan (Lisensi)](#aturan-lisensi)
-- [👤 Siapa Pembuatnya?](#siapa-pembuatnya)
+- [📋 Sebelum Mulai](#-sebelum-mulai)
+- [📥 Cara Pasang](#-cara-pasang)
+- [🚀 Menyalakan Bot](#-menyalakan-bot)
+- [🔌 Menghubungkan ke WhatsApp](#-menghubungkan-ke-whatsapp)
+- [🔄 Memperbarui Bot](#-memperbarui-bot)
+- [💻 Pakai Termux (Android)](#-pakai-termux-android)
+- [❓ Bantuan! Ada Masalah](#-bantuan-ada-masalah)
+- [💖 Dukung Kami](#-dukung-kami)
+- [📜 Aturan (Lisensi)](#-aturan-lisensi)
+- [👤 Siapa Pembuatnya?](#-siapa-pembuatnya)
 
 #### 📋 **Sebelum Mulai**
 
@@ -806,7 +806,7 @@ Untuk menyalakan **Nazuninha Bot**, ketik:
 npm start
 ```
 
-Bot akan tanya cara menghubungkan ke WhatsApp (lihat [Menghubungkan ke WhatsApp](#menghubungkan-ke-whatsapp)).
+Bot akan tanya cara menghubungkan ke WhatsApp (lihat [Menghubungkan ke WhatsApp](#-menghubungkan-ke-whatsapp)).
 
 > **Pertama Kali?** Kamu perlu hubungkan dengan kode QR atau nomor. Setelah itu, biasanya otomatis!
 
@@ -895,7 +895,7 @@ Ini bikin bot tetap fresh tanpa hapus pengaturan atau chatmu.
    ```bash
    npm start
    ```  
-   Hubungkan dengan kode QR atau kode pasangan (lihat [Menghubungkan ke WhatsApp](#menghubungkan-ke-whatsapp)).
+   Hubungkan dengan kode QR atau kode pasangan (lihat [Menghubungkan ke WhatsApp](#-menghubungkan-ke-whatsapp)).
 
 **Menyalakan Ulang Bot**:  
 - Kalau Termux tertutup atau ponsel mati, tenang! Untuk nyalakan lagi:  
@@ -912,14 +912,14 @@ Ini bikin bot tetap fresh tanpa hapus pengaturan atau chatmu.
 - Supaya bot online 24/7, jangan tutup Termux. Pakai aplikasi “tetap aktif” atau cas ponsel agar tak tidur.  
 - Jika berhenti, ulangi langkah nyalakan ulang.
 
-> **Petunjuk**: Jika bot tak nyala, coba `npm install` atau lihat [Bantuan! Ada Masalah](#bantuan-ada-masalah).
+> **Petunjuk**: Jika bot tak nyala, coba `npm install` atau lihat [Bantuan! Ada Masalah](#-bantuan-ada-masalah).
 
 #### ❓ **Bantuan! Ada Masalah**
 
 Baru pakai bot? Ini solusi untuk masalah umum:
 
 - **“Perintah tak ditemukan” (misal: git, node)**  
-  - Kamu perlu pasang Git atau Node.js. Lihat [Sebelum Mulai](#sebelum-mulai) untuk link.  
+  - Kamu perlu pasang Git atau Node.js. Lihat [Sebelum Mulai](#-sebelum-mulai) untuk link.  
   - Di Termux, coba `pkg install git` atau `pkg install nodejs`.
 
 - **Kode QR Tak Bekerja**  
