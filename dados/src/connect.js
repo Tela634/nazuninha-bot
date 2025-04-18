@@ -224,6 +224,8 @@ class ConnectionManager {
     try {
       const existingConnections = await fs.readdir(this.baseAuthDir);
       
+      if (!fs.existsSync(this.baseAuthDir)) fs.mkdirSync(this.baseAuthDir, { recursive: true });
+      
       if (process.argv.includes('--add-number')) {
         const id = await ask('Digite um ID único para a nova conexão: ');
         if (!id || existingConnections.includes(id)) {
