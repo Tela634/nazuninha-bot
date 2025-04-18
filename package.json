@@ -4,15 +4,15 @@
   "description": "O bot de WhatsApp mais leve e funcional que você já viu",
   "main": "app.js",
   "scripts": {
-    "start": "npm run start:silent",
+    "start": "npm run start:silent --silent",
     "start:silent": "bash dados/src/.scripts/.start.sh",
-    "start:add": "npm run start:add:silent",
+    "start:add": "npm run start:add:silent --silent",
     "start:add:silent": "bash dados/src/.scripts/.addnumber.sh",
-    "config": "npm run config:silent",
+    "config": "npm run config:silent --silent",
     "config:silent": "bash dados/src/.scripts/.config.sh",
-    "config:install": "npm run config:install:silent",
+    "config:install": "npm run config:install:silent --silent",
     "config:install:silent": "bash dados/src/.scripts/.config.sh --install",
-    "update": "npm run update:silent",
+    "update": "npm run update:silent --silent",
     "update:silent": "bash dados/src/.scripts/.update.sh"
   },
   "repository": {
@@ -40,7 +40,7 @@
     "yt-search": "latest"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "npm": ">=9.0.0"
   }
 }

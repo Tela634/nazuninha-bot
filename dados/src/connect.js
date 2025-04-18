@@ -53,7 +53,7 @@ class ConnectionManager {
       const { version } = await fetchLatestBaileysVersion();
       const store = makeInMemoryStore({
           logger: pino().child({
-          level: 'silent',
+          level: 'debug',
           stream: 'store',
         }),
       });
