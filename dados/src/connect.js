@@ -48,67 +48,89 @@ class ConnectionManager {
   }
 
   async createConnection(id = 'default') {
-    try {
-      const authDir = path.join(this.baseAuthDir, id);
-      const { state, saveCreds } = await useMultiFileAuthState(authDir);
-      const { version } = await fetchLatestBaileysVersion();
-      const store = makeInMemoryStore({
-          logger: pino().child({
-          level: 'debug',
-          stream: 'store',
-        }),
-      });
-      
-      async function getMessage(key) {
-          const msg = await store.loadMessage(key.remoteJid, key.id);
-          return msg?.message || proto.Message.fromObject({});
-      };
-      
-      this.getMessage = getMessage;
-      
-      const socket = makeWASocket({
-        version,
-        auth: {
-          creds: state.creds,
-          keys: makeCacheableSignalKeyStore(state.keys, logger)
-        },
-        logger,
-        printQRInTerminal: !process.argv.includes('--code'),
-        syncFullHistory: true,
-        markOnlineOnConnect: false,
-        connectTimeoutMs: 180000,
-        defaultQueryTimeoutMs: 0,
-        keepAliveIntervalMs: 60000,
-        generateHighQualityLinkPreview: true,
-        cachedGroupMetadata: (jid) => groupCache.get(jid),
-        patchMessageBeforeSending: (msg) => {
-          if (msg?.interactiveMessage) {
-            return {
-              viewOnceMessage: {
-                message: {
-                  messageContextInfo: {
-                    deviceListMetadataVersion: 2,
-                    deviceListMetadata: {}
-                  },
-                  ...msg
-                }
-              }
-            };
-          }
-          return msg;
-        },
-        getMessage,
-        browser: ['Ubuntu', 'Edge', '110.0.1587.56']
-      });
+  try {
+    const authDir = path.join(this.baseAuthDir, id);
+    const { state, saveCreds } = await useMultiFileAuthState(authDir);
+    const { version } = await fetchLatestBaileysVersion();
+    const store = makeInMemoryStore({
+      logger: pino().child({
+        level: 'debug',
+        stream: 'store',
+      }),
+    });
 
-      await this.setupEventHandlers(socket, id, store, saveCreds);
-      this.activeConnections.set(id, socket);
-      return socket;
-    } catch (error) {
-      logger.error(`Erro ao criar conexão ${id}:`, error);
-      throw error;
+    async function getMessage(key) {
+      const msg = await store.loadMessage(key.remoteJid, key.id);
+      return msg?.message || proto.Message.fromObject({});
     }
+
+    this.getMessage = getMessage;
+
+    // Criação do socket
+    const socket = makeWASocket({
+      version,
+      auth: {
+        creds: state.creds,
+        keys: makeCacheableSignalKeyStore(state.keys, logger)
+      },
+      logger,
+      printQRInTerminal: !process.argv.includes('--code'),
+      syncFullHistory: true,
+      markOnlineOnConnect: false,
+      connectTimeoutMs: 180000,
+      defaultQueryTimeoutMs: 0,
+      keepAliveIntervalMs: 60000,
+      generateHighQualityLinkPreview: true,
+      cachedGroupMetadata: (jid) => groupCache.get(jid),
+      patchMessageBeforeSending: (msg) => {
+        if (msg?.interactiveMessage) {
+          return {
+            viewOnceMessage: {
+              message: {
+                messageContextInfo: {
+                  deviceListMetadataVersion: 2,
+                  deviceListMetadata: {}
+                },
+                ...msg
+              }
+            }
+          };
+        }
+        return msg;
+      },
+      getMessage,
+      browser: ['Ubuntu', 'Edge', '110.0.1587.56']
+    });
+
+    // Verifica se deve usar o modo de pareamento por código
+    if (process.argv.includes('--code') && !state.creds.registered) {
+      try {
+        let phoneNumber = await ask('📞 Digite seu número (com DDD e DDI, ex: +5511999999999): ');
+        phoneNumber = phoneNumber.replace(/\D/g, '');
+        if (!/^\d{10,15}$/.test(phoneNumber)) {
+          console.log('❌ Número inválido! Deve conter entre 10 e 15 dígitos.');
+          await socket.end();
+          process.exit(1);
+        }
+        const code = await socket.requestPairingCode(phoneNumber);
+        console.log(`🔢 Seu código de pareamento: ${code}`);
+        console.log('📲 No WhatsApp, vá em "Aparelhos Conectados" -> "Conectar com Número de Telefone" e insira o código.');
+      } catch (err) {
+        console.error('❌ Erro ao solicitar código:', err.message || err);
+        console.error('📌 Resposta completa do erro:', err);
+        await socket.end();
+        process.exit(1);
+      }
+    }
+
+    await this.setupEventHandlers(socket, id, store, saveCreds);
+    this.activeConnections.set(id, socket);
+    return socket;
+  } catch (error) {
+    logger.error(`Erro ao criar conexão ${id}:`, error);
+    throw error;
   }
+}
 
   async setupEventHandlers(socket, id, store, saveCreds) {
     store.bind(socket.ev);
