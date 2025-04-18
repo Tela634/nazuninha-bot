@@ -79,7 +79,6 @@ clean_old_files() {
 apply_update() {
     print_message "🚚 Aplicando atualização..."
     mv "$TEMP_DIR"/* ./
-    mv "$TEMP_DIR/.git" ./
     rm -rf "$TEMP_DIR"
 }
 
