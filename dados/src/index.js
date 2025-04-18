@@ -405,9 +405,9 @@ if (isCmd && globalBlocks.commands && globalBlocks.commands[command]) {
     if (!resultPriv.success) return reply(t.b.erro());
 
     let responseText = resultPriv.reply;
-    if (Array.isArray(resultPriv.sources) && resultPriv.sources.length > 0) {
+    if (resultPriv.sources.length > 0) {
       responseText += `\n\nFontes utilizadas:\n${resultPriv.sources.join('\n')}`;
-    }
+    };
 
     if (resultPriv.file?.buffer) {
       await nazu.sendMessage(from, {
