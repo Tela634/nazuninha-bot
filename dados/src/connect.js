@@ -18,6 +18,7 @@ const axios = require('axios');
 const readline = require('readline');
 const pino = require('pino');
 const fs = require('fs').promises;
+const fs2 = require('fs');
 const path = require('path');
 
 // Configurações
@@ -222,9 +223,10 @@ class ConnectionManager {
 
   async start() {
     try {
-      const existingConnections = await fs.readdir(this.baseAuthDir);
+    
+      if (!fs2.existsSync(this.baseAuthDir)) fs2.mkdirSync(this.baseAuthDir, { recursive: true });
       
-      if (!fs.existsSync(this.baseAuthDir)) fs.mkdirSync(this.baseAuthDir, { recursive: true });
+      const existingConnections = await fs.readdir(this.baseAuthDir);
       
       if (process.argv.includes('--add-number')) {
         const id = await ask('Digite um ID único para a nova conexão: ');
