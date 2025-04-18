@@ -388,6 +388,43 @@ if (isCmd && globalBlocks.commands && globalBlocks.commands[command]) {
   };
   break
   
+  case 'cog-beta':
+  try {
+    if (!isOwner) return reply(t.b.dono());
+    if (!q) return nazu.react('❌');
+
+    await nazu.react('⚒️');
+
+    const response = await axios.post("https://api.cognima.com.br/api/ia/chat?key=CognimaTeamFreeKey", {
+      message: q,
+      chat_id: `cog_ultra_${sender.split('@')[0]}`,
+      model_name: "cognimai-ultra",
+    });
+
+    const resultPriv = response.data;
+    if (!resultPriv.success) return reply(t.b.erro());
+
+    let responseText = resultPriv.reply;
+    if (Array.isArray(resultPriv.sources) && resultPriv.sources.length > 0) {
+      responseText += `\n\nFontes utilizadas:\n${resultPriv.sources.join('\n')}`;
+    }
+
+    if (resultPriv.file?.buffer) {
+      await nazu.sendMessage(from, {
+        document: resultPriv.file.buffer,
+        fileName: resultPriv.file.filename,
+        mimetype: resultPriv.file.mimetype,
+        caption: responseText
+      }, { quoted: info });
+    } else {
+      await reply(responseText);
+    }
+  } catch (e) {
+    console.error(e);
+    await reply(t.b.erro());
+  }
+  break;
+  
   
   //FERRAMENTAS
   case 'encurtalink': case 'tinyurl': try {
@@ -576,10 +613,14 @@ break;
     let datinha = await (isTikTokUrl ? tiktok.dl(q) : tiktok.search(q));
     if (!datinha.ok) return reply(datinha.msg);
     let bahzz = [];
+    if(datinha.urls.length > 1) {
     for (const urlz of datinha.urls) {
         bahzz.push({type: datinha.type, [datinha.type]: { url: urlz }});
     };
     await nazu.sendAlbumMessage(from, bahzz, { quoted: info });
+    } else {
+    await nazu.sendMessage(from, { [datinha.type]: { url: datinha.urls[0] }}, {quoted: info});
+    }
     if (datinha.audio) await nazu.sendMessage(from, { audio: { url: datinha.audio }, mimetype: 'audio/mp4' }, { quoted: info });
    } catch (e) {
     console.error(e);
