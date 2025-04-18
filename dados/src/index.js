@@ -577,7 +577,7 @@ break;
     if (!datinha.ok) return reply(datinha.msg);
     let bahzz = [];
     for (const urlz of datinha.urls) {
-        bahzz.push({type: datinha.type, data: { url: urlz }});
+        bahzz.push({type: datinha.type, [datinha.type]: { url: urlz }});
     };
     await nazu.sendAlbumMessage(from, bahzz, { quoted: info });
     if (datinha.audio) await nazu.sendMessage(from, { audio: { url: datinha.audio }, mimetype: 'audio/mp4' }, { quoted: info });
@@ -594,7 +594,7 @@ break;
     const datinha = await igdl.dl(q);
     if (!datinha.ok) return reply(datinha.msg);
     let bahzz = [];
-    await Promise.all(datinha.data.map(urlz => bahzz.push({type: urlz.type, data: urlz.buff})));
+    await Promise.all(datinha.data.map(urlz => bahzz.push({type: urlz.type, [urlz.type]: urlz.buff})));
     await nazu.sendAlbumMessage(from, bahzz, { quoted: info });
   } catch (e) {
     console.error(e);
@@ -610,7 +610,7 @@ break;
     if (!datinha.ok) return reply(datinha.msg);
     slakk = [];
     for (const urlz of datinha.urls) {
-     slakk.push({type: datinha.type, data: {url: urlz}});
+     slakk.push({[datinha.type]: {url: urlz}});
     };
     await nazu.sendAlbumMessage(from, slakk, { quoted: info });
    } catch (e) {
