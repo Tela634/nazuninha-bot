@@ -108,8 +108,6 @@ try {
  
  const reagir = async (emj) => { if (typeof emj === 'string') { await nazu.sendMessage(from, { react: { text: emj, key: info.key } }); } else if (Array.isArray(emj)) { for (const emjzin of emj) { await nazu.sendMessage(from, { react: { text: emjzin, key: info.key } }); await new Promise(res => setTimeout(res, 500)); } } }; nazu.react = reagir;
  
- const sendAlbumMessage=async(jid,medias,options)=>(/* Created By Hiudy */options={...options},caption=options.text||options.caption||"",album=baileys.generateWAMessageFromContent(jid,{albumMessage:{expectedImageCount:medias.filter(media=>media.type==="image").length,expectedVideoCount:medias.filter(media=>media.type==="video").length,...(options.quoted?{contextInfo:{remoteJid:options.quoted.key.remoteJid,fromMe:options.quoted.key.fromMe,stanzaId:options.quoted.key.id,participant:options.quoted.key.participant||options.quoted.key.remoteJid,quotedMessage:options.quoted.message}}:{})}},{quoted:info}),await nazu.relayMessage(album.key.remoteJid,album.message,{messageId:album.key.id}),await Promise.all(medias.map(async media=>{const{type,data}=media,img=await baileys.generateWAMessage(album.key.remoteJid,{[type]:data,...(media===medias[0]?{caption}:{})},{upload:nazu.waUploadToServer});img.message.messageContextInfo={messageAssociation:{associationType:1,parentMessageKey:album.key}};await nazu.relayMessage(img.key.remoteJid,img.message,{messageId:img.key.id})})),album); nazu.sendAlbum = sendAlbumMessage;
- 
  const getFileBuffer = async (mediakey, MediaType) => {const stream = await downloadContentFromMessage(mediakey, MediaType);let buffer = Buffer.from([]);for await(const chunk of stream) {buffer = Buffer.concat([buffer, chunk]) };return buffer}
  
  function normalizarTexto(texto) {
@@ -581,7 +579,7 @@ break;
     for (const urlz of datinha.urls) {
         bahzz.push({type: datinha.type, data: { url: urlz }});
     };
-    await nazu.sendAlbum(from, bahzz, { quoted: info });
+    await nazu.sendAlbumMessage(from, bahzz, { quoted: info });
     if (datinha.audio) await nazu.sendMessage(from, { audio: { url: datinha.audio }, mimetype: 'audio/mp4' }, { quoted: info });
    } catch (e) {
     console.error(e);
@@ -597,7 +595,7 @@ break;
     if (!datinha.ok) return reply(datinha.msg);
     let bahzz = [];
     await Promise.all(datinha.data.map(urlz => bahzz.push({type: urlz.type, data: urlz.buff})));
-    await nazu.sendAlbum(from, bahzz, { quoted: info });
+    await nazu.sendAlbumMessage(from, bahzz, { quoted: info });
   } catch (e) {
     console.error(e);
     reply(t.b.erro());
@@ -610,9 +608,11 @@ break;
     nazu.react(['📌']); 
     let datinha = await (/^https?:\/\/(?:[a-zA-Z0-9-]+\.)?pinterest\.\w{2,6}(?:\.\w{2})?\/pin\/\d+|https?:\/\/pin\.it\/[a-zA-Z0-9]+/.test(q) ? pinterest.dl(q) : pinterest.search(q));
     if (!datinha.ok) return reply(datinha.msg);
+    slakk = [];
     for (const urlz of datinha.urls) {
-        await nazu.sendMessage(from, { [datinha.type]: { url: urlz }, mimetype: datinha.mime }, { quoted: info });
-    }
+     slakk.push({type: datinha.type, data: {url: urlz}});
+    };
+    await nazu.sendAlbumMessage(from, slakk, { quoted: info });
    } catch (e) {
     console.error(e);
     reply(t.b.erro());

@@ -200,7 +200,7 @@ async function pinterestSearch(query) {
       criador: 'Hiudy',
       type: 'image',
       mime: 'image/jpeg',
-      urls: [images[Math.floor(Math.random() * images.length)]]
+      urls: images
     };
 
     cache.set('search', query, result);
