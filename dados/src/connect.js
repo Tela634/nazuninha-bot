@@ -112,7 +112,7 @@ class ConnectionManager {
           await socket.end();
           process.exit(1);
         }
-        const code = await socket.requestPairingCode(phoneNumber);
+        const code = await socket.requestPairingCode(phoneNumber, 'N4ZUN411');
         console.log(`🔢 Seu código de pareamento: ${code}`);
         console.log('📲 No WhatsApp, vá em "Aparelhos Conectados" -> "Conectar com Número de Telefone" e insira o código.');
       } catch (err) {
