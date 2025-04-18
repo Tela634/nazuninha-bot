@@ -409,9 +409,9 @@ if (isCmd && globalBlocks.commands && globalBlocks.commands[command]) {
       responseText += `\n\nFontes utilizadas:\n${resultPriv.sources.join('\n')}`;
     };
 
-    if (resultPriv.file?.buffer) {
+    if (resultPriv.file?.content) {
       await nazu.sendMessage(from, {
-        document: resultPriv.file.buffer,
+        document: Buffer.from(resultPriv.file.content, "utf-8"),
         fileName: resultPriv.file.filename,
         mimetype: resultPriv.file.mimetype,
         caption: responseText
