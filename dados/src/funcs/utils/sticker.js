@@ -213,8 +213,7 @@ async function sendSticker(nazu, jid, options, quoted = {}) {
     // Envia o sticker
     await nazu.sendMessage(jid, {
       sticker: buffer,
-      ...(packname || author ? { packname, author } : {})
-    }, { quoted });
+    }, quoted);
 
     return buffer;
   } catch (error) {
