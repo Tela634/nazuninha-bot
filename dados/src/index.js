@@ -390,7 +390,7 @@ if (isCmd && globalBlocks.commands && globalBlocks.commands[command]) {
   
   case 'cog':
   try {
-    if (!isOwner) return reply(t.b.dono());
+    if(!isPremium) return reply('Apenas usuários premium.');
     if (!q) return nazu.react('❌');
 
     await nazu.react('⚒️');
