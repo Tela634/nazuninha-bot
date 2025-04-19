@@ -263,7 +263,7 @@ if (isCmd && globalBlocks.commands && globalBlocks.commands[command]) {
   }
   break;
   
-  case 'cognimai': case 'cog':
+  case 'cognimai': case 'cog-base':
   try {
     if (!q) return reply(t.b.digitarPrompt());
     nazu.react('🤖');
@@ -388,7 +388,7 @@ if (isCmd && globalBlocks.commands && globalBlocks.commands[command]) {
   };
   break
   
-  case 'cog-beta':
+  case 'cog':
   try {
     if (!isOwner) return reply(t.b.dono());
     if (!q) return nazu.react('❌');
