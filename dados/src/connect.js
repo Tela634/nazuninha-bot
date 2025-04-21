@@ -68,38 +68,25 @@ class ConnectionManager {
 
     // Criação do socket
     const socket = makeWASocket({
-      version,
+      countryCode: 'BR',
       auth: {
         creds: state.creds,
         keys: makeCacheableSignalKeyStore(state.keys, logger)
       },
       logger,
       printQRInTerminal: !process.argv.includes('--code'),
-      syncFullHistory: true,
+      syncFullHistory: false,
       markOnlineOnConnect: false,
+      generateHighQualityLinkPreview: true,
+      fireInitQueries: true,
+      emitOwnEvents: true,
+      patchMessageBeforeSending: msg => msg,
       connectTimeoutMs: 180000,
       defaultQueryTimeoutMs: 0,
       keepAliveIntervalMs: 60000,
-      generateHighQualityLinkPreview: true,
       cachedGroupMetadata: (jid) => groupCache.get(jid),
-      patchMessageBeforeSending: (msg) => {
-        if (msg?.interactiveMessage) {
-          return {
-            viewOnceMessage: {
-              message: {
-                messageContextInfo: {
-                  deviceListMetadataVersion: 2,
-                  deviceListMetadata: {}
-                },
-                ...msg
-              }
-            }
-          };
-        }
-        return msg;
-      },
       getMessage,
-      browser: ['Ubuntu', 'Edge', '110.0.1587.56']
+      browser: ['Nazuna Bot', 'Opera', '1.0.0']
     });
 
     // Verifica se deve usar o modo de pareamento por código
