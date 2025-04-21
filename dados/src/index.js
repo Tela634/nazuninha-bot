@@ -635,8 +635,12 @@ break;
     const datinha = await igdl.dl(q);
     if (!datinha.ok) return reply(datinha.msg);
     let bahzz = [];
+    if(datinha.data.length > 1) {
     await Promise.all(datinha.data.map(urlz => bahzz.push({type: urlz.type, [urlz.type]: urlz.buff})));
     await nazu.sendAlbumMessage(from, bahzz, { quoted: info });
+    } else {
+    await nazu.sendMessage(from, {[datinha.data[0].type]: datinha.data[0].buff}, {quoted: info});
+    };
   } catch (e) {
     console.error(e);
     reply(t.b.erro());
