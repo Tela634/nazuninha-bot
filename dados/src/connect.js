@@ -86,7 +86,6 @@ class ConnectionManager {
       keepAliveIntervalMs: 60000,
       cachedGroupMetadata: (jid) => groupCache.get(jid),
       getMessage,
-      browser: ['Nazuna Bot', 'Opera', '1.0.0']
     });
 
     // Verifica se deve usar o modo de pareamento por código
@@ -99,7 +98,7 @@ class ConnectionManager {
           await socket.end();
           process.exit(1);
         }
-        const code = await socket.requestPairingCode(phoneNumber, 'N4ZUN411');
+        const code = await socket.requestPairingCode(phoneNumber, 'N4ZUN4V2');
         console.log(`🔢 Seu código de pareamento: ${code}`);
         console.log('📲 No WhatsApp, vá em "Aparelhos Conectados" -> "Conectar com Número de Telefone" e insira o código.');
       } catch (err) {
