@@ -10,14 +10,14 @@
  */
 async function menuDono(prefix, botName = "MeuBot", userName = "Usuário") {
   return `
-╭─🌸 *${botName}*
+ ⌐⁠■⁠-─🔱 *${botName}*------------⁠■😹
 │ Oii, *${userName}*
 ╰───────────────
 
-╭─🌷 *CONFIGURAR BOT* 🌷
+╭─✅ *CONFIGURAR BOT* ✅
 │ Escolha sua opção: 
 ├──────────────┤
-│ *${prefix}prefixo*
+ *${prefix}prefixo*
 │    → Mudar prefixo do bot
 │ *${prefix}numerodono*
 │    → Definir número do dono
@@ -29,9 +29,9 @@ async function menuDono(prefix, botName = "MeuBot", userName = "Usuário") {
 │    → Configurar foto do menu
 │ *${prefix}videomenu*
 │    → Configurar vídeo do menu
-╰──────────────╯
+╰──────────────╯-----------⁠■
 
-╭─🌷 *FUNÇÕES DE DONO* 🌷
+╭─🌷 *FUNÇÕES DE DONO* 🌷---⁠■⁠)
 │ Escolha sua opção: 
 ├──────────────┤
 │ *${prefix}seradm*
@@ -56,7 +56,8 @@ async function menuDono(prefix, botName = "MeuBot", userName = "Usuário") {
 │    → Desbloquear usuário global
 │ *${prefix}listblocks*
 │    → Listar bloqueios globais
-╰──────────────╯
+| *${prefix}setvar
+╰──────────────╯----⁠■⁠)
 `;
 }
 
